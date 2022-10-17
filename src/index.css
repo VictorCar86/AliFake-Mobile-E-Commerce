@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .btn {
+        @apply w-max h-10 px-3 m-4 rounded-3xl bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-600 focus:outline-none focus:ring
+    }
+}
+
+@layer utilities {
+    .color-white {
+        color: #ffffff;
+    }
+}
