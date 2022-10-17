@@ -36,4 +36,4 @@ Open the file `dist/index.html` in your browser
 
 ## Check it online
 
-👉 https://weather-app-withreact.herokuapp.com/
+👉 Coming soon...
