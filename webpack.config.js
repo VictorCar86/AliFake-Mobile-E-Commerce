@@ -1,5 +1,6 @@
 const path = require('path');
 const HTMLWebpackPlugin = require("html-webpack-plugin");
+const Dotenv = require("dotenv-webpack");
 
 module.exports = {
   entry: './src/index.js',
@@ -30,7 +31,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.(gif|png|jpe?g)$/,
+        test: /\.(gif|png|webp|pdf|mp4|jpe?g)$/,
         type: "asset/resource",
         generator: {
           filename: "assets/[name][hash][ext]"
@@ -47,6 +48,10 @@ module.exports = {
     new HTMLWebpackPlugin({
       template: "./public/index.html",
       filename: "index.html"
+    }),
+    new Dotenv({
+      path: "./.env",
+      systemvars: true,
     }),
   ],
   devServer: {
