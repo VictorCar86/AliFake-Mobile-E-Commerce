@@ -6,16 +6,16 @@ const PreviewProduct = ({ data, deal = false}) => {
     );
 
     return (
-        <article className='h-min w-full rounded-xl '>
+        <article className={`${deal ? "w-[calc(37.45318vw_-_11.98502px)]" : "w-full"} h-min rounded-xl `}>
             <img className='border-gray-300 border-4 rounded-xl' src={data.product_main_image_url} alt={data.product_title} />
             <span className='text-xs font-medium'>{data.sale_price_currency}</span>
-            <span className='mx-1 text-lg font-medium'>{data.sale_price}</span>
+            <span className='mx-1 text-xl font-medium'>{data.sale_price}</span>
             {discount >= 20 && (
               <>
-                  <span className='opacity-75 line-through'>{data.original_price}</span>
-                  <p className='w-max px-1 pb-0.5 bg-red-600 text-white font-medium rounded-tl-lg rounded-br-xl'>
+                  <span className='mr-1 opacity-75 line-through'>{data.original_price}</span>
+                  <span className='inline-block w-max px-1 pb-0.5 bg-red-600 text-white font-medium rounded-tl-lg rounded-br-xl'>
                       Save {discount + "%"}
-                  </p>
+                  </span>
               </>
             )}
             {!deal && (
@@ -25,7 +25,7 @@ const PreviewProduct = ({ data, deal = false}) => {
                   </p>
               </>
             )}
-            <p>Sold {data.lastest_volume}</p>
+            <p className='opacity-75'>Sold {data.lastest_volume}</p>
         </article>
     )
 }

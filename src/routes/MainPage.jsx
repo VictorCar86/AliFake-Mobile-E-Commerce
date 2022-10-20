@@ -6,21 +6,30 @@ import SkeletonPreviewProduct from '../components/SkeletonPreviewProduct';
 import SpinnerIcon from '../assets/images/spinnerIcon.webp'
 
 const MainPage = () => {
-  const [skeletonLoading, setSkeletonLoading] = useState(true);
+  const [skeleton1Loading, setSkeleton1Loading] = useState(true);
+  const [skeleton2Loading, setSkeleton2Loading] = useState(true);
   const [infiniteLoading, setInfiniteLoading] = useState(false);
 
-  const { state, callNewBestSalesData } = useContext(AppContext)
-  const { bestSalesData } = state;
+  const { state, callNewBestSalesData, callNewOffersData } = useContext(AppContext)
+  const { bestSalesData, newOffersData } = state;
 
-  const renderProducts = () => {
-    console.log(state)
-    if (bestSalesData.docs.length !== 0){
-      if (skeletonLoading === true){
-        setSkeletonLoading(false)
+  const renderProducts = (data, deal = false) => {
+    // console.log(state)
+    if (data.length !== 0){
+
+      if (!!deal){
+        if (skeleton1Loading === true){
+          setSkeleton1Loading(false)
+        }
+      } else {
+        if (skeleton2Loading === true){
+          setSkeleton2Loading(false)
+        }
       }
-      return bestSalesData.docs.map((e, index) => (
+
+      return data.map((e, index) => (
         <li key={index}>
-          <PreviewProduct data={e} />
+          <PreviewProduct data={e} deal={deal} />
         </li>
       ))
     }
@@ -32,19 +41,60 @@ const MainPage = () => {
 
   const scrollPagination = () => {
     setInfiniteLoading(true)
-    if (bestSalesData.hasNextPage){
-      callNewBestSalesData(bestSalesData.nextPage)
-    }
+    // if (bestSalesData.hasNextPage){
+    //   callNewBestSalesData(bestSalesData.nextPage)
+    // }
+    callNewOffersData(1)
+    setTimeout(() => callNewBestSalesData(), 2000)
   }
+
+  // window.addEventListener("scroll", () => {
+  //     const {
+  //       scrollTop,
+  //       scrollHeight,
+  //       clientHeight
+  //     } = document.documentElement;
+
+  //     const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15);
+
+  //     if (scrollIsBottom){
+  //       callNewBestSalesData(bestSalesData.nextPage)
+  //     }
+
+  //     console.log(state)
+  //   }
+  // )
 
   return (
     <>
       <Header />
       <main>
-        <section className='max-w-[490px] mx-auto px-3 pt-[108px] pb-14'>
-          <p className='my-4 mx-auto text-lg font-medium'>More to love</p>
+        <section className='px-3 pt-[108px]'>
+          <p className='my-4 text-lg font-medium'>Most recent offers</p>
+          <ul className='h-full max-h-[450px] flex gap-3 overflow-x-scroll overflow-y-hidden'>
+            {!!skeleton1Loading && (
+              <>
+                <li>
+                  <SkeletonPreviewProduct deal="true" />
+                </li>
+                <li>
+                  <SkeletonPreviewProduct deal="true" />
+                </li>
+                <li>
+                  <SkeletonPreviewProduct deal="true" />
+                </li>
+                <li>
+                  <SkeletonPreviewProduct deal="true" />
+                </li>
+              </>
+            )}
+            {renderProducts(newOffersData, true)}
+          </ul>
+        </section>
+        <section className='px-3 pb-14'>
+          <p className='my-4 text-lg font-medium'>More to love</p>
           <ul className='h-full w-full grid grid-cols-2 gap-3 overflow-hidden'>
-            {!!skeletonLoading && (
+            {!!skeleton2Loading && (
               <>
                 <li>
                   <SkeletonPreviewProduct />
@@ -72,7 +122,7 @@ const MainPage = () => {
                 </li>
               </>
             )}
-            {renderProducts()}
+            {renderProducts(bestSalesData.docs)}
           </ul>
           {!!infiniteLoading && (
             <img className='h-10 w-10 mx-auto my-4 animate-spin' src={SpinnerIcon} alt="Spin loader image" />

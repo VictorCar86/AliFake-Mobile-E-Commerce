@@ -1,5 +1,5 @@
 import React from 'react'
-import useInitialState from '../utils/useInitialState'
+import useInitialState from '../hooks/useInitialState'
 
 export const AppContext = React.createContext()
 
