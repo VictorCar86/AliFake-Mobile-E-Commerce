@@ -9,7 +9,7 @@ const MainNavbar = () => {
   const location = useLocation();
 
   return (
-    <nav className='w-full max-w-md rounded-t-lg pt-1.5 fixed bottom-0 left-1/2 -translate-x-1/2 bg-gray-100'>
+    <nav className='w-full max-w-md rounded-t-lg pt-1.5 fixed bottom-0 left-1/2 -translate-x-1/2 z-10 bg-gray-100'>
         <ul className='flex justify-around gap-3' >
             <li className={`${location.pathname === "/" ? "text-red-600" : ""}`}>
               <Link to={"/"}>
