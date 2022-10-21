@@ -21,7 +21,7 @@ const useInitialState = (number = 1) => {
             url: 'https://magic-aliexpress1.p.rapidapi.com/api/bestSales/SortedByNewest',
             params: {limit: '10'},
             headers: {
-                'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
+                'X-RapidAPI-Key': process.env.NEWRAPIDAPI_KEY,
                 'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
             }
         };
@@ -45,7 +45,7 @@ const useInitialState = (number = 1) => {
             url: 'https://magic-aliexpress1.p.rapidapi.com/api/bestSales/products',
             params: {page: pageNum, priceMax: '30', priceMin: '5', sort: 'EVALUATE_RATE_ASC'},
             headers: {
-                'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
+                'X-RapidAPI-Key': process.env.NEWRAPIDAPI_KEY,
                 'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
             }
         };
