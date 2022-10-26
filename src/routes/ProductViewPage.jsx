@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FiChevronLeft, FiChevronRight, FiHeart, FiX } from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiHeart, FiMapPin, FiX } from 'react-icons/fi';
 import { useNavigate, useParams } from 'react-router-dom'
 import { AppContext } from '../context/AppProvider';
 import Searcher from '../components/Searcher';
@@ -17,6 +17,10 @@ const ProductViewPage = () => {
     const toggleSpecs = () => {
         setSpecs(prev => !prev)
     }
+
+    const starsPercentage = (productInfo.feedBackRating.averageStar / 5) * 100;
+
+    const shippingData = productInfo.metadata.shippingModule.generalFreightInfo.originalLayoutResultList[0].bizData;
 
     useEffect(() => {
         if (productInfo.product_id !== pageInfo.id && productInfo.product_id !== ""){
@@ -47,8 +51,8 @@ const ProductViewPage = () => {
                 </button>
                 <Searcher />
             </header>
-            <main className='min-h-screen pb-14 text-[4vw]'>
-                <section>
+            <main className='min-h-screen pb-14 text-[4vw] bg-gray-300'>
+                <section className='mb-3 bg-white'>
                     <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
                         {displayImages()}
                         <button className='sticky top-[90%] right-4 h-min px-1.5 flex items-center gap-1 rounded-2xl font-medium bg-gray-300' type='button'>
@@ -56,14 +60,17 @@ const ProductViewPage = () => {
                             <span>{productInfo.wishedCount}</span>
                         </button>
                     </div>
-                    <div className='p-[3%]'>
+                    <div className='px-[3%] pt-[3%]'>
                         <div className='flex gap-2 items-center'>
                             <span className='text-[5.5vw] font-bold'>{`${productInfo.sale_price_currency} ${productInfo.sale_price}`}</span>
                             <span className='line-through opacity-70'>{`${productInfo.sale_price_currency} ${productInfo.original_price}`}</span>
                             <span className='text-red-600'>{`-${productInfo.discount}`}</span>
                         </div>
                         <p className='my-2'>{productInfo.product_title}</p>
-                        <span className='mr-2'>⭐⭐⭐⭐⭐</span>
+                        <span
+                            className={`mr-2 relative text-gray-300 before:content-["★★★★★"] before:absolute before:w-[${starsPercentage}%] before:text-yellow-400 before:drop-shadow-md before:overflow-hidden`}>
+                            ★★★★★
+                        </span>
                         <span className='mr-2'>{productInfo.feedBackRating.averageStar}</span>
                         <span className='mr-2'>{`${productInfo.lastest_volume} orders`}</span>
                         <button
@@ -75,14 +82,52 @@ const ProductViewPage = () => {
                             <FiChevronRight className='inline-block w-[6%] h-[6%] float-right opacity-50' />
                         </button>
                     </div>
-                    <div>
-                        {/* {productInfo.metadata.descriptionModule.descriptionUrl} */}
-                    </div>
-                    <div>
-                        <button type='button' onClick={() => productDescription(pageInfo.id)}>product</button>
-                        <button type='button' onClick={() => console.log(state)}>state</button>
+                </section>
+                <section className='p-[3%] bg-white'>
+                    {productInfo.metadata && (
+                        <div className='mt-1 border-b border-gray-300'>
+                            <span className='font-bold'>Discounts & Coupons</span>
+                            <button className='float-right flex items-center px-2 rounded-2xl font-medium text-white bg-gradient-to-r from-red-600 to-orange-500'>
+                                <span>Get</span>
+                                <FiChevronRight className='inline-block' />
+                            </button>
+                            <div className='my-3 flex gap-2 overflow-x-scroll overflow-y-hidden'>
+                                {productInfo.metadata
+                                  .couponModule.webCouponInfo
+                                    .couponList.map((coupon, index) => (
+                                        <button
+                                          className="px-2 py-1 rounded-md text-red-600 text-left bg-gray-200"
+                                          key={index}
+                                        >
+                                          <p className='font-bold'>{coupon.copy}</p>
+                                          <p className=''>{coupon.title}</p>
+                                        </button>
+                                    ))}
+                            </div>
+                            {/* {productInfo.metadata.descriptionModule.descriptionUrl} */}
+                        </div>
+                    )}
+                    <div className='my-3'>
+                        <span className='font-bold'>Delivery</span>
+                        <span className='float-right flex items-center gap-1'>
+                            <FiMapPin className='inline-block' />
+                            {`To ${shippingData.shipTo}`}
+                        </span>
+                        <div className='mt-1.5 text-[3.5vw]'>
+                            <p className='font-medium'>
+                                Shipping: {shippingData.shippingFee === "free" ?
+                                <>Free Shipping</> :
+                                <>{shippingData.currency} {shippingData.shippingFee}</>}
+                            </p>
+                            <p>From {shippingData.shipFrom} via {shippingData.deliveryProviderName}</p>
+                            <p>Estimated delivery on {shippingData.deliveryDate.slice(0, 3) + " " + shippingData.deliveryDate.slice(-2)}</p>
+                        </div>
                     </div>
                 </section>
+                <div>
+                    <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => productDescription(pageInfo.id)}>product</button>
+                    <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(state)}>state</button>
+                </div>
             </main>
             <div className={`${specs ? "bg-gray-700/50" : "bg-transparent invisible"} transition-colors duration-200 min-h-screen w-full fixed top-0 text-[4vw] z-20`}>
                 <div className={`${specs ? "" : "translate-y-full"} transition-transform duration-500 h-3/4 w-full px-5 pb-5 absolute bottom-0 rounded-t-xl bg-white overflow-y-scroll overflow-x-hidden`}>
@@ -96,7 +141,7 @@ const ProductViewPage = () => {
                             <FiX className='w-full h-full opacity-60'/>
                         </button>
                     </div>
-                    <table className='w-full h-full mt-[12%]'>
+                    <table className='w-full h-max mt-[12%]'>
                         <tbody>
                             {productInfo.specs.map((item, index) => (
                                 <tr className='border-b border-gray-300' key={index}>
