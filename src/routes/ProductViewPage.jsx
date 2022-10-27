@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FiChevronLeft, FiChevronRight, FiHeart, FiMapPin, FiX } from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiHeart, FiMapPin, FiShoppingBag, FiX } from 'react-icons/fi';
 import { useNavigate, useParams } from 'react-router-dom'
 import { AppContext } from '../context/AppProvider';
 import Searcher from '../components/Searcher';
@@ -21,6 +21,10 @@ const ProductViewPage = () => {
     const starsPercentage = (productInfo.feedBackRating.averageStar / 5) * 100;
 
     const shippingData = productInfo.metadata.shippingModule.generalFreightInfo.originalLayoutResultList[0].bizData;
+
+    const feeShipping = shippingData.shippingFee === "free" ?
+        <>Free Shipping</> :
+        <>{shippingData.currency} {shippingData.displayAmount}</>;
 
     useEffect(() => {
         if (productInfo.product_id !== pageInfo.id && productInfo.product_id !== ""){
@@ -52,10 +56,10 @@ const ProductViewPage = () => {
                 <Searcher />
             </header>
             <main className='min-h-screen pb-14 text-[4vw] bg-gray-300'>
-                <section className='mb-3 bg-white'>
+                <section className='mb-[2%] bg-white'>
                     <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
                         {displayImages()}
-                        <button className='sticky top-[90%] right-4 h-min px-1.5 flex items-center gap-1 rounded-2xl font-medium bg-gray-300' type='button'>
+                        <button className='sticky top-[90%] right-4 h-min px-1.5 flex items-center gap-1 rounded-full font-medium bg-gray-300' type='button'>
                             <FiHeart />
                             <span>{productInfo.wishedCount}</span>
                         </button>
@@ -63,15 +67,23 @@ const ProductViewPage = () => {
                     <div className='px-[3%] pt-[3%]'>
                         <div className='flex gap-2 items-center'>
                             <span className='text-[5.5vw] font-bold'>{`${productInfo.sale_price_currency} ${productInfo.sale_price}`}</span>
-                            <span className='line-through opacity-70'>{`${productInfo.sale_price_currency} ${productInfo.original_price}`}</span>
-                            <span className='text-red-600'>{`-${productInfo.discount}`}</span>
+                            {Number(productInfo.discount.slice(0, 2)) >= 20 && (
+                              <>
+                                <span className='line-through opacity-70'>{`${productInfo.sale_price_currency} ${productInfo.original_price}`}</span>
+                                <span className='text-red-600'>{`-${productInfo.discount}`}</span>
+                              </>
+                            )}
+                        </div>
+                        <div className='mt-1.5 mb-3.5 text-[3vw] opacity-70'>
+                            <span>Price shown before tax, </span>
+                            <span>{feeShipping}</span>
                         </div>
                         <p className='my-2'>{productInfo.product_title}</p>
                         <span
                             className={`mr-2 relative text-gray-300 before:content-["★★★★★"] before:absolute before:w-[${starsPercentage}%] before:text-yellow-400 before:drop-shadow-md before:overflow-hidden`}>
                             ★★★★★
                         </span>
-                        <span className='mr-2'>{productInfo.feedBackRating.averageStar}</span>
+                        <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{productInfo.feedBackRating.averageStar}</span>
                         <span className='mr-2'>{`${productInfo.lastest_volume} orders`}</span>
                         <button
                             className='w-full mt-4 py-3.5 border-t border-gray-300'
@@ -81,13 +93,17 @@ const ProductViewPage = () => {
                             <span className='float-left font-bold'>Specifications</span>
                             <FiChevronRight className='inline-block w-[6%] h-[6%] float-right opacity-50' />
                         </button>
+                        <button className='w-full py-3.5 border-t border-gray-300' type='button'>
+                            <span className='font-bold float-left'>Item Description</span>
+                            <FiChevronRight className='inline-block w-[6%] h-[6%] float-right opacity-50' />
+                        </button>
                     </div>
                 </section>
-                <section className='p-[3%] bg-white'>
+                <section className='px-[3%] pt-[3%] bg-white'>
                     {productInfo.metadata && (
                         <div className='mt-1 border-b border-gray-300'>
                             <span className='font-bold'>Discounts & Coupons</span>
-                            <button className='float-right flex items-center px-2 rounded-2xl font-medium text-white bg-gradient-to-r from-red-600 to-orange-500'>
+                            <button className='float-right flex items-center px-2 rounded-full font-medium text-white bg-gradient-to-r from-red-600 to-orange-500'>
                                 <span>Get</span>
                                 <FiChevronRight className='inline-block' />
                             </button>
@@ -115,13 +131,33 @@ const ProductViewPage = () => {
                         </span>
                         <div className='mt-1.5 text-[3.5vw]'>
                             <p className='font-medium'>
-                                Shipping: {shippingData.shippingFee === "free" ?
-                                <>Free Shipping</> :
-                                <>{shippingData.currency} {shippingData.shippingFee}</>}
+                                Shipping: {feeShipping}
                             </p>
                             <p>From {shippingData.shipFrom} via {shippingData.deliveryProviderName}</p>
                             <p>Estimated delivery on {shippingData.deliveryDate.slice(0, 3) + " " + shippingData.deliveryDate.slice(-2)}</p>
                         </div>
+                    </div>
+                    <button className='w-full pt-3.5 pb-4 border-t text-left border-gray-300'>
+                        <span className='mr-5 font-bold'>Service</span>
+                        <span className='opacity-70'>75-day Buyer Protection</span>
+                        <FiChevronRight className='inline-block w-[6%] h-[6%] float-right opacity-50' />
+                    </button>
+                </section>
+                <section className='flex gap-4 p-[3%] text-white bg-black'>
+                    <div className='h-max rounded-full bg-white'>
+                        <FiShoppingBag className='w-[10vw] h-[10vw] m-[0.6vw] px-[12%] rounded-full border border-gray-300 text-gray-400' />
+                    </div>
+                    <div>
+                        <p className='font-bold'>{productInfo.metadata.storeModule.storeName}</p>
+                        <div className='grid grid-rows-2 grid-flow-col gap-x-12 my-2 text-[3.5vw]'>
+                            <p className='font-bold'>{productInfo.metadata.storeModule.positiveRate}</p>
+                            <p>Positive Feedback</p>
+                            <p className='font-bold'>{productInfo.metadata.storeModule.countryCompleteName}</p>
+                            <p>Country From</p>
+                        </div>
+                        <button className='relative left-1/2 -translate-x-1/2 w-[50vw] max-w-xs py-0.5 rounded-full text-[3.5vw] text-center text-black bg-white' type='button'>
+                            <span>Visit Store</span>
+                        </button>
                     </div>
                 </section>
                 <div>
