@@ -1,7 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FiChevronLeft, FiChevronRight, FiHeart, FiMapPin, FiShoppingBag, FiX } from 'react-icons/fi';
-import { useNavigate, useParams } from 'react-router-dom'
+import {
+    FiChevronLeft,
+    FiChevronRight,
+    FiHeart,
+    FiHome,
+    FiMapPin,
+    FiMoreHorizontal,
+    FiSearch,
+    FiShoppingBag,
+    FiShoppingCart,
+    FiX
+} from 'react-icons/fi';
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import { AppContext } from '../context/AppProvider';
+import AlifakelogoImg from '../assets/images/alifake_logo.webp'
 import Searcher from '../components/Searcher';
 
 const ProductViewPage = () => {
@@ -14,9 +26,13 @@ const ProductViewPage = () => {
     const [specs, setSpecs] = useState(false);
 
 
-    const toggleSpecs = () => {
-        setSpecs(prev => !prev)
-    }
+    useEffect(() => {
+        if (productInfo.product_id !== pageInfo.id && productInfo.product_id !== ""){
+            productDescription(pageInfo.id)
+        }
+    }, [])
+
+    const toggleSpecs = () => setSpecs(prev => !prev);
 
     const starsPercentage = (productInfo.feedBackRating.averageStar / 5) * 100;
 
@@ -26,11 +42,6 @@ const ProductViewPage = () => {
         <>Free Shipping</> :
         <>{shippingData.currency} {shippingData.displayAmount}</>;
 
-    useEffect(() => {
-        if (productInfo.product_id !== pageInfo.id && productInfo.product_id !== ""){
-            productDescription(pageInfo.id)
-        }
-    }, [])
 
     const displayImages = () => {
         if (productInfo.product_small_image_urls) {
@@ -49,13 +60,32 @@ const ProductViewPage = () => {
 
     return (
         <>
-            <header className='flex items-center'>
-                <button type='button' className='inline-block my-3 mx-2' onClick={() => navigate(-1)}>
-                    <FiChevronLeft className='w-8 h-8'/>
-                </button>
-                <Searcher />
+            <header className='fixed w-full bg-white shadow-sm z-10'>
+                <nav className='h-12 flex justify-between items-center'>
+                    <div className='flex items-center'>
+                        <button type='button' className='inline-block mx-4' onClick={() => navigate(-1)}>
+                            <FiChevronLeft className='scale-[2]'/>
+                        </button>
+                        <Link className='inline-block' to={"/"}>
+                            <FiHome className='inline-block h-6 w-6 mr-4' />
+                            <img className='inline-block h-1/2 w-24' src={AlifakelogoImg} alt="Alifake banner" />
+                        </Link>
+                    </div>
+                    <div className='flex gap-5 mr-4'>
+                        {/* <Searcher /> */}
+                        <button type='button'>
+                            <FiSearch className='h-6 w-6' />
+                        </button>
+                        <Link to={"/cart"}>
+                            <FiShoppingCart className='h-6 w-6' />
+                        </Link>
+                        <button type='button'>
+                            <FiMoreHorizontal className='h-6 w-6' />
+                        </button>
+                    </div>
+                </nav>
             </header>
-            <main className='min-h-screen pb-14 text-[4vw] bg-gray-300'>
+            <main className='min-h-screen pt-12 pb-14 text-[4vw] bg-gray-300'>
                 <section className='mb-[2%] bg-white'>
                     <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
                         {displayImages()}
@@ -143,11 +173,11 @@ const ProductViewPage = () => {
                         <FiChevronRight className='inline-block w-[6%] h-[6%] float-right opacity-50' />
                     </button>
                 </section>
-                <section className='flex gap-4 p-[3%] text-white bg-black'>
-                    <div className='h-max rounded-full bg-white'>
+                <section className='p-[3%] text-white bg-black'>
+                    <div className='absolute h-max w-max rounded-full bg-white'>
                         <FiShoppingBag className='w-[10vw] h-[10vw] m-[0.6vw] px-[12%] rounded-full border border-gray-300 text-gray-400' />
                     </div>
-                    <div>
+                    <div className='w-2/3 mx-auto'>
                         <p className='font-bold'>{productInfo.metadata.storeModule.storeName}</p>
                         <div className='grid grid-rows-2 grid-flow-col gap-x-12 my-2 text-[3.5vw]'>
                             <p className='font-bold'>{productInfo.metadata.storeModule.positiveRate}</p>
@@ -155,9 +185,12 @@ const ProductViewPage = () => {
                             <p className='font-bold'>{productInfo.metadata.storeModule.countryCompleteName}</p>
                             <p>Country From</p>
                         </div>
-                        <button className='relative left-1/2 -translate-x-1/2 w-[50vw] max-w-xs py-0.5 rounded-full text-[3.5vw] text-center text-black bg-white' type='button'>
+                        <a
+                            className='relative left-1/2 -translate-x-1/2 inline-block w-[50vw] max-w-xs py-0.5 rounded-full text-[3.5vw] text-center text-black bg-white'
+                            href={productInfo.metadata.storeModule.storeURL}
+                            aria-label={productInfo.metadata.storeModule.storeName}>
                             <span>Visit Store</span>
-                        </button>
+                        </a>
                     </div>
                 </section>
                 <div>
@@ -165,6 +198,10 @@ const ProductViewPage = () => {
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(state)}>state</button>
                 </div>
             </main>
+            <div className='fixed bottom-0 w-full py-2 text-center text-[4vw] text-white font-medium bg-white'>
+                <button className='pt-[2%] px-[8%] pb-[2.3%] rounded-l-full bg-gradient-to-r from-orange-500 to-yellow-500' type='button'>Add to cart</button>
+                <button className='pt-[2%] px-[8%] pb-[2.3%] rounded-r-full bg-gradient-to-r from-red-600 to-orange-600' type='button'>Buy Now</button>
+            </div>
             <div className={`${specs ? "bg-gray-700/50" : "bg-transparent invisible"} transition-colors duration-200 min-h-screen w-full fixed top-0 text-[4vw] z-20`}>
                 <div className={`${specs ? "" : "translate-y-full"} transition-transform duration-500 h-3/4 w-full px-5 pb-5 absolute bottom-0 rounded-t-xl bg-white overflow-y-scroll overflow-x-hidden`}>
                     <div className='fixed left-0 right-0 rounded-t-xl bg-white'>
