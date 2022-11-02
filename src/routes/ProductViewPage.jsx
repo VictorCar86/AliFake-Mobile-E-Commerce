@@ -9,12 +9,18 @@ import {
     FiSearch,
     FiShoppingBag,
     FiShoppingCart,
-    FiX
 } from 'react-icons/fi';
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { AppContext } from '../context/AppProvider';
 import AlifakelogoImg from '../assets/images/alifake_logo.webp'
 import Searcher from '../components/Searcher';
+import InfoModal from '../containers/InfoModal';
+
+const initialViewChanges = {
+    navbarVanilla: true,
+    specsModal: false,
+    descModal: false,
+};
 
 const ProductViewPage = () => {
     const pageInfo = useParams();
@@ -23,8 +29,7 @@ const ProductViewPage = () => {
     const { state, productDescription } = useContext(AppContext);
     const { productInfo } = state;
 
-    const [specs, setSpecs] = useState(false);
-
+    const [viewChanges, setViewChanges] = useState(initialViewChanges);
 
     useEffect(() => {
         if (productInfo.product_id !== pageInfo.id && productInfo.product_id !== ""){
@@ -32,11 +37,17 @@ const ProductViewPage = () => {
         }
     }, [])
 
-    const toggleSpecs = () => setSpecs(prev => !prev);
+    const toggleNavbar = () => setViewChanges({...viewChanges, navbarVanilla: !viewChanges.navbarVanilla});
+
+    const toggleSpecs = () => setViewChanges({...viewChanges, specsModal: !viewChanges.specsModal});
+
+    const toggleDesc = () => setViewChanges({...viewChanges, descModal: !viewChanges.descModal});
 
     const starsPercentage = (productInfo.feedBackRating.averageStar / 5) * 100;
 
-    const shippingData = productInfo.metadata.shippingModule.generalFreightInfo.originalLayoutResultList[0].bizData;
+    const shippingData = productInfo.metadata.
+                            shippingModule.generalFreightInfo.
+                                originalLayoutResultList[0].bizData;
 
     const feeShipping = shippingData.shippingFee === "free" ?
         <>Free Shipping</> :
@@ -61,35 +72,43 @@ const ProductViewPage = () => {
     return (
         <>
             <header className='fixed w-full bg-white shadow-sm z-10'>
-                <nav className='h-12 flex justify-between items-center'>
-                    <div className='flex items-center'>
-                        <button type='button' className='inline-block mx-4' onClick={() => navigate(-1)}>
+                {viewChanges.navbarVanilla === true && (
+                    <nav className='h-12 flex justify-between items-center'>
+                        <div className='flex items-center'>
+                            <button type='button' className='inline-block mx-4' onClick={() => navigate(-1)}>
+                                <FiChevronLeft className='scale-[2]'/>
+                            </button>
+                            <Link className='inline-block' to={"/"}>
+                                <FiHome className='inline-block h-6 w-6 mr-4' />
+                                <img className='inline-block h-1/2 w-24' src={AlifakelogoImg} alt="Alifake banner" />
+                            </Link>
+                        </div>
+                        <div className='flex gap-5 mr-4'>
+                            <button onClick={toggleNavbar} type='button'>
+                                <FiSearch className='h-6 w-6' />
+                            </button>
+                            <Link to={"/cart"}>
+                                <FiShoppingCart className='h-6 w-6' />
+                            </Link>
+                            <button type='button'>
+                                <FiMoreHorizontal className='h-6 w-6' />
+                            </button>
+                        </div>
+                    </nav>)}
+                {viewChanges.navbarVanilla === false && (
+                    <nav className='relative h-12 flex justify-center items-center'>
+                        <button type='button' className='inline-block mx-4 absolute left-0 top-1/3' onClick={toggleNavbar}>
                             <FiChevronLeft className='scale-[2]'/>
                         </button>
-                        <Link className='inline-block' to={"/"}>
-                            <FiHome className='inline-block h-6 w-6 mr-4' />
-                            <img className='inline-block h-1/2 w-24' src={AlifakelogoImg} alt="Alifake banner" />
-                        </Link>
-                    </div>
-                    <div className='flex gap-5 mr-4'>
-                        {/* <Searcher /> */}
-                        <button type='button'>
-                            <FiSearch className='h-6 w-6' />
-                        </button>
-                        <Link to={"/cart"}>
-                            <FiShoppingCart className='h-6 w-6' />
-                        </Link>
-                        <button type='button'>
-                            <FiMoreHorizontal className='h-6 w-6' />
-                        </button>
-                    </div>
-                </nav>
+                        <Searcher />
+                    </nav>
+                )}
             </header>
             <main className='min-h-screen pt-12 pb-14 text-[4vw] bg-gray-300'>
                 <section className='mb-[2%] bg-white'>
                     <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
                         {displayImages()}
-                        <button className='sticky top-[90%] right-4 h-min px-1.5 flex items-center gap-1 rounded-full font-medium bg-gray-300' type='button'>
+                        <button className='sticky top-[90%] right-4 h-min px-1.5 flex items-center gap-1 rounded-full font-medium bg-gray-300/80' type='button'>
                             <FiHeart />
                             <span>{productInfo.wishedCount}</span>
                         </button>
@@ -123,7 +142,11 @@ const ProductViewPage = () => {
                             <span className='float-left font-bold'>Specifications</span>
                             <FiChevronRight className='inline-block w-[6%] h-[6%] float-right opacity-50' />
                         </button>
-                        <button className='w-full py-3.5 border-t border-gray-300' type='button'>
+                        <button
+                            className='w-full py-3.5 border-t border-gray-300'
+                            onClick={toggleDesc}
+                            type='button'
+                        >
                             <span className='font-bold float-left'>Item Description</span>
                             <FiChevronRight className='inline-block w-[6%] h-[6%] float-right opacity-50' />
                         </button>
@@ -198,34 +221,20 @@ const ProductViewPage = () => {
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(state)}>state</button>
                 </div>
             </main>
-            <div className='fixed bottom-0 w-full py-2 text-center text-[4vw] text-white font-medium bg-white'>
-                <button className='pt-[2%] px-[8%] pb-[2.3%] rounded-l-full bg-gradient-to-r from-orange-500 to-yellow-500' type='button'>Add to cart</button>
-                <button className='pt-[2%] px-[8%] pb-[2.3%] rounded-r-full bg-gradient-to-r from-red-600 to-orange-600' type='button'>Buy Now</button>
-            </div>
-            <div className={`${specs ? "bg-gray-700/50" : "bg-transparent invisible"} transition-colors duration-200 min-h-screen w-full fixed top-0 text-[4vw] z-20`}>
-                <div className={`${specs ? "" : "translate-y-full"} transition-transform duration-500 h-3/4 w-full px-5 pb-5 absolute bottom-0 rounded-t-xl bg-white overflow-y-scroll overflow-x-hidden`}>
-                    <div className='fixed left-0 right-0 rounded-t-xl bg-white'>
-                        <p className='mt-2.5 mb-3 text-center font-medium'>Product Details</p>
-                        <button
-                            className='absolute top-0 right-4 h-full w-[5%]'
-                            onClick={toggleSpecs}
-                            type='button'
-                        >
-                            <FiX className='w-full h-full opacity-60'/>
-                        </button>
-                    </div>
-                    <table className='w-full h-max mt-[12%]'>
-                        <tbody>
-                            {productInfo.specs.map((item, index) => (
-                                <tr className='border-b border-gray-300' key={index}>
-                                  <th className='text-black/60 font-normal text-left'>{item.attrName}</th>
-                                  <td className='py-2'>{item.attrValue}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <InfoModal title="Product Details" state={viewChanges.specsModal} toggle={toggleSpecs} >
+                <table className='w-full h-max mt-[12%]'>
+                    <tbody>
+                        {productInfo.specs.map((item, index) => (
+                            <tr className='border-b border-gray-300' key={index}>
+                                <th className='text-black/60 font-normal text-left'>{item.attrName}</th>
+                                <td className='py-2'>{item.attrValue}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </InfoModal>
+            <InfoModal title="Description" state={viewChanges.descModal} toggle={toggleDesc} >
+            </InfoModal>
         </>
     )
 }
