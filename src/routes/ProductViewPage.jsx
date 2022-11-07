@@ -15,6 +15,7 @@ import { AppContext } from '../context/AppProvider';
 import AlifakelogoImg from '../assets/images/alifake_logo.webp'
 import Searcher from '../components/Searcher';
 import InfoModal from '../containers/InfoModal';
+import InfiniteProducts from '../containers/InfiniteProducts';
 
 const initialViewChanges = {
     navbarVanilla: true,
@@ -65,7 +66,7 @@ const ProductViewPage = () => {
                             alt={productInfo.product_title}
                             key={index}
                         />
-                    ))
+                    ));
         }
     }
 
@@ -220,6 +221,7 @@ const ProductViewPage = () => {
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => productDescription(pageInfo.id)}>product</button>
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(state)}>state</button>
                 </div>
+                <InfiniteProducts />
             </main>
             <InfoModal title="Product Details" state={viewChanges.specsModal} toggle={toggleSpecs} >
                 <table className='w-full h-max mt-[12%]'>
