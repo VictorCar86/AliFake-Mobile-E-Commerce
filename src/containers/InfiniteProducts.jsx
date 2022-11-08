@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom';
 import { AppContext } from '../context/AppProvider';
 import SkeletonPreviewProduct from '../components/SkeletonPreviewProduct';
 import useIntersection from '../hooks/useIntersection';
@@ -6,32 +7,26 @@ import PreviewProduct from '../components/PreviewProduct';
 import SpinnerIcon from '../assets/images/spinnerIcon.webp'
 
 const InfiniteProducts = () => {
-    const { state, callNewBestSalesData, callNewOffersData } = useContext(AppContext);
-    const { bestSalesData, newOffersData } = state;
+    const { state, callNewBestSalesData } = useContext(AppContext);
+    const { bestSalesData } = state;
+
+    const scrollStopRef = useRef(null);
+
     const [infiniteLoading, setInfiniteLoading] = useState(false);
+    const [skeletonLoading, setSkeletonLoading] = useState(true);
 
-    const bestSalesRef = useRef(null);
+    const { pathname } = useLocation();
 
-    const [skeleton1Loading, setSkeleton1Loading] = useState(true);
-    const [skeleton2Loading, setSkeleton2Loading] = useState(true);
 
-    const renderProducts = (data, deal = false) => {
-        // console.log(state)
+    const renderProducts = (data) => {
         if (data.length !== 0){
-
-            if (!!deal){
-                if (skeleton1Loading === true){
-                    setSkeleton1Loading(false)
-                }
-            } else {
-                if (skeleton2Loading === true){
-                    setSkeleton2Loading(false)
-                }
+            if (skeletonLoading === true){
+                setSkeletonLoading(false)
             }
 
             return data.map((e, index) => (
                 <li key={index}>
-                    <PreviewProduct data={e} deal={deal} />
+                    <PreviewProduct data={e} />
                 </li>
             ))
         }
@@ -42,30 +37,31 @@ const InfiniteProducts = () => {
 
         if (bestSalesData.hasNextPage){
             callNewBestSalesData(bestSalesData.nextPage);
-        } else {
-            // callNewOffersData();
+        }
+        else {
             setTimeout(() => callNewBestSalesData(), 2000);
         }
     }
 
     useEffect(() => {
-        setInfiniteLoading(false)
-    }, [bestSalesData]);
+        setInfiniteLoading(false);
+    },
+    [bestSalesData]);
 
     useEffect(() => {
-        if (bestSalesRef.current !== null && bestSalesData.hasNextPage){
+        if (scrollStopRef.current !== null && bestSalesData.hasNextPage){
             useIntersection(
                 () => scrollPagination()
-            ).observe(bestSalesRef.current)
+            ).observe(scrollStopRef.current);
         }
     }
     , [infiniteLoading]);
 
     return (
-        <section className={`table-cell w-full h-full px-3 ${!infiniteLoading ? "pb-32" : "pb-14"} bg-white`}>
-            <p className='my-4 text-lg font-medium'>More to love</p>
+        <section className={`table-cell w-full h-full px-3 ${!infiniteLoading ? "pb-32" : "pb-14"} text-base bg-white`}>
+            <p className={`my-4 text-lg ${pathname !== "/" ? "text-[4vw] font-bold" : "font-medium"} font-medium`}>More to love</p>
             <ul className='h-full w-full min-h-screen  grid grid-cols-2 gap-3 overflow-hidden'>
-            {!!skeleton2Loading && (
+            {!!skeletonLoading && (
                 <>
                     <li>
                         <SkeletonPreviewProduct />
@@ -101,7 +97,7 @@ const InfiniteProducts = () => {
                 </div>
             )}
             {!infiniteLoading && (
-                <button onClick={scrollPagination} ref={bestSalesRef}>more</button>
+                <button onClick={scrollPagination} ref={scrollStopRef}>more</button>
             )}
         </section>
     )
