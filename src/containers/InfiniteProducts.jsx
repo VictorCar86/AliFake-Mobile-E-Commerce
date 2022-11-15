@@ -1,30 +1,27 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom';
-import { AppContext } from '../context/AppProvider';
 import SkeletonPreviewProduct from '../components/SkeletonPreviewProduct';
 import useIntersection from '../hooks/useIntersection';
 import PreviewProduct from '../components/PreviewProduct';
 import SpinnerIcon from '../assets/images/spinnerIcon.webp'
 
-const InfiniteProducts = () => {
-    const { state, callNewBestSalesData } = useContext(AppContext);
-    const { bestSalesData } = state;
-
-    const scrollStopRef = useRef(null);
+const InfiniteProducts = ({ data, callData }) => {
 
     const [infiniteLoading, setInfiniteLoading] = useState(false);
     const [skeletonLoading, setSkeletonLoading] = useState(true);
 
+    const scrollStopRef = useRef(null);
+
     const { pathname } = useLocation();
 
+    const renderProducts = (docs) => {
+        if (docs.length !== 0){
 
-    const renderProducts = (data) => {
-        if (data.length !== 0){
             if (skeletonLoading === true){
-                setSkeletonLoading(false)
+                setSkeletonLoading(false);
             }
 
-            return data.map((e, index) => (
+            return docs.map((e, index) => (
                 <li key={index}>
                     <PreviewProduct data={e} />
                 </li>
@@ -35,21 +32,21 @@ const InfiniteProducts = () => {
     const scrollPagination = () => {
         setInfiniteLoading(true);
 
-        if (bestSalesData.hasNextPage){
-            callNewBestSalesData(bestSalesData.nextPage);
+        if (data.hasNextPage){
+            callData(data.nextPage);
         }
         else {
-            setTimeout(() => callNewBestSalesData(), 2000);
+            setTimeout(() => callData(), 2000);
         }
     }
 
     useEffect(() => {
         setInfiniteLoading(false);
     },
-    [bestSalesData]);
+    [data]);
 
     useEffect(() => {
-        if (scrollStopRef.current !== null && bestSalesData.hasNextPage){
+        if (scrollStopRef.current !== null && data.hasNextPage){
             useIntersection(
                 () => scrollPagination()
             ).observe(scrollStopRef.current);
@@ -89,7 +86,7 @@ const InfiniteProducts = () => {
                     </li>
                 </>
             )}
-            {renderProducts(bestSalesData.docs)}
+            {renderProducts(data.docs)}
             </ul>
             {!!infiniteLoading && (
                 <div className='w-full h-max py-4 text-center'>

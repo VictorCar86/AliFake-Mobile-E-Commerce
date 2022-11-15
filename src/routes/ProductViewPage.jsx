@@ -10,12 +10,13 @@ import {
     FiShoppingBag,
     FiShoppingCart,
 } from 'react-icons/fi';
-import { useNavigate, useParams, Link } from 'react-router-dom'
 import { AppContext } from '../context/AppProvider';
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import AlifakelogoImg from '../assets/images/alifake_logo.webp'
 import Searcher from '../components/Searcher';
 import InfoModal from '../containers/InfoModal';
 import InfiniteProducts from '../containers/InfiniteProducts';
+
 
 const initialViewChanges = {
     navbarVanilla: true,
@@ -23,12 +24,13 @@ const initialViewChanges = {
     descModal: false,
 };
 
+
 const ProductViewPage = () => {
+    const { state, callNewBestSalesData, productDescription } = useContext(AppContext);
+    const { bestSalesData, productInfo } = state;
+
     const pageInfo = useParams();
     const navigate = useNavigate();
-
-    const { state, productDescription } = useContext(AppContext);
-    const { productInfo } = state;
 
     const [viewChanges, setViewChanges] = useState(initialViewChanges);
 
@@ -36,7 +38,7 @@ const ProductViewPage = () => {
         if (productInfo.product_id !== pageInfo.id && productInfo.product_id !== ""){
             productDescription(pageInfo.id)
         }
-    }, [])
+    }, []);
 
     const toggleNavbar = () => setViewChanges({...viewChanges, navbarVanilla: !viewChanges.navbarVanilla});
 
@@ -51,22 +53,24 @@ const ProductViewPage = () => {
                                 originalLayoutResultList[0].bizData;
 
     const feeShipping = shippingData.shippingFee === "free" ?
-        <>Free Shipping</> :
-        <>{shippingData.currency} {shippingData.displayAmount}</>;
+                            <>Free Shipping</> :
+                            <>{shippingData.currency} {shippingData.displayAmount}</>;
 
 
     const displayImages = () => {
+
         if (productInfo.product_small_image_urls) {
-            return productInfo
-                .product_small_image_urls
-                    .string.map((image, index) => (
-                        <img
-                            className='w-full h-auto snap-center'
-                            src={image}
-                            alt={productInfo.product_title}
-                            key={index}
-                        />
-                    ));
+
+          return productInfo
+            .product_small_image_urls
+              .string.map((image, index) => (
+                <img
+                    className='w-full h-auto snap-center'
+                    src={image}
+                    alt={productInfo.product_title}
+                    key={index}
+                />
+              ));
         }
     }
 
@@ -221,7 +225,7 @@ const ProductViewPage = () => {
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => productDescription(pageInfo.id)}>product</button>
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(state)}>state</button>
                 </div>
-                <InfiniteProducts />
+                <InfiniteProducts data={bestSalesData} callData={callNewBestSalesData} />
             </main>
             <InfoModal title="Product Details" state={viewChanges.specsModal} toggle={toggleSpecs} >
                 <table className='w-full h-max mt-[12%]'>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 const axios = require("axios");
 
 const initialState = {
@@ -2801,7 +2801,8 @@ const initialState = {
     // },
 };
 
-const useInitialState = (number = 1) => {
+const useInitialState = () => {
+
     const [state, setState] = useState(initialState)
 
     const callNewOffersData = () => {
@@ -2817,13 +2818,10 @@ const useInitialState = (number = 1) => {
         };
 
         axios.request(options).then(function (response) {
-            setState(prev => {
-                return {
-                    productInfo: prev.productInfo,
-                    bestSalesData: prev.bestSalesData,
-                    newOffersData: response.data,
-                }
-            })
+            setState({
+                    ...state,
+                    newOffersData: response.data
+                })
         }).catch(function (error) {
             console.error(error);
         });
@@ -2842,18 +2840,15 @@ const useInitialState = (number = 1) => {
         };
 
         axios.request(options).then(function (response) {
-            setState(prev => {
-                return {
-                    productInfo: prev.productInfo,
-                    newOffersData: prev.newOffersData,
+            setState({
+                    ...state,
                     bestSalesData: {
                         docs: [...state.bestSalesData.docs, ...response.data.docs],
                         hasNextPage: response.data.hasNextPage,
                         nextPage: response.data.nextPage,
                         page: response.data.page,
                     }
-                }
-            })
+                })
         }).catch(function (error) {
             console.error(error);
         });
@@ -2862,34 +2857,22 @@ const useInitialState = (number = 1) => {
     const productDescription = (productId = 0) => {
         console.log("product", state)
         const options = {
-        method: 'GET',
-        url: `https://magic-aliexpress1.p.rapidapi.com/api/product/${productId}`,
-        params: {lg: 'en', targetCurrency: 'USD'},
-        headers: {
-            'X-RapidAPI-Key': process.env.NEWRAPIDAPI_KEY,
-            'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
-        }
+            method: 'GET',
+            url: `https://magic-aliexpress1.p.rapidapi.com/api/product/${productId}`,
+            params: {lg: 'en', targetCurrency: 'USD'},
+            headers: {
+                'X-RapidAPI-Key': process.env.NEWRAPIDAPI_KEY,
+                'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
+            }
         };
 
         axios.request(options).then(function (response) {
             console.log("dataPro", response.data)
-            setState(prev => {
-                return {
-                    newOffersData: prev.newOffersData,
-                    bestSalesData: prev.bestSalesData,
-                    productInfo: response.data,
-                }
-            })
+            setState({ ...state, productInfo: response.data })
         }).catch(function (error) {
             console.error(error);
         });
     }
-
-    // useEffect(() => {
-    //     callNewBestSalesData()
-    //     callNewOffersData()
-    // }, [number])
-
 
     return {
         state,
