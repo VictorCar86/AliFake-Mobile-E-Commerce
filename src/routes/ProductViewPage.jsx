@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import {
     FiChevronLeft,
     FiChevronRight,
-    FiHeart,
     FiHome,
     FiMapPin,
     FiMoreHorizontal,
@@ -10,12 +9,14 @@ import {
     FiShoppingBag,
     FiShoppingCart,
 } from 'react-icons/fi';
+import ReactDOM from 'react-dom/client';
 import { AppContext } from '../context/AppProvider';
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import AlifakelogoImg from '../assets/images/alifake_logo.webp'
 import Searcher from '../components/Searcher';
 import InfoModal from '../containers/InfoModal';
 import InfiniteProducts from '../containers/InfiniteProducts';
+import HeartButton from '../components/HeartButton';
 
 
 const initialViewChanges = {
@@ -29,8 +30,35 @@ const ProductViewPage = () => {
     const { state, callNewBestSalesData, productDescription } = useContext(AppContext);
     const { bestSalesData, productInfo } = state;
 
+    const descriptionRef = useRef(null)
+
+    useEffect(() => {
+        if (descriptionRef !== null){
+            printHtml(descriptionRef)
+        }
+    }
+    , [descriptionRef]);
+
     const pageInfo = useParams();
     const navigate = useNavigate();
+
+    const [docHtml, setDocHtml] = useState("");
+
+    const printHtml = (refDom) => {
+        const WEBURL = "https://aeproductsourcesite.alicdn.com/product/description/pc/v2/en_US/desc.htm?productId=1005001560047961&key=Sae82907d8c9a4184912455c339bfb298c.zip&token=79bf21903ccbe68300d93357b11ffee1";
+
+        return fetch(WEBURL)
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+                // refDom.current = 123;
+                // document.getElementById(refDom.current.id) = doc.body;
+                setDocHtml(/**/);
+                console.log(doc.body, refDom);
+            })
+            .catch(err => console.error(err));
+    }
 
     const [viewChanges, setViewChanges] = useState(initialViewChanges);
 
@@ -59,18 +87,20 @@ const ProductViewPage = () => {
 
     const displayImages = () => {
 
-        if (productInfo.product_small_image_urls) {
+        const imagesLocation = productInfo.product_small_image_urls;
 
-          return productInfo
-            .product_small_image_urls
-              .string.map((image, index) => (
+        if (imagesLocation) {
+
+            const imagesArray = imagesLocation.string;
+
+            return imagesArray.map((image, index) => (
                 <img
-                    className='w-full h-auto snap-center'
+                    className={`w-11/12 h-auto ${imagesArray.length !== index+1 ? "snap-start" : "snap-end"}`}
                     src={image}
                     alt={productInfo.product_title}
                     key={index}
                 />
-              ));
+            ));
         }
     }
 
@@ -109,14 +139,11 @@ const ProductViewPage = () => {
                     </nav>
                 )}
             </header>
-            <main className='min-h-screen pt-12 pb-14 text-[4vw] bg-gray-300'>
+            <main className='min-h-screen pt-12 text-[4vw] bg-gray-300'>
                 <section className='mb-[2%] bg-white'>
                     <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
-                        {displayImages()}
-                        <button className='sticky top-[90%] right-4 h-min px-1.5 flex items-center gap-1 rounded-full font-medium bg-gray-300/80' type='button'>
-                            <FiHeart />
-                            <span>{productInfo.wishedCount}</span>
-                        </button>
+                        { displayImages() }
+                        <HeartButton wishedCount={productInfo.wishedCount} sticky="true" />
                     </div>
                     <div className='px-[3%] pt-[3%]'>
                         <div className='flex gap-2 items-center'>
@@ -224,6 +251,7 @@ const ProductViewPage = () => {
                 <div>
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => productDescription(pageInfo.id)}>product</button>
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(state)}>state</button>
+                    <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(docHtml)}>html</button>
                 </div>
                 <InfiniteProducts data={bestSalesData} callData={callNewBestSalesData} />
             </main>
@@ -240,6 +268,8 @@ const ProductViewPage = () => {
                 </table>
             </InfoModal>
             <InfoModal title="Description" state={viewChanges.descModal} toggle={toggleDesc} >
+                <div ref={descriptionRef} id="zzz"></div>
+                {docHtml}
             </InfoModal>
         </>
     )

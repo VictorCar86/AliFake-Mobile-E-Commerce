@@ -55,7 +55,7 @@ const InfiniteProducts = ({ data, callData }) => {
     , [infiniteLoading]);
 
     return (
-        <section className={`table-cell w-full h-full px-3 ${!infiniteLoading ? "pb-32" : "pb-14"} text-base bg-white`}>
+        <section className={`table-cell w-full h-full px-3 ${!infiniteLoading ? "pb-12" : ""} text-base bg-white`}>
             <p className={`my-4 text-lg ${pathname !== "/" ? "text-[4vw] font-bold" : "font-medium"} font-medium`}>More to love</p>
             <ul className='h-full w-full min-h-screen  grid grid-cols-2 gap-3 overflow-hidden'>
             {!!skeletonLoading && (
