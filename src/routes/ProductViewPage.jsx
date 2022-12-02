@@ -9,9 +9,9 @@ import {
     FiShoppingBag,
     FiShoppingCart,
 } from 'react-icons/fi';
-import ReactDOM from 'react-dom/client';
 import { AppContext } from '../context/AppProvider';
 import { useNavigate, useParams, Link } from 'react-router-dom'
+import { Markup } from 'interweave';
 import AlifakelogoImg from '../assets/images/alifake_logo.webp'
 import Searcher from '../components/Searcher';
 import InfoModal from '../containers/InfoModal';
@@ -34,8 +34,8 @@ const ProductViewPage = () => {
 
     useEffect(() => {
         if (descriptionRef !== null){
-            printHtml(descriptionRef)
         }
+        printHtml(descriptionRef)
     }
     , [descriptionRef]);
 
@@ -49,14 +49,7 @@ const ProductViewPage = () => {
 
         return fetch(WEBURL)
             .then(response => response.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, "text/html");
-                // refDom.current = 123;
-                // document.getElementById(refDom.current.id) = doc.body;
-                setDocHtml(/**/);
-                console.log(doc.body, refDom);
-            })
+            .then(html => setDocHtml(html))
             .catch(err => console.error(err));
     }
 
@@ -255,8 +248,9 @@ const ProductViewPage = () => {
                 </div>
                 <InfiniteProducts data={bestSalesData} callData={callNewBestSalesData} />
             </main>
+
             <InfoModal title="Product Details" state={viewChanges.specsModal} toggle={toggleSpecs} >
-                <table className='w-full h-max mt-[12%]'>
+                <table className='w-full h-max'>
                     <tbody>
                         {productInfo.specs.map((item, index) => (
                             <tr className='border-b border-gray-300' key={index}>
@@ -268,9 +262,10 @@ const ProductViewPage = () => {
                 </table>
             </InfoModal>
             <InfoModal title="Description" state={viewChanges.descModal} toggle={toggleDesc} >
-                <div ref={descriptionRef} id="zzz"></div>
-                {docHtml}
+                <div ref={descriptionRef}></div>
+                <Markup content={docHtml} />
             </InfoModal>
+
         </>
     )
 }

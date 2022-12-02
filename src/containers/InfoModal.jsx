@@ -15,7 +15,9 @@ const InfoModal = ({ children, title, state, toggle }) => {
                     <FiX className='w-full h-full opacity-60'/>
                 </button>
             </div>
-            { children }
+            <section className='mt-[12%]'>
+                { children }
+            </section>
         </div>
     </div>
   )
