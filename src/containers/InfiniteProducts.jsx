@@ -7,7 +7,8 @@ import SpinnerIcon from '../assets/images/spinnerIcon.webp'
 
 const InfiniteProducts = ({ data, callData }) => {
 
-    const [infiniteLoading, setInfiniteLoading] = useState(false);
+    const [apiLoading, setApiLoading] = useState(false);
+    const [infiniteLoading, setInfiniteLoading] = useState(true);
     const [skeletonLoading, setSkeletonLoading] = useState(true);
 
     const scrollStopRef = useRef(null);
@@ -29,26 +30,51 @@ const InfiniteProducts = ({ data, callData }) => {
         }
     }
 
-    const scrollPagination = () => {
+    useEffect(() => {
+        if (infiniteLoading && !apiLoading){
+            setApiLoading(true);
+            // (async () => {
+            //     if (data.hasNextPage){
+            //         await callData(data.nextPage);
+            //         setApiLoading(false);
+            //     }
+            //     else {
+            //         setTimeout(async () => {
+            //             await callData()
+            //             setApiLoading(false);
+            //         }
+            //         , 2000);
+            //     }
+            // })()
+            scrollPagination();
+        }
+    }, [])
+
+    const scrollPagination = async () => {
         setInfiniteLoading(true);
 
         if (data.hasNextPage){
-            callData(data.nextPage);
+            await callData(data.nextPage);
         }
         else {
-            setTimeout(() => callData(), 2000);
+            setTimeout(async () => {
+                await callData()
+            }
+            , 2000);
         }
     }
 
     useEffect(() => {
         setInfiniteLoading(false);
-    },
-    [data]);
+    }
+    ,[data]);
 
     useEffect(() => {
-        if (scrollStopRef.current !== null && data.hasNextPage){
+        if (scrollStopRef.current !== null){
             useIntersection(
-                () => scrollPagination()
+                () => {
+                    scrollPagination();
+                }
             ).observe(scrollStopRef.current);
         }
     }
@@ -94,10 +120,10 @@ const InfiniteProducts = ({ data, callData }) => {
                 </div>
             )}
             {!infiniteLoading && (
-                <button onClick={scrollPagination} ref={scrollStopRef}>more</button>
+                <button onClick={scrollPagination} ref={scrollStopRef}></button>
             )}
         </section>
     )
 }
 
-export default InfiniteProducts
+export default InfiniteProducts;

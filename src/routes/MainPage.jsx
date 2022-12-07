@@ -22,7 +22,7 @@ const MainPage = () => {
             </li>
         ))
     }
-}
+  }
 
   return (
     <>

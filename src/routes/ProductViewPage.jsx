@@ -30,24 +30,19 @@ const ProductViewPage = () => {
     const { state, callNewBestSalesData, productDescription } = useContext(AppContext);
     const { bestSalesData, productInfo } = state;
 
-    const descriptionRef = useRef(null)
-
-    useEffect(() => {
-        if (descriptionRef !== null){
-        }
-        printHtml(descriptionRef)
-    }
-    , [descriptionRef]);
-
     const pageInfo = useParams();
     const navigate = useNavigate();
 
     const [docHtml, setDocHtml] = useState("");
 
-    const printHtml = (refDom) => {
-        const WEBURL = "https://aeproductsourcesite.alicdn.com/product/description/pc/v2/en_US/desc.htm?productId=1005001560047961&key=Sae82907d8c9a4184912455c339bfb298c.zip&token=79bf21903ccbe68300d93357b11ffee1";
+    useEffect(() => {
+        printHtml(productInfo.metadata
+                    .descriptionModule.descriptionUrl);
+    }
+    , [productInfo]);
 
-        return fetch(WEBURL)
+    const printHtml = (WEBURL) => {
+        fetch(WEBURL)
             .then(response => response.text())
             .then(html => setDocHtml(html))
             .catch(err => console.error(err));
@@ -227,7 +222,7 @@ const ProductViewPage = () => {
                     </div>
                     <div className='w-2/3 mx-auto'>
                         <p className='font-bold'>{productInfo.metadata.storeModule.storeName}</p>
-                        <div className='grid grid-rows-2 grid-flow-col gap-x-12 my-2 text-[3.5vw]'>
+                        <div className='grid grid-rows-2 grid-flow-col gap-x-[16%] my-2 text-[3.5vw]'>
                             <p className='font-bold'>{productInfo.metadata.storeModule.positiveRate}</p>
                             <p>Positive Feedback</p>
                             <p className='font-bold'>{productInfo.metadata.storeModule.countryCompleteName}</p>
@@ -262,7 +257,6 @@ const ProductViewPage = () => {
                 </table>
             </InfoModal>
             <InfoModal title="Description" state={viewChanges.descModal} toggle={toggleDesc} >
-                <div ref={descriptionRef}></div>
                 <Markup content={docHtml} />
             </InfoModal>
 
