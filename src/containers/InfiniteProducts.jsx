@@ -120,7 +120,7 @@ const InfiniteProducts = ({ data, callData }) => {
                 </div>
             )}
             {!infiniteLoading && (
-                <button onClick={scrollPagination} ref={scrollStopRef}></button>
+                <button onClick={scrollPagination} ref={scrollStopRef} />
             )}
         </section>
     )

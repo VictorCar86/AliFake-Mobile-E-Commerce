@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
     FiChevronLeft,
     FiChevronRight,
@@ -10,7 +10,7 @@ import {
     FiShoppingCart,
 } from 'react-icons/fi';
 import { AppContext } from '../context/AppProvider';
-import { useNavigate, useParams, Link } from 'react-router-dom'
+import { useNavigate, useParams, Link, useLocation } from 'react-router-dom'
 import { Markup } from 'interweave';
 import AlifakelogoImg from '../assets/images/alifake_logo.webp'
 import Searcher from '../components/Searcher';
@@ -32,6 +32,7 @@ const ProductViewPage = () => {
 
     const pageInfo = useParams();
     const navigate = useNavigate();
+    const { pathname } = useLocation();
 
     const [docHtml, setDocHtml] = useState("");
 
@@ -50,11 +51,18 @@ const ProductViewPage = () => {
 
     const [viewChanges, setViewChanges] = useState(initialViewChanges);
 
+    // useEffect(() => {
+    //     if (productInfo.product_id !== pageInfo.id && productInfo.product_id !== ""){
+    //         productDescription(pageInfo.id)
+    //     }
+    // }, []);
+
     useEffect(() => {
-        if (productInfo.product_id !== pageInfo.id && productInfo.product_id !== ""){
-            productDescription(pageInfo.id)
+        if (pathname.includes(`/product/${pageInfo.id}`)){
+            window.scrollTo(0, 0);
+            productDescription(pageInfo.id);
         }
-    }, []);
+    }, [pathname]);
 
     const toggleNavbar = () => setViewChanges({...viewChanges, navbarVanilla: !viewChanges.navbarVanilla});
 
@@ -62,7 +70,8 @@ const ProductViewPage = () => {
 
     const toggleDesc = () => setViewChanges({...viewChanges, descModal: !viewChanges.descModal});
 
-    const starsPercentage = (productInfo.feedBackRating.averageStar / 5) * 100;
+
+    const starsPercentage = (productInfo.feedBackRating?.averageStar / 5) * 100;
 
     const shippingData = productInfo.metadata.
                             shippingModule.generalFreightInfo.
@@ -74,11 +83,9 @@ const ProductViewPage = () => {
 
 
     const displayImages = () => {
-
         const imagesLocation = productInfo.product_small_image_urls;
 
         if (imagesLocation) {
-
             const imagesArray = imagesLocation.string;
 
             return imagesArray.map((image, index) => (
@@ -95,6 +102,7 @@ const ProductViewPage = () => {
     return (
         <>
             <header className='fixed w-full bg-white shadow-sm z-10'>
+
                 {viewChanges.navbarVanilla === true && (
                     <nav className='h-12 flex justify-between items-center'>
                         <div className='flex items-center'>
@@ -117,7 +125,9 @@ const ProductViewPage = () => {
                                 <FiMoreHorizontal className='h-6 w-6' />
                             </button>
                         </div>
-                    </nav>)}
+                    </nav>
+                )}
+
                 {viewChanges.navbarVanilla === false && (
                     <nav className='relative h-12 flex justify-center items-center'>
                         <button type='button' className='inline-block mx-4 absolute left-0 top-1/3' onClick={toggleNavbar}>
@@ -126,6 +136,7 @@ const ProductViewPage = () => {
                         <Searcher />
                     </nav>
                 )}
+
             </header>
             <main className='min-h-screen pt-12 text-[4vw] bg-gray-300'>
                 <section className='mb-[2%] bg-white'>
@@ -136,7 +147,7 @@ const ProductViewPage = () => {
                     <div className='px-[3%] pt-[3%]'>
                         <div className='flex gap-2 items-center'>
                             <span className='text-[5.5vw] font-bold'>{`${productInfo.sale_price_currency} ${productInfo.sale_price}`}</span>
-                            {Number(productInfo.discount.slice(0, 2)) >= 20 && (
+                            {Number(productInfo.discount?.slice(0, 2)) >= 20 && (
                               <>
                                 <span className='line-through opacity-70'>{`${productInfo.sale_price_currency} ${productInfo.original_price}`}</span>
                                 <span className='text-red-600'>{`-${productInfo.discount}`}</span>
@@ -148,11 +159,10 @@ const ProductViewPage = () => {
                             <span>{feeShipping}</span>
                         </div>
                         <p className='my-2'>{productInfo.product_title}</p>
-                        <span
-                            className={`mr-2 relative text-gray-300 before:content-["★★★★★"] before:absolute before:w-[${starsPercentage}%] before:text-yellow-400 before:drop-shadow-md before:overflow-hidden`}>
+                        <span className={`mr-2 relative text-gray-300 before:content-["★★★★★"] before:absolute before:w-[${starsPercentage}%] before:text-yellow-400 before:drop-shadow-md before:overflow-hidden`}>
                             ★★★★★
                         </span>
-                        <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{productInfo.feedBackRating.averageStar}</span>
+                        <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{productInfo.feedBackRating?.averageStar}</span>
                         <span className='mr-2'>{`${productInfo.lastest_volume} orders`}</span>
                         <button
                             className='w-full mt-4 py-3.5 border-t border-gray-300'
@@ -207,7 +217,7 @@ const ProductViewPage = () => {
                                 Shipping: {feeShipping}
                             </p>
                             <p>From {shippingData.shipFrom} via {shippingData.deliveryProviderName}</p>
-                            <p>Estimated delivery on {shippingData.deliveryDate.slice(0, 3) + " " + shippingData.deliveryDate.slice(-2)}</p>
+                            <p>Estimated delivery on {shippingData.deliveryDate?.slice(0, 3) + " " + shippingData.deliveryDate?.slice(-2)}</p>
                         </div>
                     </div>
                     <button className='w-full pt-3.5 pb-4 border-t text-left border-gray-300'>
