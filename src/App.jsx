@@ -1,7 +1,8 @@
 import React from 'react'
 import "./App.css"
+import ReduxProvider from './context/ReduxProvider'
+// import AppProvider from './context/AppProvider'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import AppProvider from './context/AppProvider'
 import MainNavbar from './containers/MainNavbar'
 import MainPage from './routes/MainPage'
 import ProductViewPage from './routes/ProductViewPage'
@@ -13,7 +14,7 @@ const App = () => {
 
   return (
     <>
-      <AppProvider>
+      <ReduxProvider>
         <BrowserRouter>
           <MainNavbar />
           <Routes>
@@ -24,7 +25,7 @@ const App = () => {
             <Route path="account" element={<AccountPage />} />
           </Routes>
         </BrowserRouter>
-      </AppProvider>
+      </ReduxProvider>
     </>
   )
 }

@@ -37,8 +37,7 @@ const ProductViewPage = () => {
     const [docHtml, setDocHtml] = useState("");
 
     useEffect(() => {
-        printHtml(productInfo.metadata
-                    .descriptionModule.descriptionUrl);
+        printHtml(productInfo.metadata?.descriptionModule.descriptionUrl);
     }
     , [productInfo]);
 
@@ -73,13 +72,13 @@ const ProductViewPage = () => {
 
     const starsPercentage = (productInfo.feedBackRating?.averageStar / 5) * 100;
 
-    const shippingData = productInfo.metadata.
+    const shippingData = productInfo.metadata?.
                             shippingModule.generalFreightInfo.
                                 originalLayoutResultList[0].bizData;
 
-    const feeShipping = shippingData.shippingFee === "free" ?
+    const feeShipping = shippingData?.shippingFee === "free" ?
                             <>Free Shipping</> :
-                            <>{shippingData.currency} {shippingData.displayAmount}</>;
+                            <>{shippingData?.currency} {shippingData?.displayAmount}</>;
 
 
     const displayImages = () => {
@@ -210,14 +209,14 @@ const ProductViewPage = () => {
                         <span className='font-bold'>Delivery</span>
                         <span className='float-right flex items-center gap-1'>
                             <FiMapPin className='inline-block' />
-                            {`To ${shippingData.shipTo}`}
+                            {`To ${shippingData?.shipTo}`}
                         </span>
                         <div className='mt-1.5 text-[3.5vw]'>
                             <p className='font-medium'>
                                 Shipping: {feeShipping}
                             </p>
-                            <p>From {shippingData.shipFrom} via {shippingData.deliveryProviderName}</p>
-                            <p>Estimated delivery on {shippingData.deliveryDate?.slice(0, 3) + " " + shippingData.deliveryDate?.slice(-2)}</p>
+                            <p>From {shippingData?.shipFrom} via {shippingData?.deliveryProviderName}</p>
+                            <p>Estimated delivery on {shippingData?.deliveryDate?.slice(0, 3) + " " + shippingData?.deliveryDate.slice(-2)}</p>
                         </div>
                     </div>
                     <button className='w-full pt-3.5 pb-4 border-t text-left border-gray-300'>
@@ -231,17 +230,17 @@ const ProductViewPage = () => {
                         <FiShoppingBag className='w-[10vw] h-[10vw] m-[0.6vw] px-[12%] rounded-full border border-gray-300 text-gray-400' />
                     </div>
                     <div className='w-2/3 mx-auto'>
-                        <p className='font-bold'>{productInfo.metadata.storeModule.storeName}</p>
+                        <p className='font-bold'>{productInfo.metadata?.storeModule.storeName}</p>
                         <div className='grid grid-rows-2 grid-flow-col gap-x-[16%] my-2 text-[3.5vw]'>
-                            <p className='font-bold'>{productInfo.metadata.storeModule.positiveRate}</p>
+                            <p className='font-bold'>{productInfo.metadata?.storeModule.positiveRate}</p>
                             <p>Positive Feedback</p>
-                            <p className='font-bold'>{productInfo.metadata.storeModule.countryCompleteName}</p>
+                            <p className='font-bold'>{productInfo.metadata?.storeModule.countryCompleteName}</p>
                             <p>Country From</p>
                         </div>
                         <a
                             className='relative left-1/2 -translate-x-1/2 inline-block w-[50vw] max-w-xs py-0.5 rounded-full text-[3.5vw] text-center text-black bg-white'
-                            href={productInfo.metadata.storeModule.storeURL}
-                            aria-label={productInfo.metadata.storeModule.storeName}>
+                            href={productInfo.metadata?.storeModule.storeURL}
+                            aria-label={productInfo.metadata?.storeModule.storeName}>
                             <span>Visit Store</span>
                         </a>
                     </div>
@@ -257,7 +256,7 @@ const ProductViewPage = () => {
             <InfoModal title="Product Details" state={viewChanges.specsModal} toggle={toggleSpecs} >
                 <table className='w-full h-max'>
                     <tbody>
-                        {productInfo.specs.map((item, index) => (
+                        {productInfo.specs?.map((item, index) => (
                             <tr className='border-b border-gray-300' key={index}>
                                 <th className='text-black/60 font-normal text-left'>{item.attrName}</th>
                                 <td className='py-2'>{item.attrValue}</td>
@@ -267,7 +266,7 @@ const ProductViewPage = () => {
                 </table>
             </InfoModal>
             <InfoModal title="Description" state={viewChanges.descModal} toggle={toggleDesc} >
-                <Markup content={docHtml} />
+                {/* <Markup content={docHtml} /> */}
             </InfoModal>
 
         </>
