@@ -1,13 +1,11 @@
-import React, { useContext, useState } from 'react'
-import { AppContext } from '../context/AppProvider';
+import React, { useState } from 'react'
+// import { AppContext } from '../context/AppProvider';
 import Header from '../containers/Header'
 import SkeletonPreviewProduct from '../components/SkeletonPreviewProduct';
 import InfiniteProducts from '../containers/InfiniteProducts';
 
 const MainPage = () => {
-  const { state, callNewBestSalesData, callNewOffersData } = useContext(AppContext);
-  const { bestSalesData, newOffersData } = state;
-
+  // const { state, callNewBestSalesData, callNewOffersData } = useContext(AppContext);
   const [skeletonLoading, setSkeletonLoading] = useState(true);
 
   const renderProducts = (data, deal = false) => {
@@ -47,10 +45,10 @@ const MainPage = () => {
                 </li>
               </>
             )}
-            {renderProducts(newOffersData)}
+            {/* {renderProducts(newOffersData)} */}
           </ul>
         </section>
-        <InfiniteProducts data={bestSalesData} callData={callNewBestSalesData} />
+        <InfiniteProducts />
       </main>
     </>
   )

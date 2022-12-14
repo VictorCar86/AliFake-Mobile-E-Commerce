@@ -1,10 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
 const axios = require("axios");
-const dispatch = useDispatch();
 
-export const newOffersSlice = createSlice({
-    name: 'newOffersData',
+export const sliceNewOffers = createSlice({
+    name: 'newOffers',
     initialState: {
         fetching: false,
         docs: [],
@@ -21,14 +19,15 @@ export const newOffersSlice = createSlice({
     }
 })
 
-export const bestSalesState = (state) => state.newOffersData;
-export const fetchState = (state) => state.newOffersData.fetching;
-const { requestOffers, resultOffers } = newOffersSlice.actions;
+export const newOffersState = (state) => state.sliceNewOffers;
+export const fetchingNewOffers = (state) => state.sliceNewOffers.fetching;
+const { requestOffers, resultOffers } = sliceNewOffers.actions;
 
-export const fetchNewOffers  = () => {
-    const alreadyFetching = useSelector(fetchState);
+export const fetchNewOffers = (dispatch, selector) => () => {
+    const alreadyFetching = selector(fetchingNewOffers);
+    const envKey = process.env.NEWRAPIDAPI_KEY;
 
-    if (alreadyFetching){
+    if (alreadyFetching || !envKey){
         return;
     }
 
@@ -37,7 +36,7 @@ export const fetchNewOffers  = () => {
         url: 'https://magic-aliexpress1.p.rapidapi.com/api/bestSales/SortedByNewest',
         params: {limit: '10'},
         headers: {
-            'X-RapidAPI-Key': process.env.NEWRAPIDAPI_KEY,
+            'X-RapidAPI-Key': envKey,
             'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
         }
     };
@@ -55,4 +54,4 @@ export const fetchNewOffers  = () => {
         });
 }
 
-export default newOffersSlice.reducer;
+export default sliceNewOffers.reducer;

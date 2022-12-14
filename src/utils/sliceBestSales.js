@@ -1,63 +1,61 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
-const axios = require("axios");
-const dispatch = useDispatch();
 
-export const bestSalesSlice = createSlice({
-    name: 'bestSalesData',
+export const sliceBestSales = createSlice({
+    name: 'bestSales',
     initialState: {
         fetching: false,
         docs: [],
-        hasNextPage: false,
+        hasNextPage: true,
         nextPage: 1,
         page: 0,
     },
     reducers: {
         requestBestSales: (state) => {
             state.fetching = true;
-            state.docs = [];
-            // state.hasNextPage = false;
-            // state.nextPage = 1;
-            // state.page = 0;
         },
         resultBestSales: (state, action) => {
+            const payload = action.payload;
+
             state.fetching = false;
-            state.docs = [...action.payload];
+            state.docs = [...state.docs, ...payload.docs];
+            state.hasNextPage = payload.hasNextPage;
+            state.nextPage = payload.nextPage;
+            state.page = payload.page;
         },
     }
 })
 
-export const bestSalesState = (state) => state.bestSalesData;
-export const fetchState = (state) => state.bestSalesData.fetching;
-const { requestBestSales, resultBestSales } = bestSalesSlice.actions;
+export const bestSalesState = (state) => state.sliceBestSales;
+export const { requestBestSales, resultBestSales } = sliceBestSales.actions;
 
-export const fetchBestSales = (pageNum = 1) => {
-    const alreadyFetching = useSelector(fetchState);
+// export const fetchBestSales = (dispatch, selector) => (pageNum = 1) => {
+//     const alreadyFetching = selector();
+//     const envKey = process.env.NEWRAPIDAPI_KEY;
 
-    if (alreadyFetching){
-        return;
-    }
+//     if (alreadyFetching || !envKey){
+//         return;
+//     }
 
-    const options = {
-        method: 'GET',
-        url: 'https://magic-aliexpress1.p.rapidapi.com/api/bestSales/products',
-        params: {page: pageNum, priceMax: '30', priceMin: '5', sort: 'EVALUATE_RATE_ASC'},
-        headers: {
-            'X-RapidAPI-Key': process.env.NEWRAPIDAPI_KEY,
-            'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
-        }
-    };
+//     const options = {
+//         method: 'GET',
+//         url: 'https://magic-aliexpress1.p.rapidapi.com/api/bestSales/products',
+//         params: {page: pageNum, priceMax: '30', priceMin: '5', sort: 'EVALUATE_RATE_ASC'},
+//         headers: {
+//             'X-RapidAPI-Key': envKey,
+//             'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
+//         }
+//     };
 
-    dispatch( requestBestSales() );
+//     dispatch( requestBestSales() );
 
-    axios.request(options)
-        .then((response) => {
-            console.log("fetchBestSales", response);
-            dispatch( resultBestSales(response) );
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-}
+//     axios.request(options)
+//         .then((response) => {
+//             console.log("fetchBestSales", response);
+//             dispatch( resultBestSales(response) );
+//         })
+//         .catch((error) => {
+//             console.error(error);
+//         });
+// }
 
-export default bestSalesSlice.reducer;
+export default sliceBestSales.reducer;

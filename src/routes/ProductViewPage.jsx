@@ -27,8 +27,8 @@ const initialViewChanges = {
 
 
 const ProductViewPage = () => {
-    const { state, callNewBestSalesData, productDescription } = useContext(AppContext);
-    const { bestSalesData, productInfo } = state;
+    // const { state, callNewBestSalesData, productDescription } = useContext(AppContext);
+    // const { bestSalesData, productInfo } = state;
 
     const pageInfo = useParams();
     const navigate = useNavigate();

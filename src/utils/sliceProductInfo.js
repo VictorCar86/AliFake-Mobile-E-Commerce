@@ -1,10 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
 const axios = require("axios");
-const dispatch = useDispatch();
 
-export const productInfoSlice = createSlice({
-    name: 'productData',
+export const sliceProductInfo = createSlice({
+    name: 'productInfo',
     initialState: {
         fetching: false,
         docs: {
@@ -14,25 +12,26 @@ export const productInfoSlice = createSlice({
         },
     },
     reducers: {
-        requestProductData: (state) => {
+        requestProductInfo: (state) => {
             state.fetching = true;
             state.docs = [];
         },
-        resultProductData: (state, action) => {
+        resultProductInfo: (state, action) => {
             state.fetching = false;
             state.docs = [...action.payload];
         },
     }
 })
 
-export const bestSalesState = (state) => state.productData;
-export const fetchState = (state) => state.productData.fetching;
-const { requestProductData, resultProductData } = productInfoSlice.actions;
+export const productInfoState = (state) => state.sliceProductInfo;
+export const fetchingProductInfo = (state) => state.sliceProductInfo.fetching;
+const { requestProductInfo, resultProductInfo } = sliceProductInfo.actions;
 
-export const fetchProductInfo = (productId = 0) => {
-    const alreadyFetching = useSelector(fetchState);
+export const fetchProductInfo = (dispatch, selector) => (productId = 0) => {
+    const alreadyFetching = selector(fetchingProductInfo);
+    const envKey = process.env.NEWRAPIDAPI_KEY;
 
-    if (alreadyFetching){
+    if (alreadyFetching || !envKey){
         return;
     }
 
@@ -41,21 +40,21 @@ export const fetchProductInfo = (productId = 0) => {
         url: `https://magic-aliexpress1.p.rapidapi.com/api/product/${productId}`,
         params: {lg: 'en', targetCurrency: 'USD'},
         headers: {
-            'X-RapidAPI-Key': process.env.NEWRAPIDAPI_KEY,
+            'X-RapidAPI-Key': envKey,
             'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
         }
     };
 
-    dispatch( requestProductData() );
+    dispatch( requestProductInfo() );
 
     axios
         .request(options)
         .then((response) => {
             console.log("fetchProductInfo", response);
-            dispatch( resultProductData(response) );
+            dispatch( resultProductInfo(response) );
         }).catch((error) => {
             console.error(error);
         });
 }
 
-export default productInfoSlice.reducer;
+export default sliceProductInfo.reducer;

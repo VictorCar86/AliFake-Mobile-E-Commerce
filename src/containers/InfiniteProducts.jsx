@@ -1,13 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import { bestSalesState, requestBestSales, resultBestSales } from '../utils/sliceBestSales';
 import SkeletonPreviewProduct from '../components/SkeletonPreviewProduct';
 import useIntersection from '../hooks/useIntersection';
 import PreviewProduct from '../components/PreviewProduct';
 import SpinnerIcon from '../assets/images/spinnerIcon.webp'
+const axios = require("axios");
 
-const InfiniteProducts = ({ data, callData }) => {
+const InfiniteProducts = () => {
+    const data = useSelector(bestSalesState);
+    const dispatch = useDispatch();
 
-    const [apiLoading, setApiLoading] = useState(false);
     const [infiniteLoading, setInfiniteLoading] = useState(true);
     const [skeletonLoading, setSkeletonLoading] = useState(true);
 
@@ -30,22 +34,42 @@ const InfiniteProducts = ({ data, callData }) => {
         }
     }
 
+    // console.log(useSelector(bestSalesState));
+
+    const fetchData = (pageNum = 1) => {
+        const alreadyFetching = data.fetching;
+        const envKey = process.env.NEWRAPIDAPI_KEY;
+
+        if (alreadyFetching || !envKey){
+            return;
+        }
+
+        const options = {
+            method: 'GET',
+            url: 'https://magic-aliexpress1.p.rapidapi.com/api/bestSales/products',
+            params: {page: pageNum, priceMax: '30', priceMin: '5', sort: 'EVALUATE_RATE_ASC'},
+            headers: {
+                'X-RapidAPI-Key': envKey,
+                'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
+            }
+        };
+
+        dispatch( requestBestSales() );
+
+        axios.request(options)
+            .then((response) => {
+                dispatch( resultBestSales(response.data) );
+                console.log("fetchBestSales", response, data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+      }
+
     useEffect(() => {
-        if (infiniteLoading && !apiLoading){
-            setApiLoading(true);
-            // (async () => {
-            //     if (data.hasNextPage){
-            //         await callData(data.nextPage);
-            //         setApiLoading(false);
-            //     }
-            //     else {
-            //         setTimeout(async () => {
-            //             await callData()
-            //             setApiLoading(false);
-            //         }
-            //         , 2000);
-            //     }
-            // })()
+        window.scrollTo(0, 0);
+
+        if (infiniteLoading && !data.fetching){
             scrollPagination();
         }
     }, [])
@@ -53,12 +77,12 @@ const InfiniteProducts = ({ data, callData }) => {
     const scrollPagination = async () => {
         setInfiniteLoading(true);
 
-        if (data.hasNextPage){
-            await callData(data.nextPage);
+        if (data.page !== 0 && data.hasNextPage){
+            fetchData(data.nextPage);
         }
         else {
-            setTimeout(async () => {
-                await callData()
+            setTimeout(() => {
+                fetchData()
             }
             , 2000);
         }
@@ -81,8 +105,8 @@ const InfiniteProducts = ({ data, callData }) => {
     , [infiniteLoading]);
 
     return (
-        <section className={`table-cell w-full h-full px-3 ${!infiniteLoading ? "pb-12" : ""} text-base bg-white`}>
-            <p className={`my-4 text-lg ${pathname !== "/" ? "text-[4vw] font-bold" : "font-medium"} font-medium`}>More to love</p>
+        <section className={`table-cell w-full h-full px-3 ${!infiniteLoading && 'pb-12'} ${pathname === '/' && 'pb-14'} text-base bg-white`}>
+            <p className={`my-4 text-lg ${pathname !== '/' ? 'text-[4vw] font-bold' : 'font-medium'} font-medium`}>More to love</p>
             <ul className='h-full w-full min-h-screen  grid grid-cols-2 gap-3 overflow-hidden'>
             {!!skeletonLoading && (
                 <>
@@ -116,7 +140,7 @@ const InfiniteProducts = ({ data, callData }) => {
             </ul>
             {!!infiniteLoading && (
                 <div className='w-full h-max py-4 text-center'>
-                    <img className='inline-block h-10 w-10 animate-spin' src={SpinnerIcon} alt="Spin loader image" />
+                    <img className='inline-block h-10 w-10 animate-spin' src={SpinnerIcon} alt='Spin loader image' />
                 </div>
             )}
             {!infiniteLoading && (
