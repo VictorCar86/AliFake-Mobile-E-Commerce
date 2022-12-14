@@ -1,5 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const uniqueObjectsReducer = (accumulator, currentValue) => {
+    const existingObject = accumulator.find(
+      (obj) => obj.product_id === currentValue.product_id
+    );
+
+    if (!existingObject) {
+      accumulator.push(currentValue);
+    }
+
+    return accumulator;
+}
+
 export const sliceBestSales = createSlice({
     name: 'bestSales',
     initialState: {
@@ -17,7 +29,7 @@ export const sliceBestSales = createSlice({
             const payload = action.payload;
 
             state.fetching = false;
-            state.docs = [...state.docs, ...payload.docs];
+            state.docs = payload.docs.reduce(uniqueObjectsReducer, [...state.docs]);
             state.hasNextPage = payload.hasNextPage;
             state.nextPage = payload.nextPage;
             state.page = payload.page;
@@ -27,35 +39,5 @@ export const sliceBestSales = createSlice({
 
 export const bestSalesState = (state) => state.sliceBestSales;
 export const { requestBestSales, resultBestSales } = sliceBestSales.actions;
-
-// export const fetchBestSales = (dispatch, selector) => (pageNum = 1) => {
-//     const alreadyFetching = selector();
-//     const envKey = process.env.NEWRAPIDAPI_KEY;
-
-//     if (alreadyFetching || !envKey){
-//         return;
-//     }
-
-//     const options = {
-//         method: 'GET',
-//         url: 'https://magic-aliexpress1.p.rapidapi.com/api/bestSales/products',
-//         params: {page: pageNum, priceMax: '30', priceMin: '5', sort: 'EVALUATE_RATE_ASC'},
-//         headers: {
-//             'X-RapidAPI-Key': envKey,
-//             'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
-//         }
-//     };
-
-//     dispatch( requestBestSales() );
-
-//     axios.request(options)
-//         .then((response) => {
-//             console.log("fetchBestSales", response);
-//             dispatch( resultBestSales(response) );
-//         })
-//         .catch((error) => {
-//             console.error(error);
-//         });
-// }
 
 export default sliceBestSales.reducer;

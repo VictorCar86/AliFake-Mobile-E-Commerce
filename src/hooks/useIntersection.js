@@ -3,11 +3,12 @@ const useIntersection = (callback) => {
         entries.forEach(entry => {
             if (entry.isIntersecting){
                 console.log(entry);
-                callback()
+                callback();
+                observer.disconnect();
             }
         })
     })
     return observer
 }
 
-export default useIntersection
+export default useIntersection;

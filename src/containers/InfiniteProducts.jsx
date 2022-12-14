@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { bestSalesState, requestBestSales, resultBestSales } from '../utils/sliceBestSales';
@@ -59,22 +59,16 @@ const InfiniteProducts = () => {
         axios.request(options)
             .then((response) => {
                 dispatch( resultBestSales(response.data) );
-                console.log("fetchBestSales", response, data);
+                setInfiniteLoading(false);
+                // console.log("fetchBestSales", response.data, data);
             })
             .catch((error) => {
+                setInfiniteLoading(false);
                 console.error(error);
             });
-      }
+    }
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-
-        if (infiniteLoading && !data.fetching){
-            scrollPagination();
-        }
-    }, [])
-
-    const scrollPagination = async () => {
+    const scrollPagination = () => {
         setInfiniteLoading(true);
 
         if (data.page !== 0 && data.hasNextPage){
@@ -89,9 +83,10 @@ const InfiniteProducts = () => {
     }
 
     useEffect(() => {
-        setInfiniteLoading(false);
-    }
-    ,[data]);
+        if (infiniteLoading && !data.fetching){
+            scrollPagination();
+        }
+    }, [])
 
     useEffect(() => {
         if (scrollStopRef.current !== null){
@@ -105,7 +100,8 @@ const InfiniteProducts = () => {
     , [infiniteLoading]);
 
     return (
-        <section className={`table-cell w-full h-full px-3 ${!infiniteLoading && 'pb-12'} ${pathname === '/' && 'pb-14'} text-base bg-white`}>
+        <section className={`table-cell w-full h-full px-3 ${!infiniteLoading && 'h-[calc(100%+48px)]'} ${pathname === '/' && 'pb-14'} text-base bg-white`}>
+            <button className='fixed top-[3%] z-30 bg-red-600 text-white' onClick={() => console.log(data)}>IMADWADA</button>
             <p className={`my-4 text-lg ${pathname !== '/' ? 'text-[4vw] font-bold' : 'font-medium'} font-medium`}>More to love</p>
             <ul className='h-full w-full min-h-screen  grid grid-cols-2 gap-3 overflow-hidden'>
             {!!skeletonLoading && (
@@ -138,13 +134,13 @@ const InfiniteProducts = () => {
             )}
             {renderProducts(data.docs)}
             </ul>
-            {!!infiniteLoading && (
+            {infiniteLoading && (
                 <div className='w-full h-max py-4 text-center'>
                     <img className='inline-block h-10 w-10 animate-spin' src={SpinnerIcon} alt='Spin loader image' />
                 </div>
             )}
             {!infiniteLoading && (
-                <button onClick={scrollPagination} ref={scrollStopRef} />
+                <div className='h-0 w-full' onClick={scrollPagination} ref={scrollStopRef} />
             )}
         </section>
     )
