@@ -9,7 +9,7 @@ import SpinnerIcon from '../assets/images/spinnerIcon.webp'
 const axios = require("axios");
 
 const InfiniteProducts = () => {
-    const data = useSelector(bestSalesState);
+    const bestSalesData = useSelector(bestSalesState);
     const dispatch = useDispatch();
 
     const [infiniteLoading, setInfiniteLoading] = useState(true);
@@ -36,8 +36,8 @@ const InfiniteProducts = () => {
 
     // console.log(useSelector(bestSalesState));
 
-    const fetchData = (pageNum = 1) => {
-        const alreadyFetching = data.fetching;
+    const fetchBestSales = (pageNum = 1) => {
+        const alreadyFetching = bestSalesData.fetching;
         const envKey = process.env.NEWRAPIDAPI_KEY;
 
         if (alreadyFetching || !envKey){
@@ -60,7 +60,7 @@ const InfiniteProducts = () => {
             .then((response) => {
                 dispatch( resultBestSales(response.data) );
                 setInfiniteLoading(false);
-                // console.log("fetchBestSales", response.data, data);
+                // console.log("fetchBestSales", response.bestSalesData, bestSalesData);
             })
             .catch((error) => {
                 setInfiniteLoading(false);
@@ -71,19 +71,19 @@ const InfiniteProducts = () => {
     const scrollPagination = () => {
         setInfiniteLoading(true);
 
-        if (data.page !== 0 && data.hasNextPage){
-            fetchData(data.nextPage);
+        if (bestSalesData.page !== 0 && bestSalesData.hasNextPage){
+            fetchBestSales(bestSalesData.nextPage);
         }
         else {
             setTimeout(() => {
-                fetchData()
+                fetchBestSales()
             }
             , 2000);
         }
     }
 
     useEffect(() => {
-        if (infiniteLoading && !data.fetching){
+        if (infiniteLoading && !bestSalesData.fetching && bestSalesData.page === 0){
             scrollPagination();
         }
     }, [])
@@ -101,7 +101,7 @@ const InfiniteProducts = () => {
 
     return (
         <section className={`table-cell w-full h-full px-3 ${!infiniteLoading && 'h-[calc(100%+48px)]'} ${pathname === '/' && 'pb-14'} text-base bg-white`}>
-            <button className='fixed top-[3%] z-30 bg-red-600 text-white' onClick={() => console.log(data)}>IMADWADA</button>
+            <button className='fixed top-[3%] z-30 bg-red-600 text-white' onClick={() => console.log(bestSalesData)}>IMADWADA</button>
             <p className={`my-4 text-lg ${pathname !== '/' ? 'text-[4vw] font-bold' : 'font-medium'} font-medium`}>More to love</p>
             <ul className='h-full w-full min-h-screen  grid grid-cols-2 gap-3 overflow-hidden'>
             {!!skeletonLoading && (
@@ -132,7 +132,7 @@ const InfiniteProducts = () => {
                     </li>
                 </>
             )}
-            {renderProducts(data.docs)}
+            {renderProducts(bestSalesData.docs)}
             </ul>
             {infiniteLoading && (
                 <div className='w-full h-max py-4 text-center'>

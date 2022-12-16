@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     FiChevronLeft,
     FiChevronRight,
@@ -9,7 +9,6 @@ import {
     FiShoppingBag,
     FiShoppingCart,
 } from 'react-icons/fi';
-import { AppContext } from '../context/AppProvider';
 import { useNavigate, useParams, Link, useLocation } from 'react-router-dom'
 import { Markup } from 'interweave';
 import AlifakelogoImg from '../assets/images/alifake_logo.webp'
@@ -17,7 +16,9 @@ import Searcher from '../components/Searcher';
 import InfoModal from '../containers/InfoModal';
 import InfiniteProducts from '../containers/InfiniteProducts';
 import HeartButton from '../components/HeartButton';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { productInfoState, requestProductInfo, resultProductInfo } from '../utils/sliceProductInfo';
+const axios = require("axios");
 
 const initialViewChanges = {
     navbarVanilla: true,
@@ -25,21 +26,58 @@ const initialViewChanges = {
     descModal: false,
 };
 
-
 const ProductViewPage = () => {
-    // const { state, callNewBestSalesData, productDescription } = useContext(AppContext);
-    // const { bestSalesData, productInfo } = state;
-
+    const productInfo = useSelector(productInfoState);
+    const dispatch = useDispatch();
     const pageInfo = useParams();
     const navigate = useNavigate();
     const { pathname } = useLocation();
 
+    const fetchProductInfo = (productId = 0) => {
+        const alreadyFetching = productInfo.fetching;
+        const envKey = process.env.NEWRAPIDAPI_KEY;
+
+        if (alreadyFetching || !envKey){
+            console.error('Your API Key is not valid or does not exist')
+            return;
+        }
+
+        const options = {
+            method: 'GET',
+            url: `https://magic-aliexpress1.p.rapidapi.com/api/product/${productId}`,
+            params: {lg: 'en', targetCurrency: 'USD'},
+            headers: {
+                'X-RapidAPI-Key': envKey,
+                'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
+            }
+        };
+
+        dispatch( requestProductInfo() );
+
+        axios
+            .request(options)
+            .then((response) => {
+                console.log("fetchProductInfo", response.data);
+                dispatch( resultProductInfo(response.data) );
+            }).catch((error) => {
+                console.error(error);
+            });
+    }
+
+    useEffect(() => {
+        if (pathname.includes(`/product/${pageInfo.id}`)){
+            window.scrollTo(0, 0);
+            fetchProductInfo(pageInfo.id);
+        }
+    }, [pathname]);
+
+
     const [docHtml, setDocHtml] = useState("");
 
     useEffect(() => {
-        printHtml(productInfo.metadata?.descriptionModule.descriptionUrl);
+        printHtml(productInfo.docs.metadata?.descriptionModule.descriptionUrl);
     }
-    , [productInfo]);
+    , [productInfo.docs]);
 
     const printHtml = (WEBURL) => {
         fetch(WEBURL)
@@ -50,19 +88,6 @@ const ProductViewPage = () => {
 
     const [viewChanges, setViewChanges] = useState(initialViewChanges);
 
-    // useEffect(() => {
-    //     if (productInfo.product_id !== pageInfo.id && productInfo.product_id !== ""){
-    //         productDescription(pageInfo.id)
-    //     }
-    // }, []);
-
-    useEffect(() => {
-        if (pathname.includes(`/product/${pageInfo.id}`)){
-            window.scrollTo(0, 0);
-            productDescription(pageInfo.id);
-        }
-    }, [pathname]);
-
     const toggleNavbar = () => setViewChanges({...viewChanges, navbarVanilla: !viewChanges.navbarVanilla});
 
     const toggleSpecs = () => setViewChanges({...viewChanges, specsModal: !viewChanges.specsModal});
@@ -70,9 +95,9 @@ const ProductViewPage = () => {
     const toggleDesc = () => setViewChanges({...viewChanges, descModal: !viewChanges.descModal});
 
 
-    const starsPercentage = (productInfo.feedBackRating?.averageStar / 5) * 100;
+    const starsPercentage = (productInfo.docs.feedBackRating?.averageStar / 5) * 100;
 
-    const shippingData = productInfo.metadata?.
+    const shippingData = productInfo.docs.metadata?.
                             shippingModule.generalFreightInfo.
                                 originalLayoutResultList[0].bizData;
 
@@ -82,16 +107,14 @@ const ProductViewPage = () => {
 
 
     const displayImages = () => {
-        const imagesLocation = productInfo.product_small_image_urls;
+        const imagesLocation = productInfo.docs.product_small_image_urls;
 
         if (imagesLocation) {
-            const imagesArray = imagesLocation.string;
-
-            return imagesArray.map((image, index) => (
+            return imagesLocation.string?.map((image, index) => (
                 <img
-                    className={`w-11/12 h-auto ${imagesArray.length !== index+1 ? "snap-start" : "snap-end"}`}
+                    className={`w-11/12 h-auto ${imagesLocation.string.length !== index+1 ? "snap-start" : "snap-end"} ${imagesLocation.loading && "animate-pulse"}`}
                     src={image}
-                    alt={productInfo.product_title}
+                    alt={productInfo.docs.product_title}
                     key={index}
                 />
             ));
@@ -141,15 +164,15 @@ const ProductViewPage = () => {
                 <section className='mb-[2%] bg-white'>
                     <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
                         { displayImages() }
-                        <HeartButton wishedCount={productInfo.wishedCount} sticky="true" />
+                        <HeartButton wishedCount={productInfo.docs.wishedCount} sticky="true" />
                     </div>
                     <div className='px-[3%] pt-[3%]'>
                         <div className='flex gap-2 items-center'>
-                            <span className='text-[5.5vw] font-bold'>{`${productInfo.sale_price_currency} ${productInfo.sale_price}`}</span>
-                            {Number(productInfo.discount?.slice(0, 2)) >= 20 && (
+                            <span className='text-[5.5vw] font-bold'>{`${productInfo.docs.sale_price_currency} ${productInfo.docs.sale_price}`}</span>
+                            {Number(productInfo.docs.discount?.slice(0, 2)) >= 20 && (
                               <>
-                                <span className='line-through opacity-70'>{`${productInfo.sale_price_currency} ${productInfo.original_price}`}</span>
-                                <span className='text-red-600'>{`-${productInfo.discount}`}</span>
+                                <span className='line-through opacity-70'>{`${productInfo.docs.sale_price_currency} ${productInfo.docs.original_price}`}</span>
+                                <span className='text-red-600'>{`-${productInfo.docs.discount}`}</span>
                               </>
                             )}
                         </div>
@@ -157,12 +180,12 @@ const ProductViewPage = () => {
                             <span>Price shown before tax, </span>
                             <span>{feeShipping}</span>
                         </div>
-                        <p className='my-2'>{productInfo.product_title}</p>
+                        <p className='my-2'>{productInfo.docs.product_title}</p>
                         <span className={`mr-2 relative text-gray-300 before:content-["★★★★★"] before:absolute before:w-[${starsPercentage}%] before:text-yellow-400 before:drop-shadow-md before:overflow-hidden`}>
                             ★★★★★
                         </span>
-                        <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{productInfo.feedBackRating?.averageStar}</span>
-                        <span className='mr-2'>{`${productInfo.lastest_volume} orders`}</span>
+                        <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{productInfo.docs.feedBackRating?.averageStar}</span>
+                        <span className='mr-2'>{`${productInfo.docs.lastest_volume} orders`}</span>
                         <button
                             className='w-full mt-4 py-3.5 border-t border-gray-300'
                             onClick={toggleSpecs}
@@ -182,7 +205,7 @@ const ProductViewPage = () => {
                     </div>
                 </section>
                 <section className='px-[3%] pt-[3%] bg-white'>
-                    {productInfo.metadata && (
+                    {productInfo.docs.metadata && (
                         <div className='mt-1 border-b border-gray-300'>
                             <span className='font-bold'>Discounts & Coupons</span>
                             <button className='float-right flex items-center px-2 rounded-full font-medium text-white bg-gradient-to-r from-red-600 to-orange-500'>
@@ -190,7 +213,7 @@ const ProductViewPage = () => {
                                 <FiChevronRight className='inline-block' />
                             </button>
                             <div className='my-3 flex gap-2 overflow-x-scroll overflow-y-hidden'>
-                                {productInfo.metadata
+                                {productInfo.docs.metadata
                                   .couponModule.webCouponInfo
                                     .couponList.map((coupon, index) => (
                                         <button
@@ -216,7 +239,7 @@ const ProductViewPage = () => {
                                 Shipping: {feeShipping}
                             </p>
                             <p>From {shippingData?.shipFrom} via {shippingData?.deliveryProviderName}</p>
-                            <p>Estimated delivery on {shippingData?.deliveryDate?.slice(0, 3) + " " + shippingData?.deliveryDate.slice(-2)}</p>
+                            <p>Estimated delivery on {shippingData?.deliveryDate?.slice(0, 3) + " " + shippingData?.deliveryDate?.slice(-2)}</p>
                         </div>
                     </div>
                     <button className='w-full pt-3.5 pb-4 border-t text-left border-gray-300'>
@@ -230,33 +253,33 @@ const ProductViewPage = () => {
                         <FiShoppingBag className='w-[10vw] h-[10vw] m-[0.6vw] px-[12%] rounded-full border border-gray-300 text-gray-400' />
                     </div>
                     <div className='w-2/3 mx-auto'>
-                        <p className='font-bold'>{productInfo.metadata?.storeModule.storeName}</p>
+                        <p className='font-bold'>{productInfo.docs.metadata?.storeModule.storeName}</p>
                         <div className='grid grid-rows-2 grid-flow-col gap-x-[16%] my-2 text-[3.5vw]'>
-                            <p className='font-bold'>{productInfo.metadata?.storeModule.positiveRate}</p>
+                            <p className='font-bold'>{productInfo.docs.metadata?.storeModule.positiveRate}</p>
                             <p>Positive Feedback</p>
-                            <p className='font-bold'>{productInfo.metadata?.storeModule.countryCompleteName}</p>
+                            <p className='font-bold'>{productInfo.docs.metadata?.storeModule.countryCompleteName}</p>
                             <p>Country From</p>
                         </div>
                         <a
                             className='relative left-1/2 -translate-x-1/2 inline-block w-[50vw] max-w-xs py-0.5 rounded-full text-[3.5vw] text-center text-black bg-white'
-                            href={productInfo.metadata?.storeModule.storeURL}
-                            aria-label={productInfo.metadata?.storeModule.storeName}>
+                            href={productInfo.docs.metadata?.storeModule.storeURL}
+                            aria-label={productInfo.docs.metadata?.storeModule.storeName}>
                             <span>Visit Store</span>
                         </a>
                     </div>
                 </section>
                 <div>
-                    <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => productDescription(pageInfo.id)}>product</button>
+                    <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => fetchProductInfo(pageInfo.id)}>product</button>
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(state)}>state</button>
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(docHtml)}>html</button>
                 </div>
-                <InfiniteProducts data={bestSalesData} callData={callNewBestSalesData} />
+                <InfiniteProducts />
             </main>
 
             <InfoModal title="Product Details" state={viewChanges.specsModal} toggle={toggleSpecs} >
                 <table className='w-full h-max'>
                     <tbody>
-                        {productInfo.specs?.map((item, index) => (
+                        {productInfo.docs.specs?.map((item, index) => (
                             <tr className='border-b border-gray-300' key={index}>
                                 <th className='text-black/60 font-normal text-left'>{item.attrName}</th>
                                 <td className='py-2'>{item.attrValue}</td>
