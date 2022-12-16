@@ -101,7 +101,7 @@ const InfiniteProducts = () => {
 
     return (
         <section className={`table-cell w-full h-full px-3 ${!infiniteLoading && 'h-[calc(100%+48px)]'} ${pathname === '/' && 'pb-14'} text-base bg-white`}>
-            <button className='fixed top-[3%] z-30 bg-red-600 text-white' onClick={() => console.log(bestSalesData)}>IMADWADA</button>
+            {/* <button className='fixed top-[3%] z-30 bg-red-600 text-white' onClick={() => console.log(bestSalesData)}>BestSalesData</button> */}
             <p className={`my-4 text-lg ${pathname !== '/' ? 'text-[4vw] font-bold' : 'font-medium'} font-medium`}>More to love</p>
             <ul className='h-full w-full min-h-screen  grid grid-cols-2 gap-3 overflow-hidden'>
             {!!skeletonLoading && (

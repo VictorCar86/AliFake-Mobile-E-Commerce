@@ -75,14 +75,21 @@ const ProductViewPage = () => {
     const [docHtml, setDocHtml] = useState("");
 
     useEffect(() => {
-        printHtml(productInfo.docs.metadata?.descriptionModule.descriptionUrl);
+        const productDescriptionUrl =
+        productInfo.docs.metadata?.descriptionModule.descriptionUrl;
+
+        if (productDescriptionUrl && (productInfo.docs.product_id !== 0)){
+            printHtml(productDescriptionUrl);
+        }
     }
     , [productInfo.docs]);
 
-    const printHtml = (WEBURL) => {
-        fetch(WEBURL)
+    const printHtml = (weburl) => {
+        fetch(weburl)
             .then(response => response.text())
-            .then(html => setDocHtml(html))
+            .then(html => {
+                setDocHtml(html);
+            })
             .catch(err => console.error(err));
     }
 
@@ -97,9 +104,9 @@ const ProductViewPage = () => {
 
     const starsPercentage = (productInfo.docs.feedBackRating?.averageStar / 5) * 100;
 
-    const shippingData = productInfo.docs.metadata?.
-                            shippingModule.generalFreightInfo.
-                                originalLayoutResultList[0].bizData;
+    const shippingData =
+    productInfo.docs.metadata?.shippingModule
+    .generalFreightInfo.originalLayoutResultList[0].bizData;
 
     const feeShipping = shippingData?.shippingFee === "free" ?
                             <>Free Shipping</> :
@@ -164,28 +171,43 @@ const ProductViewPage = () => {
                 <section className='mb-[2%] bg-white'>
                     <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
                         { displayImages() }
-                        <HeartButton wishedCount={productInfo.docs.wishedCount} sticky="true" />
+                        {productInfo.docs.wishedCount && (
+                            <HeartButton wishedCount={productInfo.docs.wishedCount} sticky="true" />
+                        )}
                     </div>
                     <div className='px-[3%] pt-[3%]'>
-                        <div className='flex gap-2 items-center'>
-                            <span className='text-[5.5vw] font-bold'>{`${productInfo.docs.sale_price_currency} ${productInfo.docs.sale_price}`}</span>
-                            {Number(productInfo.docs.discount?.slice(0, 2)) >= 20 && (
-                              <>
-                                <span className='line-through opacity-70'>{`${productInfo.docs.sale_price_currency} ${productInfo.docs.original_price}`}</span>
-                                <span className='text-red-600'>{`-${productInfo.docs.discount}`}</span>
-                              </>
-                            )}
-                        </div>
-                        <div className='mt-1.5 mb-3.5 text-[3vw] opacity-70'>
-                            <span>Price shown before tax, </span>
-                            <span>{feeShipping}</span>
-                        </div>
-                        <p className='my-2'>{productInfo.docs.product_title}</p>
+                        {productInfo.docs.sale_price && (
+                            <>
+                                <div className='flex gap-2 justify-start items-center'>
+                                    <span className='text-[5.5vw] font-bold'>{`${productInfo.docs.sale_price_currency} ${productInfo.docs.sale_price}`}</span>
+                                    {Number(productInfo.docs.discount?.slice(0, 2)) >= 20 && (
+                                    <>
+                                        <span className='line-through opacity-70'>{`${productInfo.docs.sale_price_currency} ${productInfo.docs.original_price}`}</span>
+                                        <span className='text-red-600'>{`-${productInfo.docs.discount}`}</span>
+                                    </>
+                                    )}
+                                </div>
+                                <div className='mt-1.5 mb-3.5 text-[3vw] opacity-70'>
+                                    <span>Price shown before tax, </span>
+                                    <span>{feeShipping}</span>
+                                </div>
+                                <p className='my-2'>{productInfo.docs.product_title}</p>
+                            </>
+                        )}
+                        {!productInfo.docs.sale_price && (
+                            <>
+                                <div className='h-[6vw] w-4/5 pl-2 mt-[1%] rounded-lg bg-gray-300 animate-pulse'></div>
+                                <div className='h-[4.5vw] w-2/3 pl-2 mt-[2.75%] rounded-lg bg-gray-300 animate-pulse'></div>
+                                <div className='h-[5vw] w-full pl-2 mt-[4.6%] rounded-lg bg-gray-300 animate-pulse'></div>
+                                <div className='h-[5vw] w-11/12 pl-2 mt-[1%] rounded-lg bg-gray-300 animate-pulse'></div>
+                                <div className='h-[5vw] w-3/5 pl-2 mt-[1%] mb-2.5 rounded-lg bg-gray-300 animate-pulse'></div>
+                            </>
+                        )}
                         <span className={`mr-2 relative text-gray-300 before:content-["★★★★★"] before:absolute before:w-[${starsPercentage}%] before:text-yellow-400 before:drop-shadow-md before:overflow-hidden`}>
                             ★★★★★
                         </span>
-                        <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{productInfo.docs.feedBackRating?.averageStar}</span>
-                        <span className='mr-2'>{`${productInfo.docs.lastest_volume} orders`}</span>
+                        <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{productInfo.docs.feedBackRating?.averageStar || "0.0"}</span>
+                        <span className='mr-2'>{`${productInfo.docs.lastest_volume || "loading"} orders`}</span>
                         <button
                             className='w-full mt-4 py-3.5 border-t border-gray-300'
                             onClick={toggleSpecs}
@@ -289,11 +311,13 @@ const ProductViewPage = () => {
                 </table>
             </InfoModal>
             <InfoModal title="Description" state={viewChanges.descModal} toggle={toggleDesc} >
-                {/* <Markup content={docHtml} /> */}
+                <React.Fragment>
+                    <Markup content={docHtml} />
+                </React.Fragment>
             </InfoModal>
 
         </>
     )
 }
 
-export default ProductViewPage
+export default ProductViewPage;
