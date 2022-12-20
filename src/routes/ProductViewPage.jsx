@@ -9,9 +9,9 @@ import {
     FiShoppingBag,
     FiShoppingCart,
 } from 'react-icons/fi';
-import { useNavigate, useParams, Link, useLocation } from 'react-router-dom'
+import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import { Markup } from 'interweave';
-import AlifakelogoImg from '../assets/images/alifake_logo.webp'
+import AlifakelogoImg from '../assets/images/alifake_logo.webp';
 import Searcher from '../components/Searcher';
 import InfoModal from '../containers/InfoModal';
 import InfiniteProducts from '../containers/InfiniteProducts';
@@ -64,15 +64,15 @@ const ProductViewPage = () => {
             });
     }
 
+    const [docHtml, setDocHtml] = useState("");
+
     useEffect(() => {
         if (pathname.includes(`/product/${pageInfo.id}`)){
             window.scrollTo(0, 0);
             fetchProductInfo(pageInfo.id);
+            setDocHtml("");
         }
     }, [pathname]);
-
-
-    const [docHtml, setDocHtml] = useState("");
 
     useEffect(() => {
         const productDescriptionUrl =
@@ -131,7 +131,6 @@ const ProductViewPage = () => {
     return (
         <>
             <header className='fixed w-full bg-white shadow-sm z-10'>
-
                 {viewChanges.navbarVanilla === true && (
                     <nav className='h-12 flex justify-between items-center'>
                         <div className='flex items-center'>
@@ -165,16 +164,18 @@ const ProductViewPage = () => {
                         <Searcher />
                     </nav>
                 )}
-
             </header>
+
             <main className='min-h-screen pt-12 text-[4vw] bg-gray-300'>
                 <section className='mb-[2%] bg-white'>
+
                     <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
                         { displayImages() }
                         {productInfo.docs.wishedCount && (
                             <HeartButton wishedCount={productInfo.docs.wishedCount} sticky="true" />
                         )}
                     </div>
+
                     <div className='px-[3%] pt-[3%]'>
                         {productInfo.docs.sale_price && (
                             <>
@@ -247,7 +248,6 @@ const ProductViewPage = () => {
                                         </button>
                                     ))}
                             </div>
-                            {/* {productInfo.metadata.descriptionModule.descriptionUrl} */}
                         </div>
                     )}
                     <div className='my-3'>
@@ -290,11 +290,11 @@ const ProductViewPage = () => {
                         </a>
                     </div>
                 </section>
-                <div>
+                {/* <div>
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => fetchProductInfo(pageInfo.id)}>product</button>
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(state)}>state</button>
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(docHtml)}>html</button>
-                </div>
+                </div> */}
                 <InfiniteProducts />
             </main>
 

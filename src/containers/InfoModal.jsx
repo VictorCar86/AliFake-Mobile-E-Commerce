@@ -1,5 +1,6 @@
 import React from 'react'
 import { FiX } from 'react-icons/fi';
+import spinnerIcon from '../assets/images/spinnerIcon.webp'
 
 const InfoModal = ({ children, title, state, toggle }) => {
 
@@ -11,6 +12,10 @@ const InfoModal = ({ children, title, state, toggle }) => {
         document.getElementsByTagName('body')[0].style.overflow = "visible";
         toggle()
     }
+
+    const propsDirectory = children.props.children.props;
+
+    console.log(children, title);
 
     return (
         <div className={`${state ? "bg-gray-700/50" : "bg-transparent invisible"} transition-colors duration-200 min-h-screen w-full fixed top-0 text-[4vw] z-20`}>
@@ -26,7 +31,10 @@ const InfoModal = ({ children, title, state, toggle }) => {
                     </button>
                 </div>
                 <section className='mt-[12%]'>
-                    { children }
+                    {propsDirectory.children || propsDirectory.content  ?
+                        children :
+                        (<img className='h-auto w-[10vw] mt-[16%] mx-auto text-center animate-spin' src={spinnerIcon} alt="Loading content..." />)
+                    }
                 </section>
             </div>
         </div>

@@ -5,7 +5,7 @@ import { bestSalesState, requestBestSales, resultBestSales } from '../utils/slic
 import SkeletonPreviewProduct from '../components/SkeletonPreviewProduct';
 import useIntersection from '../hooks/useIntersection';
 import PreviewProduct from '../components/PreviewProduct';
-import SpinnerIcon from '../assets/images/spinnerIcon.webp'
+import spinnerIcon from '../assets/images/spinnerIcon.webp'
 const axios = require("axios");
 
 const InfiniteProducts = () => {
@@ -136,7 +136,7 @@ const InfiniteProducts = () => {
             </ul>
             {infiniteLoading && (
                 <div className='w-full h-max py-4 text-center'>
-                    <img className='inline-block h-10 w-10 animate-spin' src={SpinnerIcon} alt='Spin loader image' />
+                    <img className='inline-block h-10 w-10 animate-spin' src={spinnerIcon} alt='Spin loader image' />
                 </div>
             )}
             {!infiniteLoading && (
