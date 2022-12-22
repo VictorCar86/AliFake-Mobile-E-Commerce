@@ -15,7 +15,7 @@ const InfoModal = ({ children, title, state, toggle }) => {
 
     const propsDirectory = children.props.children.props;
 
-    console.log(children, title);
+    // console.log(children, title);
 
     return (
         <div className={`${state ? "bg-gray-700/50" : "bg-transparent invisible"} transition-colors duration-200 min-h-screen w-full fixed top-0 text-[4vw] z-20`}>

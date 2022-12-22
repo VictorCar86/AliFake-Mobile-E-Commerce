@@ -102,7 +102,9 @@ const ProductViewPage = () => {
     const toggleDesc = () => setViewChanges({...viewChanges, descModal: !viewChanges.descModal});
 
 
-    const starsPercentage = (productInfo.docs.feedBackRating?.averageStar / 5) * 100;
+    const starsPercentage = ((productInfo.docs.feedBackRating?.averageStar / 5) * 100) || 0;
+
+    // console.log(productInfo.docs.feedBackRating?.averageStar);
 
     const shippingData =
     productInfo.docs.metadata?.shippingModule
@@ -127,6 +129,8 @@ const ProductViewPage = () => {
             ));
         }
     }
+
+    console.log(shippingData?.shippingFee);
 
     return (
         <>
@@ -166,9 +170,13 @@ const ProductViewPage = () => {
                 )}
             </header>
 
-            <main className='min-h-screen pt-12 text-[4vw] bg-gray-300'>
-                <section className='mb-[2%] bg-white'>
+            <main className='relative min-h-screen pt-12 text-[4vw] bg-gray-300'>
+                <div className='fixed bottom-0 w-full h-[8vh] pt-1.5 text-white font-bold text-center bg-white z-30'>
+                    <button className='w-[42%] p-2.5 rounded-l-full bg-gradient-to-r from-yellow-400 to-orange-500'>Add to cart</button>
+                    <button className='w-[42%] p-2.5 rounded-r-full bg-gradient-to-r from-red-600 to-orange-500'>Buy now</button>
+                </div>
 
+                <section className='mb-[2%] bg-white'>
                     <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
                         { displayImages() }
                         {productInfo.docs.wishedCount && (
@@ -204,11 +212,13 @@ const ProductViewPage = () => {
                                 <div className='h-[5vw] w-3/5 pl-2 mt-[1%] mb-2.5 rounded-lg bg-gray-300 animate-pulse'></div>
                             </>
                         )}
-                        <span className={`mr-2 relative text-gray-300 before:content-["★★★★★"] before:absolute before:w-[${starsPercentage}%] before:text-yellow-400 before:drop-shadow-md before:overflow-hidden`}>
-                            ★★★★★
-                        </span>
-                        <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{productInfo.docs.feedBackRating?.averageStar || "0.0"}</span>
-                        <span className='mr-2'>{`${productInfo.docs.lastest_volume || "loading"} orders`}</span>
+                        <div className={`${!productInfo.docs.feedBackRating.averageStar && 'blur-[1px]'}`}>
+                            <span className={`mr-2 relative text-gray-300 before:content-["★★★★★"] before:absolute before:w-[${starsPercentage}%] before:text-yellow-400 before:drop-shadow-md before:overflow-hidden`}>
+                                ★★★★★
+                            </span>
+                            <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{productInfo.docs.feedBackRating?.averageStar || "0.0"}</span>
+                            <span className='mr-2'>{`${productInfo.docs.lastest_volume || "loading"} orders`}</span>
+                        </div>
                         <button
                             className='w-full mt-4 py-3.5 border-t border-gray-300'
                             onClick={toggleSpecs}
@@ -227,6 +237,7 @@ const ProductViewPage = () => {
                         </button>
                     </div>
                 </section>
+
                 <section className='px-[3%] pt-[3%] bg-white'>
                     {productInfo.docs.metadata && (
                         <div className='mt-1 border-b border-gray-300'>
@@ -250,18 +261,23 @@ const ProductViewPage = () => {
                             </div>
                         </div>
                     )}
+
                     <div className='my-3'>
                         <span className='font-bold'>Delivery</span>
-                        <span className='float-right flex items-center gap-1'>
+                        <span className={`float-right flex items-center gap-1 ${!shippingData && 'blur-[1px]'}`}>
                             <FiMapPin className='inline-block' />
-                            {`To ${shippingData?.shipTo}`}
+
+                            {/* Update logic with user information - local storage */}
+
+                            {`To ${shippingData?.shipTo || ". . ."}`}
+
                         </span>
-                        <div className='mt-1.5 text-[3.5vw]'>
+                        <div className={`mt-1.5 text-[3.5vw] ${!shippingData && 'blur-[1px]'}`}>
                             <p className='font-medium'>
                                 Shipping: {feeShipping}
                             </p>
-                            <p>From {shippingData?.shipFrom} via {shippingData?.deliveryProviderName}</p>
-                            <p>Estimated delivery on {shippingData?.deliveryDate?.slice(0, 3) + " " + shippingData?.deliveryDate?.slice(-2)}</p>
+                            <p>From {shippingData?.shipFrom || ". . ."} via {shippingData?.deliveryProviderName || ". . ."}</p>
+                            <p>Estimated delivery {shippingData?.deliveryDate && `on ${shippingData?.deliveryDate?.slice(0, 3)} ${shippingData?.deliveryDate?.slice(-2)}`}</p>
                         </div>
                     </div>
                     <button className='w-full pt-3.5 pb-4 border-t text-left border-gray-300'>
