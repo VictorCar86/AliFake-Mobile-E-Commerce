@@ -1,27 +1,28 @@
 import skeletonImage from '../assets/images/skeleton.webp'
+import notfoundImage from '../assets/images/not_found.webp'
 import { createSlice } from "@reduxjs/toolkit";
 
 const missingProduct = "No product found in Aliexpress API, DB & Scrapping";
 
-const initialDocs = () => ({
+const initialDocs = {
     product_id: 0,
     product_small_image_urls: {
         string: [skeletonImage, skeletonImage],
         loading: true,
     },
     feedBackRating: {},
-})
+};
 
 export const sliceProductInfo = createSlice({
     name: 'productInfo',
     initialState: {
         fetching: false,
-        docs: initialDocs(),
+        docs: initialDocs,
     },
     reducers: {
         requestProductInfo: (state) => {
             state.fetching = true;
-            state.docs = initialDocs();
+            state.docs = initialDocs;
         },
         resultProductInfo: (state, action) => {
             const payload = action.payload;
@@ -29,7 +30,11 @@ export const sliceProductInfo = createSlice({
             state.fetching = false;
 
             if (payload.name?.includes(missingProduct)) {
-                state.docs = initialDocs();
+                state.docs = {
+                    product_small_image_urls: {
+                        string: [notfoundImage, notfoundImage]
+                    }
+                };
             } else {
                 state.docs = {...payload};
             }

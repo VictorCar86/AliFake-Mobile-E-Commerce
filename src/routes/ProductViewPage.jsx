@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
     FiChevronLeft,
     FiChevronRight,
@@ -52,16 +52,16 @@ const ProductViewPage = () => {
             }
         };
 
-        // dispatch( requestProductInfo() );
+        dispatch( requestProductInfo() );
 
-        // axios
-        //     .request(options)
-        //     .then((response) => {
-        //         console.log("fetchProductInfo", response.data);
-        //         dispatch( resultProductInfo(response.data) );
-        //     }).catch((error) => {
-        //         console.error(error);
-        //     });
+        axios
+            .request(options)
+            .then((response) => {
+                console.log("fetchProductInfo", response.data);
+                dispatch( resultProductInfo(response.data) );
+            }).catch((error) => {
+                console.error(error);
+            });
     }
 
     const [docHtml, setDocHtml] = useState("");
@@ -114,7 +114,6 @@ const ProductViewPage = () => {
                             <>Free Shipping</> :
                             <>{shippingData?.currency} {shippingData?.displayAmount}</>;
 
-
     const displayImages = () => {
         const imagesLocation = productInfo.docs.product_small_image_urls;
 
@@ -129,6 +128,25 @@ const ProductViewPage = () => {
             ));
         }
     }
+
+    const infiniteSectionGet = useRef(null);
+    const [showExtraButtons, setShowExtraButtons] = useState(true);
+
+    // Complete logic of height and buttons
+
+    const elementPosition = infiniteSectionGet.current;
+
+    console.log(elementPosition);
+
+    window.addEventListener('scroll', () => {
+        const scrollPosition = window.pageYOffset;
+
+        if (elementPosition <= scrollPosition) {
+            setShowExtraButtons(true);
+        } else {
+            setShowExtraButtons(false);
+        }
+    });
 
     return (
         <>
@@ -205,7 +223,7 @@ const ProductViewPage = () => {
                                 <div className='h-[5vw] w-3/5 pl-2 mt-[1%] mb-2.5 rounded-lg bg-gray-300 animate-pulse'></div>
                             </>
                         )}
-                        <div className={`${!productInfo.docs.feedBackRating.averageStar && 'blur-[1px]'}`}>
+                        <div className={`${!productInfo.docs.feedBackRating?.averageStar && 'blur-[1px]'}`}>
                             <span className={`mr-2 relative text-gray-300 before:content-["★★★★★"] before:absolute before:w-[${starsPercentage}%] before:text-yellow-400 before:drop-shadow-md before:overflow-hidden`}>
                                 ★★★★★
                             </span>
@@ -303,12 +321,11 @@ const ProductViewPage = () => {
                 {/* <div>
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => fetchProductInfo(pageInfo.id)}>product</button>
                     <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(state)}>state</button>
-                    <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(docHtml)}>html</button>
                 </div> */}
-                <InfiniteProducts />
+                <InfiniteProducts ref={infiniteSectionGet} />
             </main>
 
-            {!(viewChanges.specsModal || viewChanges.descModal) && (
+            {!(viewChanges.specsModal || viewChanges.descModal || showExtraButtons) && (
                 <div className='fixed bottom-0 w-full h-[8vh] pt-1.5 text-white font-bold text-center bg-white z-30'>
                     <button className='w-[42%] p-2.5 rounded-l-full bg-gradient-to-r from-yellow-400 to-orange-500'>
                         Add to cart
