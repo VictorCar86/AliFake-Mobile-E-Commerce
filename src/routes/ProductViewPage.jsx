@@ -52,16 +52,16 @@ const ProductViewPage = () => {
             }
         };
 
-        dispatch( requestProductInfo() );
+        // dispatch( requestProductInfo() );
 
-        axios
-            .request(options)
-            .then((response) => {
-                console.log("fetchProductInfo", response.data);
-                dispatch( resultProductInfo(response.data) );
-            }).catch((error) => {
-                console.error(error);
-            });
+        // axios
+        //     .request(options)
+        //     .then((response) => {
+        //         console.log("fetchProductInfo", response.data);
+        //         dispatch( resultProductInfo(response.data) );
+        //     }).catch((error) => {
+        //         console.error(error);
+        //     });
     }
 
     const [docHtml, setDocHtml] = useState("");
@@ -130,8 +130,6 @@ const ProductViewPage = () => {
         }
     }
 
-    console.log(shippingData?.shippingFee);
-
     return (
         <>
             <header className='fixed w-full bg-white shadow-sm z-10'>
@@ -171,11 +169,6 @@ const ProductViewPage = () => {
             </header>
 
             <main className='relative min-h-screen pt-12 text-[4vw] bg-gray-300'>
-                <div className='fixed bottom-0 w-full h-[8vh] pt-1.5 text-white font-bold text-center bg-white z-30'>
-                    <button className='w-[42%] p-2.5 rounded-l-full bg-gradient-to-r from-yellow-400 to-orange-500'>Add to cart</button>
-                    <button className='w-[42%] p-2.5 rounded-r-full bg-gradient-to-r from-red-600 to-orange-500'>Buy now</button>
-                </div>
-
                 <section className='mb-[2%] bg-white'>
                     <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
                         { displayImages() }
@@ -274,7 +267,7 @@ const ProductViewPage = () => {
                         </span>
                         <div className={`mt-1.5 text-[3.5vw] ${!shippingData && 'blur-[1px]'}`}>
                             <p className='font-medium'>
-                                Shipping: {feeShipping}
+                                Shipping: {shippingData?.shippingFee ? feeShipping : '. . . '}
                             </p>
                             <p>From {shippingData?.shipFrom || ". . ."} via {shippingData?.deliveryProviderName || ". . ."}</p>
                             <p>Estimated delivery {shippingData?.deliveryDate && `on ${shippingData?.deliveryDate?.slice(0, 3)} ${shippingData?.deliveryDate?.slice(-2)}`}</p>
@@ -286,12 +279,13 @@ const ProductViewPage = () => {
                         <FiChevronRight className='inline-block w-[6%] h-[6%] float-right opacity-50' />
                     </button>
                 </section>
+
                 <section className='p-[3%] text-white bg-black'>
                     <div className='absolute h-max w-max rounded-full bg-white'>
                         <FiShoppingBag className='w-[10vw] h-[10vw] m-[0.6vw] px-[12%] rounded-full border border-gray-300 text-gray-400' />
                     </div>
                     <div className='w-2/3 mx-auto'>
-                        <p className='font-bold'>{productInfo.docs.metadata?.storeModule.storeName}</p>
+                        <p className='font-bold'>{productInfo.docs.metadata?.storeModule.storeName || ". . ."}</p>
                         <div className='grid grid-rows-2 grid-flow-col gap-x-[16%] my-2 text-[3.5vw]'>
                             <p className='font-bold'>{productInfo.docs.metadata?.storeModule.positiveRate}</p>
                             <p>Positive Feedback</p>
@@ -314,6 +308,17 @@ const ProductViewPage = () => {
                 <InfiniteProducts />
             </main>
 
+            {!(viewChanges.specsModal || viewChanges.descModal) && (
+                <div className='fixed bottom-0 w-full h-[8vh] pt-1.5 text-white font-bold text-center bg-white z-30'>
+                    <button className='w-[42%] p-2.5 rounded-l-full bg-gradient-to-r from-yellow-400 to-orange-500'>
+                        Add to cart
+                    </button>
+                    <button className='w-[42%] p-2.5 rounded-r-full bg-gradient-to-r from-red-600 to-orange-500'>
+                        Buy now
+                    </button>
+                </div>
+            )}
+
             <InfoModal title="Product Details" state={viewChanges.specsModal} toggle={toggleSpecs} >
                 <table className='w-full h-max'>
                     <tbody>
@@ -326,12 +331,12 @@ const ProductViewPage = () => {
                     </tbody>
                 </table>
             </InfoModal>
+
             <InfoModal title="Description" state={viewChanges.descModal} toggle={toggleDesc} >
                 <React.Fragment>
                     <Markup content={docHtml} />
                 </React.Fragment>
             </InfoModal>
-
         </>
     )
 }

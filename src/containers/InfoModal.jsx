@@ -1,16 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FiX } from 'react-icons/fi';
 import spinnerIcon from '../assets/images/spinnerIcon.webp'
 
 const InfoModal = ({ children, title, state, toggle }) => {
+
+    const [zIndex, setZIndex] = useState("z-20");
+
+    // console.log(state, zIndex.current)
 
     if (state){
         document.getElementsByTagName('body')[0].style.overflow = "hidden";
     }
 
     const closeLogic = () => {
+        setTimeout(() => {
+            setZIndex("-z-20");
+            console.log("loading?", zIndex)
+        }
+        , 400)
         document.getElementsByTagName('body')[0].style.overflow = "visible";
-        toggle()
+        toggle();
     }
 
     const propsDirectory = children.props.children.props;
@@ -18,8 +27,8 @@ const InfoModal = ({ children, title, state, toggle }) => {
     // console.log(children, title);
 
     return (
-        <div className={`${state ? "bg-gray-700/50" : "bg-transparent invisible"} transition-colors duration-200 min-h-screen w-full fixed top-0 text-[4vw] z-20`}>
-            <div className={`${state ? "" : "translate-y-full"} transition-transform duration-500 h-3/4 w-full px-5 pb-5 absolute bottom-0 rounded-t-xl bg-white overflow-y-scroll overflow-x-hidden`}>
+        <div className={`${state ? "bg-gray-700/50" : "bg-transparent"} ${zIndex} transition-colors duration-500 min-h-screen w-full fixed top-0 text-[4vw]`}>
+            <div className={`${!state && "translate-y-full"} transition-transform duration-500 h-3/4 w-full px-5 pb-5 absolute bottom-0 rounded-t-xl bg-white overflow-y-scroll overflow-x-hidden`}>
                 <div className='fixed left-0 right-0 rounded-t-xl bg-white'>
                     <p className='mt-2.5 mb-3 text-center font-medium'>{title}</p>
                     <button
