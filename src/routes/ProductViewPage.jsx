@@ -140,16 +140,26 @@ const ProductViewPage = () => {
     const headerRef = useRef(null);
     const infiniteSectionRef = useRef(null);
     const [showExtraButtons, setShowExtraButtons] = useState(true);
-
-    const headerHeight = headerRef.current?.clientHeight;
-    const scrollPosition = window.pageYOffset + headerHeight;
-    const elementPosition = infiniteSectionRef.current?.offsetTop;
+    // const showExtraButtons = useRef(null);
 
     window.addEventListener('scroll', () => {
+        const headerHeight = headerRef.current?.clientHeight;
+        const scrollPosition = window.pageYOffset + headerHeight;
+        const elementPosition = infiniteSectionRef.current?.offsetTop;
+
+        // console.log(elementPosition, scrollPosition);
         if (elementPosition <= scrollPosition) {
-            setShowExtraButtons(true);
+            if (!showExtraButtons) {
+                setShowExtraButtons(true);
+                // showExtraButtons.current = true;
+                console.log('true');
+            }
         } else {
-            setShowExtraButtons(false);
+            if (showExtraButtons) {
+                setShowExtraButtons(false);
+                // showExtraButtons.current = false;
+                console.log('false');
+            }
         }
     });
 
@@ -159,22 +169,22 @@ const ProductViewPage = () => {
                 {viewChanges.navbarVanilla === true && (
                     <nav className='h-12 flex justify-between items-center'>
                         <div className='flex items-center'>
-                            <button type='button' className='inline-block mx-4' onClick={() => navigate(-1)}>
+                            <button type='button' className='inline-block mx-4' onClick={() => navigate(-1)} aria-label="Go back">
                                 <FiChevronLeft className='scale-[2]'/>
                             </button>
-                            <Link className='inline-block' to={"/"}>
+                            <Link className='inline-block' to={"/"} aria-label="Go to home page">
                                 <FiHome className='inline-block h-6 w-6 mr-4' />
                                 <img className='inline-block h-1/2 w-24' src={AlifakelogoImg} alt="Alifake banner" />
                             </Link>
                         </div>
                         <div className='flex gap-5 mr-4'>
-                            <button onClick={toggleNavbar} type='button'>
+                            <button onClick={toggleNavbar} type='button' aria-label="Search for a product">
                                 <FiSearch className='h-6 w-6' />
                             </button>
-                            <Link to={"/cart"}>
+                            <Link to={"/cart"} aria-label="Go to your shopping cart">
                                 <FiShoppingCart className='h-6 w-6' />
                             </Link>
-                            <button type='button' onClick={toggleOptions}>
+                            <button type='button' onClick={toggleOptions} aria-label="Show more options">
                                 <FiMoreHorizontal className='h-6 w-6' />
                             </button>
                         </div>
@@ -194,19 +204,19 @@ const ProductViewPage = () => {
                     <nav className='absolute top-12 right-0 w-max p-3 rounded-xl bg-white shadow-2xl'>
                         <ul className='grid gap-2'>
                             <li>
-                                <Link to={"/categories"}>
+                                <Link to={"/categories"} aria-label="Go to categories">
                                     <FiGrid className='inline-block max-w-[26px] w-[6vw] h-full mr-2' />
                                     <span>Categories</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={"/cart"}>
+                                <Link to={"/account"} aria-label="Go to your wish list">
                                     <FiHeart className='inline-block max-w-[26px] w-[6vw] h-full mr-2' />
                                     <span>Wish List</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to={"/account"}>
+                                <Link to={"/account"} aria-label="Go to your account">
                                     <FiUser className='inline-block max-w-[26px] w-[6vw] h-full mr-2' />
                                     <span>Account</span>
                                 </Link>

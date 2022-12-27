@@ -5,6 +5,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const missingProduct = "No product found in Aliexpress API, DB & Scrapping";
 
 const initialDocs = {
+    product_title: 'Loading image...',
     product_id: 0,
     product_small_image_urls: {
         string: [skeletonImage, skeletonImage],

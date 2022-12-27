@@ -16,7 +16,7 @@ const MainNavbar = () => {
 
   return (
     <nav className={`${pathname.includes('product') ? "invisible" : "visible"} w-full max-w-md rounded-t-lg pt-1.5 fixed bottom-0 left-1/2 -translate-x-1/2 z-10 bg-gray-200`}>
-        <ul className='flex justify-around gap-3' >
+        <ul className='flex justify-around gap-3 px-2.5 font-medium' >
             <li className={`${pathname === "/" ? "text-red-600" : ""}`} onClick={avaliableScroll}>
               <Link to={"/"}>
                 <FiHome className={svgStyles} />

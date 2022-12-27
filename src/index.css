@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    body {
+        -webkit-tap-highlight-color: #c6c6c696;
+    }
+}
+
 /* @layer components {
 } */
 
