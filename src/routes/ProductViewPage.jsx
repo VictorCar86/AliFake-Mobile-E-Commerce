@@ -2,12 +2,15 @@ import React, { useEffect, useRef, useState } from 'react'
 import {
     FiChevronLeft,
     FiChevronRight,
+    FiGrid,
+    FiHeart,
     FiHome,
     FiMapPin,
     FiMoreHorizontal,
     FiSearch,
     FiShoppingBag,
     FiShoppingCart,
+    FiUser,
 } from 'react-icons/fi';
 import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import { Markup } from 'interweave';
@@ -95,6 +98,8 @@ const ProductViewPage = () => {
 
     const [viewChanges, setViewChanges] = useState(initialViewChanges);
 
+    const toggleOptions = () => setViewChanges({...viewChanges, extraOptions: !viewChanges.extraOptions});
+
     const toggleNavbar = () => setViewChanges({...viewChanges, navbarVanilla: !viewChanges.navbarVanilla});
 
     const toggleSpecs = () => setViewChanges({...viewChanges, specsModal: !viewChanges.specsModal});
@@ -129,18 +134,18 @@ const ProductViewPage = () => {
         }
     }
 
-    const infiniteSectionGet = useRef(null);
+
+    // Show and disappear buttons
+
+    const headerRef = useRef(null);
+    const infiniteSectionRef = useRef(null);
     const [showExtraButtons, setShowExtraButtons] = useState(true);
 
-    // Complete logic of height and buttons
-
-    const elementPosition = infiniteSectionGet.current;
-
-    console.log(elementPosition);
+    const headerHeight = headerRef.current?.clientHeight;
+    const scrollPosition = window.pageYOffset + headerHeight;
+    const elementPosition = infiniteSectionRef.current?.offsetTop;
 
     window.addEventListener('scroll', () => {
-        const scrollPosition = window.pageYOffset;
-
         if (elementPosition <= scrollPosition) {
             setShowExtraButtons(true);
         } else {
@@ -150,7 +155,7 @@ const ProductViewPage = () => {
 
     return (
         <>
-            <header className='fixed w-full bg-white shadow-sm z-10'>
+            <header className='fixed w-full bg-white shadow-sm z-10' ref={headerRef}>
                 {viewChanges.navbarVanilla === true && (
                     <nav className='h-12 flex justify-between items-center'>
                         <div className='flex items-center'>
@@ -169,7 +174,7 @@ const ProductViewPage = () => {
                             <Link to={"/cart"}>
                                 <FiShoppingCart className='h-6 w-6' />
                             </Link>
-                            <button type='button'>
+                            <button type='button' onClick={toggleOptions}>
                                 <FiMoreHorizontal className='h-6 w-6' />
                             </button>
                         </div>
@@ -184,6 +189,31 @@ const ProductViewPage = () => {
                         <Searcher />
                     </nav>
                 )}
+
+                <div className={`absolute h-screen w-full top-0 left-0 ${viewChanges.extraOptions ? "scale-100" : "scale-0 -translate-y-[43vh] translate-x-[50vw]"} transition`} onClick={toggleOptions}>
+                    <nav className='absolute top-12 right-0 w-max p-3 rounded-xl bg-white shadow-2xl'>
+                        <ul className='grid gap-2'>
+                            <li>
+                                <Link to={"/categories"}>
+                                    <FiGrid className='inline-block max-w-[26px] w-[6vw] h-full mr-2' />
+                                    <span>Categories</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={"/cart"}>
+                                    <FiHeart className='inline-block max-w-[26px] w-[6vw] h-full mr-2' />
+                                    <span>Wish List</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to={"/account"}>
+                                    <FiUser className='inline-block max-w-[26px] w-[6vw] h-full mr-2' />
+                                    <span>Account</span>
+                                </Link>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             </header>
 
             <main className='relative min-h-screen pt-12 text-[4vw] bg-gray-300'>
@@ -318,11 +348,11 @@ const ProductViewPage = () => {
                         </a>
                     </div>
                 </section>
-                {/* <div>
-                    <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => fetchProductInfo(pageInfo.id)}>product</button>
-                    <button className='mr-2 px-2 bg-red-600 text-white' type='button' onClick={() => console.log(state)}>state</button>
-                </div> */}
-                <InfiniteProducts ref={infiniteSectionGet} />
+
+                <section className='h-full w-full' ref={infiniteSectionRef}>
+                    <InfiniteProducts />
+                </section>
+
             </main>
 
             {!(viewChanges.specsModal || viewChanges.descModal || showExtraButtons) && (
