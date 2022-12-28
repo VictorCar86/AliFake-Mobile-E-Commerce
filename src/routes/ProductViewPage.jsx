@@ -21,6 +21,7 @@ import InfiniteProducts from '../containers/InfiniteProducts';
 import HeartButton from '../components/HeartButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { productInfoState, requestProductInfo, resultProductInfo } from '../utils/sliceProductInfo';
+import BackButton from '../components/BackButton';
 const axios = require("axios");
 
 const initialViewChanges = {
@@ -169,9 +170,10 @@ const ProductViewPage = () => {
                 {viewChanges.navbarVanilla === true && (
                     <nav className='h-12 flex justify-between items-center'>
                         <div className='flex items-center'>
-                            <button type='button' className='inline-block mx-4' onClick={() => navigate(-1)} aria-label="Go back">
+                            {/* <button type='button' className='inline-block mx-4' onClick={() => navigate(-1)} aria-label="Go back">
                                 <FiChevronLeft className='scale-[2]'/>
-                            </button>
+                            </button> */}
+                            <BackButton />
                             <Link className='inline-block' to={"/"} aria-label="Go to home page">
                                 <FiHome className='inline-block h-6 w-6 mr-4' />
                                 <img className='inline-block h-1/2 w-24' src={AlifakelogoImg} alt="Alifake banner" />
@@ -359,7 +361,7 @@ const ProductViewPage = () => {
                     </div>
                 </section>
 
-                <section className='h-full w-full' ref={infiniteSectionRef}>
+                <section className='h-full w-full bg-white' ref={infiniteSectionRef}>
                     <InfiniteProducts />
                 </section>
 
