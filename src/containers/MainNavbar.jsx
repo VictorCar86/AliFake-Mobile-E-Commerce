@@ -17,25 +17,25 @@ const MainNavbar = () => {
   return (
     <nav className={`${pathname.includes('product') ? "invisible" : "visible"} w-full max-w-md rounded-t-lg pt-1.5 fixed bottom-0 left-1/2 -translate-x-1/2 z-10 bg-gray-200`}>
         <ul className='flex justify-around gap-3 px-2.5 font-medium' >
-            <li className={`${pathname === "/" ? "text-red-600" : ""}`} onClick={avaliableScroll}>
+            <li className={`${pathname === "/" ? "text-red-700" : ""}`} onClick={avaliableScroll}>
               <Link to={"/"}>
                 <FiHome className={svgStyles} />
                 <span>Home</span>
               </Link>
             </li>
-            <li className={`${pathname === "/categories" ? "text-red-600" : ""}`}>
+            <li className={`${pathname === "/categories" ? "text-red-700" : ""}`}>
               <Link to={"/categories"}>
                 <FiGrid className={svgStyles} />
                 <span>Categories</span>
               </Link>
             </li>
-            <li className={`${pathname === "/cart" ? "text-red-600" : ""}`}>
+            <li className={`${pathname === "/cart" ? "text-red-700" : ""}`}>
               <Link to={"/cart"}>
                 <FiShoppingCart className={svgStyles} />
                 <span>Cart</span>
               </Link>
             </li>
-            <li className={`${pathname === "/account" ? "text-red-600" : ""}`}>
+            <li className={`${pathname === "/account" ? "text-red-700" : ""}`}>
               <Link to={"/account"}>
                 <FiUser className={svgStyles} />
                 <span>Account</span>

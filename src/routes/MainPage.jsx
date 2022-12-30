@@ -28,7 +28,7 @@ const MainPage = () => {
       <main>
         <section className='px-3 pt-[108px]'>
           <p className='my-[1.8vh] text-[4.8vw] font-medium'>Most recent offers</p>
-          <ul className='h-full max-h-[450px] flex gap-3 overflow-x-scroll overflow-y-hidden'>
+          <ul className='h-full max-h-[450px] flex gap-1.5 overflow-x-scroll overflow-y-hidden'>
             {!!skeletonLoading && (
               <>
                 <li>

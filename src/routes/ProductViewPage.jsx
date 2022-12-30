@@ -1,40 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react'
-import {
-    FiChevronLeft,
-    FiChevronRight,
-    FiGrid,
-    FiHeart,
-    FiHome,
-    FiMapPin,
-    FiMoreHorizontal,
-    FiSearch,
-    FiShoppingBag,
-    FiShoppingCart,
-    FiUser,
-} from 'react-icons/fi';
-import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
+import { FiChevronRight, FiMapPin, FiShoppingBag } from 'react-icons/fi';
+import { useParams, useLocation } from 'react-router-dom';
 import { Markup } from 'interweave';
-import AlifakelogoImg from '../assets/images/alifake_logo.webp';
-import Searcher from '../components/Searcher';
 import InfoModal from '../containers/InfoModal';
 import InfiniteProducts from '../containers/InfiniteProducts';
 import HeartButton from '../components/HeartButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { productInfoState, requestProductInfo, resultProductInfo } from '../utils/sliceProductInfo';
-import BackButton from '../components/BackButton';
+import GenericNavbar from '../containers/GenericNavbar';
 const axios = require("axios");
-
-const initialViewChanges = {
-    navbarVanilla: true,
-    specsModal: false,
-    descModal: false,
-};
 
 const ProductViewPage = () => {
     const productInfo = useSelector(productInfoState);
     const dispatch = useDispatch();
     const pageInfo = useParams();
-    const navigate = useNavigate();
     const { pathname } = useLocation();
 
     const fetchProductInfo = (productId = 0) => {
@@ -61,9 +40,10 @@ const ProductViewPage = () => {
         axios
             .request(options)
             .then((response) => {
-                console.log("fetchProductInfo", response.data);
+                // console.log("fetchProductInfo", response.data);
                 dispatch( resultProductInfo(response.data) );
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 console.error(error);
             });
     }
@@ -97,15 +77,12 @@ const ProductViewPage = () => {
             .catch(err => console.error(err));
     }
 
-    const [viewChanges, setViewChanges] = useState(initialViewChanges);
 
-    const toggleOptions = () => setViewChanges({...viewChanges, extraOptions: !viewChanges.extraOptions});
+    const [specsModal, setSpecsModal] = useState(false);
+    const [descModal, setDescModal] = useState(false);
 
-    const toggleNavbar = () => setViewChanges({...viewChanges, navbarVanilla: !viewChanges.navbarVanilla});
-
-    const toggleSpecs = () => setViewChanges({...viewChanges, specsModal: !viewChanges.specsModal});
-
-    const toggleDesc = () => setViewChanges({...viewChanges, descModal: !viewChanges.descModal});
+    const toggleSpecs = () => setSpecsModal(prev => !prev);
+    const toggleDesc = () => setDescModal(prev => !prev);
 
 
     const starsPercentage = ((productInfo.docs.feedBackRating?.averageStar / 5) * 100) || 0;
@@ -141,7 +118,6 @@ const ProductViewPage = () => {
     const headerRef = useRef(null);
     const infiniteSectionRef = useRef(null);
     const [showExtraButtons, setShowExtraButtons] = useState(true);
-    // const showExtraButtons = useRef(null);
 
     window.addEventListener('scroll', () => {
         const headerHeight = headerRef.current?.clientHeight;
@@ -152,81 +128,17 @@ const ProductViewPage = () => {
         if (elementPosition <= scrollPosition) {
             if (!showExtraButtons) {
                 setShowExtraButtons(true);
-                // showExtraButtons.current = true;
-                console.log('true');
             }
         } else {
             if (showExtraButtons) {
                 setShowExtraButtons(false);
-                // showExtraButtons.current = false;
-                console.log('false');
             }
         }
     });
 
     return (
         <>
-            <header className='fixed w-full bg-white shadow-sm z-10' ref={headerRef}>
-                {viewChanges.navbarVanilla === true && (
-                    <nav className='h-12 flex justify-between items-center'>
-                        <div className='flex items-center'>
-                            {/* <button type='button' className='inline-block mx-4' onClick={() => navigate(-1)} aria-label="Go back">
-                                <FiChevronLeft className='scale-[2]'/>
-                            </button> */}
-                            <BackButton />
-                            <Link className='inline-block' to={"/"} aria-label="Go to home page">
-                                <FiHome className='inline-block h-6 w-6 mr-4' />
-                                <img className='inline-block h-1/2 w-24' src={AlifakelogoImg} alt="Alifake banner" />
-                            </Link>
-                        </div>
-                        <div className='flex gap-5 mr-4'>
-                            <button onClick={toggleNavbar} type='button' aria-label="Search for a product">
-                                <FiSearch className='h-6 w-6' />
-                            </button>
-                            <Link to={"/cart"} aria-label="Go to your shopping cart">
-                                <FiShoppingCart className='h-6 w-6' />
-                            </Link>
-                            <button type='button' onClick={toggleOptions} aria-label="Show more options">
-                                <FiMoreHorizontal className='h-6 w-6' />
-                            </button>
-                        </div>
-                    </nav>
-                )}
-
-                {viewChanges.navbarVanilla === false && (
-                    <nav className='relative h-12 flex justify-center items-center'>
-                        <button type='button' className='inline-block mx-4 absolute left-0 top-1/3' onClick={toggleNavbar}>
-                            <FiChevronLeft className='scale-[2]'/>
-                        </button>
-                        <Searcher />
-                    </nav>
-                )}
-
-                <div className={`absolute h-screen w-full top-0 left-0 ${viewChanges.extraOptions ? "scale-100" : "scale-0 -translate-y-[43vh] translate-x-[50vw]"} transition`} onClick={toggleOptions}>
-                    <nav className='absolute top-12 right-0 w-max p-3 rounded-xl bg-white shadow-2xl'>
-                        <ul className='grid gap-2'>
-                            <li>
-                                <Link to={"/categories"} aria-label="Go to categories">
-                                    <FiGrid className='inline-block max-w-[26px] w-[6vw] h-full mr-2' />
-                                    <span>Categories</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={"/account"} aria-label="Go to your wish list">
-                                    <FiHeart className='inline-block max-w-[26px] w-[6vw] h-full mr-2' />
-                                    <span>Wish List</span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to={"/account"} aria-label="Go to your account">
-                                    <FiUser className='inline-block max-w-[26px] w-[6vw] h-full mr-2' />
-                                    <span>Account</span>
-                                </Link>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </header>
+            <GenericNavbar />
 
             <main className='relative min-h-screen pt-12 text-[4vw] bg-gray-300'>
                 <section className='mb-[2%] bg-white'>
@@ -367,7 +279,7 @@ const ProductViewPage = () => {
 
             </main>
 
-            {!(viewChanges.specsModal || viewChanges.descModal || showExtraButtons) && (
+            {!(specsModal || descModal || showExtraButtons) && (
                 <div className='fixed bottom-0 w-full h-[8vh] pt-1.5 text-white font-bold text-center bg-white z-30'>
                     <button className='w-[42%] p-2.5 rounded-l-full bg-gradient-to-r from-yellow-400 to-orange-500'>
                         Add to cart
@@ -378,7 +290,7 @@ const ProductViewPage = () => {
                 </div>
             )}
 
-            <InfoModal title="Product Details" state={viewChanges.specsModal} toggle={toggleSpecs} >
+            <InfoModal title="Product Details" state={specsModal} toggle={toggleSpecs} >
                 <table className='w-full h-max'>
                     <tbody>
                         {productInfo.docs.specs?.map((item, index) => (
@@ -391,7 +303,7 @@ const ProductViewPage = () => {
                 </table>
             </InfoModal>
 
-            <InfoModal title="Description" state={viewChanges.descModal} toggle={toggleDesc} >
+            <InfoModal title="Description" state={descModal} toggle={toggleDesc} >
                 <React.Fragment>
                     <Markup content={docHtml} />
                 </React.Fragment>
