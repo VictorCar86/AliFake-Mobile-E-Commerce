@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
     FiChevronLeft,
+    FiClock,
     FiGrid,
     FiHeart,
     FiHome,
@@ -75,9 +76,15 @@ const GenericNavbar = ({ headerRef = null }) => {
                             </Link>
                         </li>
                         <li>
-                            <Link to={"/account"} aria-label="Go to your wish list">
+                            <Link to={"/account/wishlist"} aria-label="Go to your wish list">
                                 <FiHeart className='inline-block max-w-[26px] w-[6vw] h-full mr-2' />
                                 <span>Wish List</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to={"/account/viewed"} aria-label="Go to viewed products">
+                                <FiClock className='inline-block max-w-[26px] w-[6vw] h-full mr-2' />
+                                <span>Viewed</span>
                             </Link>
                         </li>
                         <li>

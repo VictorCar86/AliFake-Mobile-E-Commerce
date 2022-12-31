@@ -7,6 +7,8 @@ const MainNavbar = () => {
   const svgStyles = "w-6 h-6 mx-auto";
 
   const { pathname } = useLocation();
+  const routeExceptions = ['/product', 'account/wishlist', 'account/viewed'];
+  const includeRoute = routeExceptions.some(route => pathname.includes(route));
 
   const avaliableScroll = () => {
     if (pathname === "/"){
@@ -15,7 +17,7 @@ const MainNavbar = () => {
   }
 
   return (
-    <nav className={`${pathname.includes('product') ? "invisible" : "visible"} w-full max-w-md rounded-t-lg pt-1.5 fixed bottom-0 left-1/2 -translate-x-1/2 z-10 bg-gray-200`}>
+    <nav className={`${includeRoute ? "hidden" : "block"} w-full max-w-md rounded-t-lg pt-1.5 fixed bottom-0 left-1/2 -translate-x-1/2 z-10 bg-gray-200`}>
         <ul className='flex justify-around gap-3 px-2.5 font-medium' >
             <li className={`${pathname === "/" ? "text-red-700" : ""}`} onClick={avaliableScroll}>
               <Link to={"/"}>

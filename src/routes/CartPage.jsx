@@ -6,10 +6,9 @@ import InfiniteProducts from '../containers/InfiniteProducts';
 import BackButton from '../components/BackButton';
 
 const CartPage = () => {
-  const backgroundStyles = "bg-gray-200/70";
   return (
     <>
-      <header className={`h-12 flex justify-between items-center ${backgroundStyles}`}>
+      <header className='h-[12.8vw] flex justify-between items-center bg-white'>
         <div className='flex'>
           {/* <FiChevronLeft className='inline-block w-[5vw] h-auto scale-150 opacity-75' /> */}
           <BackButton />
@@ -23,7 +22,7 @@ const CartPage = () => {
         </div>
       </header>
 
-      <main className={backgroundStyles}>
+      <main className='bg-gray-200/70'>
         <section className=''>
           <GiShoppingCart className='w-2/5 h-max mx-auto fill-gray-400/60' />
           <p className='pb-[6%] text-center text-gray-500 text-[4vw]'>No items added to cart yet</p>
