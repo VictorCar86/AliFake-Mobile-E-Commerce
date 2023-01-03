@@ -29,7 +29,7 @@ const AccountPage = () => {
   const displayOrderButtons = (optionsData) => {
     return optionsData.map((config, index) => (
       <li key={index}>
-        <button className='w-full h-full inline-grid' type='button' aria-label={config.title}>
+        <button className='w-full h-[22vw] inline-grid' type='button' aria-label={config.title}>
           {config.component}
           <span>{config.title}</span>
         </button>
