@@ -22,7 +22,7 @@ const App = () => {
           <Routes>
             <Route index element={<MainPage />} />
               <Route path="product/:id" element={<ProductViewPage />} />
-            <Route path="categories" element={<CategoriesPage />} />
+            {/* <Route path="categories" element={<CategoriesPage />} /> */}
             <Route path="cart" element={<CartPage />} />
             <Route path="account" element={<AccountPage />} />
               <Route path="account/wishlist" element={<WishListPage />} />

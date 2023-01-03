@@ -8,6 +8,7 @@ import HeartButton from '../components/HeartButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { productInfoState, requestProductInfo, resultProductInfo } from '../utils/sliceProductInfo';
 import GenericNavbar from '../containers/GenericNavbar';
+import NotFound from '../assets/images/not_found.webp';
 const axios = require("axios");
 
 const ProductViewPage = () => {
@@ -15,6 +16,9 @@ const ProductViewPage = () => {
     const dispatch = useDispatch();
     const pageInfo = useParams();
     const { pathname } = useLocation();
+
+    const [docHtml, setDocHtml] = useState("");
+    const [errorFetch, setErrorFetch] = useState(false);
 
     const fetchProductInfo = (productId = 0) => {
         const alreadyFetching = productInfo.fetching;
@@ -45,10 +49,9 @@ const ProductViewPage = () => {
             })
             .catch((error) => {
                 console.error(error);
+                setErrorFetch(true);
             });
     }
-
-    const [docHtml, setDocHtml] = useState("");
 
     useEffect(() => {
         if (pathname.includes(`/product/${pageInfo.id}`)){
@@ -103,8 +106,8 @@ const ProductViewPage = () => {
         if (imagesLocation) {
             return imagesLocation.string?.map((image, index) => (
                 <img
-                    className={`w-11/12 h-auto ${imagesLocation.string.length !== index+1 ? "snap-start" : "snap-end"} ${imagesLocation.loading && "animate-pulse"}`}
-                    src={image}
+                    className={`w-11/12 h-auto ${imagesLocation.string.length !== index+1 ? "snap-start" : "snap-end"} ${(imagesLocation.loading && !errorFetch) && "animate-pulse"}`}
+                    src={errorFetch ? NotFound : image}
                     alt={productInfo.docs.product_title}
                     key={index}
                 />
@@ -143,7 +146,9 @@ const ProductViewPage = () => {
             <main className='relative min-h-screen pt-12 text-[4vw] bg-gray-300'>
                 <section className='mb-[2%] bg-white'>
                     <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
+
                         { displayImages() }
+
                         {productInfo.docs.wishedCount && (
                             <HeartButton wishedCount={productInfo.docs.wishedCount} sticky="true" />
                         )}

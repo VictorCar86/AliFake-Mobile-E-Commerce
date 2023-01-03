@@ -27,8 +27,8 @@ const defaultButtonOptions = [
 const AccountPage = () => {
 
   const displayOrderButtons = (optionsData) => {
-    return optionsData.map(config => (
-      <li>
+    return optionsData.map((config, index) => (
+      <li key={index}>
         <button className='w-full h-full inline-grid' type='button' aria-label={config.title}>
           {config.component}
           <span>{config.title}</span>
@@ -41,9 +41,9 @@ const AccountPage = () => {
     <>
       <div className='h-screen overflow-hidden'>
         <header className='text-[4vw] bg-gray-100'>
-          <aside className='flex h-12'>
+          <nav className='flex items-center h-[12.8vw] w-full'>
             <BackButton />
-          </aside>
+          </nav>
 
           <div className='flex gap-[4%] px-3'>
             <IoPersonCircleSharp className='w-[16%] h-max rounded-full fill-gray-100 bg-gray-400/75 shadow-xl' />
@@ -72,14 +72,14 @@ const AccountPage = () => {
           </nav>
         </header>
         <main className='h-screen px-3 text-[4vw] bg-gray-100'>
-          <section className='p-3 pb-0 rounded-lg bg-white'>
+          <section className='h-min w-full p-3 pb-0 rounded-lg bg-white'>
             <span className='text-[4.8vw] font-medium'>Orders</span>
             <button className='float-right' type='button' aria-label='View all'>
               <span className='inline-block font-medium'>View all</span>
               <FiChevronRight className='inline-block h-full w-[5vw] ml-1 -translate-y-px opacity-25'/>
             </button>
 
-            <div className='mt-2 pt-5 pb-2.5 border-t border-b border-gray-200'>
+            <div className='h-min w-full mt-2 pt-5 pb-2.5 border-t border-b border-gray-200'>
               <ul className='grid grid-cols-4 text-center'>
 
               { displayOrderButtons(defaultButtonOptions) }

@@ -12,12 +12,16 @@ const InfiniteProducts = () => {
     const bestSalesData = useSelector(bestSalesState);
     const dispatch = useDispatch();
 
+    const [errorFetch, setErrorFetch] = useState(false);
     const [infiniteLoading, setInfiniteLoading] = useState(true);
     const [skeletonLoading, setSkeletonLoading] = useState(true);
 
     const scrollStopRef = useRef(null);
+    const useEffectFirstCall = useRef(false);
 
     const { pathname } = useLocation();
+    const routeExceptions = ['/', 'cart'];
+    const includeRoute = routeExceptions.some(route => pathname.includes(route));
 
     const renderProducts = (docs) => {
         if (docs.length !== 0){
@@ -63,6 +67,7 @@ const InfiniteProducts = () => {
                 // console.log("fetchBestSales", response.bestSalesData, bestSalesData);
             })
             .catch((error) => {
+                setErrorFetch(true);
                 setInfiniteLoading(false);
                 console.error(error);
             });
@@ -83,13 +88,16 @@ const InfiniteProducts = () => {
     }
 
     useEffect(() => {
-        if (infiniteLoading && !bestSalesData.fetching && bestSalesData.page === 0){
-            scrollPagination();
+        if (useEffectFirstCall.current !== true){
+            if (infiniteLoading && !bestSalesData.fetching && bestSalesData.page === 0){
+                scrollPagination();
+            }
         }
-    }, [])
+        return () => useEffectFirstCall.current = true;
+    }, []);
 
     useEffect(() => {
-        if (scrollStopRef.current !== null){
+        if (scrollStopRef.current !== null && !errorFetch){
             useIntersection(
                 () => {
                     scrollPagination();
@@ -100,35 +108,35 @@ const InfiniteProducts = () => {
     , [infiniteLoading]);
 
     return (
-        <section className={`table-cell w-full h-full px-3 ${!infiniteLoading && 'h-[calc(100%+48px)]'} ${pathname === '/' && 'pb-14'} text-base bg-transparent`}>
+        <section className={`table-cell w-full h-full px-3 ${!infiniteLoading && 'h-[calc(100%+48px)]'} ${includeRoute && 'pb-14'} text-base bg-transparent`}>
             {/* <button className='fixed top-[3%] z-30 bg-red-600 text-white' onClick={() => console.log(bestSalesData)}>BestSalesData</button> */}
-            <p className={`my-[1.8vh] text-lg  ${pathname !== '/' ? 'text-[4vw] font-bold' : 'text-[4.8vw] font-medium'}`}>More to love</p>
+            <p className={`my-[1.8vh] ${pathname !== '/' ? 'text-[4vw] font-bold' : 'text-[4.8vw] font-medium'}`}>More to love</p>
             <ul className='h-full w-full min-h-screen grid grid-cols-2 gap-1.5 overflow-hidden'>
             {!!skeletonLoading && (
                 <>
                     <li>
-                        <SkeletonPreviewProduct />
+                        <SkeletonPreviewProduct error={errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct />
+                        <SkeletonPreviewProduct error={errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct />
+                        <SkeletonPreviewProduct error={errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct />
+                        <SkeletonPreviewProduct error={errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct />
+                        <SkeletonPreviewProduct error={errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct />
+                        <SkeletonPreviewProduct error={errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct />
+                        <SkeletonPreviewProduct error={errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct />
+                        <SkeletonPreviewProduct error={errorFetch} />
                     </li>
                 </>
             )}
