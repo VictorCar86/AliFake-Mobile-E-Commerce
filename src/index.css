@@ -6,6 +6,11 @@
     body {
         -webkit-tap-highlight-color: #c6c6c696;
     }
+
+    #root {
+        margin: 0px auto;
+        max-width: 640px;
+    }
 }
 
 /* @layer components {

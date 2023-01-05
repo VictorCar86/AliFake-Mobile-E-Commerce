@@ -7,7 +7,7 @@ for (let index = 0; index < 101; index++) {
   safeWidth.push(`before:w-[${index}%]`)
 }
 
-const rotateXY = plugin(function ({ addUtilities }) {
+const rotateX = plugin(function ({ addUtilities }) {
   addUtilities({
     '.rotate-x-20': {
       transform: 'rotateX(20deg)',
@@ -30,6 +30,11 @@ const rotateXY = plugin(function ({ addUtilities }) {
     '.rotate-x-180': {
       transform: 'rotateX(180deg)',
     },
+  })
+});
+
+const rotateY = plugin(function ({ addUtilities }) {
+  addUtilities({
     '.rotate-y-20': {
       transform: 'rotateY(20deg)',
     },
@@ -60,7 +65,14 @@ module.exports = {
   safelist: safeWidth,
   theme: {
     extend: {
+      fontSize: {
+        'clamp-xs': 'clamp(0px, 3.2vw, 20px)',
+        'clamp-sm': 'clamp(0px, 3.73333vw, 24px)',
+        'clamp-base': 'clamp(0px, 4.26666vw, 27px)',
+        'clamp-lg': 'clamp(0px, 4.8vw, 30px)',
+        'clamp-xl': 'clamp(0px, 5.33333vw, 34px)',
+      }
     },
   },
-  plugins: [rotateXY],
+  plugins: [rotateX, rotateY],
 }

@@ -7,7 +7,7 @@ const BackButton = () => {
 
     return (
         <button type='button' className='inline-block mx-3' onClick={() => navigate(-1)} aria-label="Go back">
-            <FiChevronLeft className='w-[6.83vw] h-auto scale-125'/>
+            <FiChevronLeft className='w-[6.83vw] max-w-[43.703px] h-auto scale-125'/>
         </button>
     )
 }

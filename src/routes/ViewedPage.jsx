@@ -1,11 +1,11 @@
-import React from 'react'
-import CompleteModal from '../containers/CompleteModal'
+import React from 'react';
+import GenericPage from '../containers/GenericPage';
 
 const ViewedPage = () => {
   return (
-    <CompleteModal title='Viewed'>
+    <GenericPage title='Viewed'>
 
-    </CompleteModal>
+    </GenericPage>
   )
 }
 

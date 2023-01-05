@@ -1,12 +1,12 @@
 import React from 'react'
 import { FiShoppingCart } from 'react-icons/fi'
-import CompleteModal from '../containers/CompleteModal';
+import GenericPage from '../containers/GenericPage';
 
 const WishListPage = () => {
   return (
-    <CompleteModal title='Wish List' Icon={FiShoppingCart} linkTo="/cart">
+    <GenericPage title='Wish List' Icon={FiShoppingCart} linkTo="/cart">
 
-    </CompleteModal>
+    </GenericPage>
   )
 }
 

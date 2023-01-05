@@ -25,9 +25,9 @@ const MainPage = () => {
   return (
     <>
       <Header />
-      <main>
+      <main className='text-base'>
         <section className='px-3 pt-[108px]'>
-          <p className='my-[1.8vh] text-[4.8vw] font-medium'>Most recent offers</p>
+          <p className='my-[1.8vh] text-clamp-lg font-medium'>Most recent offers</p>
           <ul className='h-full max-h-[450px] flex gap-1.5 overflow-x-scroll overflow-y-hidden'>
             {!!skeletonLoading && (
               <>
@@ -48,7 +48,9 @@ const MainPage = () => {
             {/* {renderProducts(newOffersData)} */}
           </ul>
         </section>
+
         <InfiniteProducts />
+
       </main>
     </>
   )
