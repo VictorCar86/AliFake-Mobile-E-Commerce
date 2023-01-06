@@ -143,7 +143,7 @@ const ProductViewPage = () => {
         <>
             <GenericNavbar />
 
-            <main className='relative min-h-screen pt-12 text-[4vw] bg-gray-300'>
+            <main className='relative min-h-screen pt-[clamp(0px,12.8vw,81.906px);] text-clamp-base bg-gray-300'>
                 <section className='mb-[2%] bg-white'>
                     <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
 
@@ -175,11 +175,11 @@ const ProductViewPage = () => {
                         )}
                         {!productInfo.docs.sale_price && (
                             <>
-                                <div className='h-[6vw] w-4/5 pl-2 mt-[1%] rounded-lg bg-gray-300 animate-pulse'></div>
-                                <div className='h-[4.5vw] w-2/3 pl-2 mt-[2.75%] rounded-lg bg-gray-300 animate-pulse'></div>
-                                <div className='h-[5vw] w-full pl-2 mt-[4.6%] rounded-lg bg-gray-300 animate-pulse'></div>
-                                <div className='h-[5vw] w-11/12 pl-2 mt-[1%] rounded-lg bg-gray-300 animate-pulse'></div>
-                                <div className='h-[5vw] w-3/5 pl-2 mt-[1%] mb-2.5 rounded-lg bg-gray-300 animate-pulse'></div>
+                                <div className='max-h-[38.39px] h-[6vw] w-4/5 pl-2 mt-[1%] rounded-lg bg-gray-300 animate-pulse'></div>
+                                <div className='max-h-[28.8px] h-[4.5vw] w-2/3 pl-2 mt-[2.75%] rounded-lg bg-gray-300 animate-pulse'></div>
+                                <div className='max-h-[32px] h-[5vw] w-full pl-2 mt-[4.6%] rounded-lg bg-gray-300 animate-pulse'></div>
+                                <div className='max-h-[32px] h-[5vw] w-11/12 pl-2 mt-[1%] rounded-lg bg-gray-300 animate-pulse'></div>
+                                <div className='max-h-[32px] h-[5vw] w-3/5 pl-2 mt-[1%] mb-2.5 rounded-lg bg-gray-300 animate-pulse'></div>
                             </>
                         )}
                         <div className={`${!productInfo.docs.feedBackRating?.averageStar && 'blur-[1px]'}`}>
@@ -242,7 +242,7 @@ const ProductViewPage = () => {
                             {`To ${shippingData?.shipTo || ". . ."}`}
 
                         </span>
-                        <div className={`mt-1.5 text-[3.5vw] ${!shippingData && 'blur-[1px]'}`}>
+                        <div className={`mt-1.5 text-clamp-sm ${!shippingData && 'blur-[1px]'}`}>
                             <p className='font-medium'>
                                 Shipping: {shippingData?.shippingFee ? feeShipping : '. . . '}
                             </p>
@@ -257,20 +257,20 @@ const ProductViewPage = () => {
                     </button>
                 </section>
 
-                <section className='p-[3%] text-white bg-black'>
+                <section className='p-[3%] text-clamp-sm text-white bg-black'>
                     <div className='absolute h-max w-max rounded-full bg-white'>
-                        <FiShoppingBag className='w-[10vw] h-[10vw] m-[0.6vw] px-[12%] rounded-full border border-gray-300 text-gray-400' />
+                        <FiShoppingBag className='w-[10vw] h-[10vw] max-w-[64px] max-h-[64px] m-[clamp(0px,0.6vw,3.840px)] px-[12%] rounded-full border border-gray-300 text-gray-400' />
                     </div>
                     <div className='w-2/3 mx-auto'>
                         <p className='font-bold'>{productInfo.docs.metadata?.storeModule.storeName || ". . ."}</p>
-                        <div className='grid grid-rows-2 grid-flow-col gap-x-[16%] my-2 text-[3.5vw]'>
+                        <div className='grid grid-rows-2 grid-flow-col gap-x-[16%] my-2'>
                             <p className='font-bold'>{productInfo.docs.metadata?.storeModule.positiveRate}</p>
                             <p>Positive Feedback</p>
                             <p className='font-bold'>{productInfo.docs.metadata?.storeModule.countryCompleteName}</p>
                             <p>Country From</p>
                         </div>
                         <a
-                            className='relative left-1/2 -translate-x-1/2 inline-block w-[50vw] max-w-xs py-0.5 rounded-full text-[3.5vw] text-center text-black bg-white'
+                            className='relative left-1/2 -translate-x-1/2 inline-block w-[50vw] max-w-xs py-0.5 rounded-full text-center text-black bg-white'
                             href={productInfo.docs.metadata?.storeModule.storeURL}
                             aria-label={productInfo.docs.metadata?.storeModule.storeName}>
                             <span>Visit Store</span>
@@ -285,7 +285,7 @@ const ProductViewPage = () => {
             </main>
 
             {!(specsModal || descModal || showExtraButtons) && (
-                <div className='fixed bottom-0 w-full h-[8vh] pt-1.5 text-white font-bold text-center bg-white z-30'>
+                <div className='fixed bottom-0 w-full max-w-[640px] h-14 pt-1.5 text-white font-bold text-center bg-white z-30'>
                     <button className='w-[42%] p-2.5 rounded-l-full bg-gradient-to-r from-yellow-400 to-orange-500'>
                         Add to cart
                     </button>

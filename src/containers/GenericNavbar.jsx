@@ -15,11 +15,6 @@ import BackButton from '../components/BackButton';
 import Searcher from '../components/Searcher';
 import AlifakelogoImg from '../assets/images/alifake_logo.webp';
 
-const initial= {
-    navbarVanilla: true,
-    specsModal: false,
-    descModal: false,
-};
 
 const GenericNavbar = ({ headerRef = null }) => {
 
@@ -30,44 +25,42 @@ const GenericNavbar = ({ headerRef = null }) => {
     const toggleNavbar = () => setNavbarVanilla(prev => !prev);
 
     return (
-        <header className='fixed h-max w-full bg-white shadow-sm z-10' ref={headerRef}>
+        <header className='fixed h-max w-full max-w-[640px] bg-white shadow-sm z-10' ref={headerRef}>
             {navbarVanilla === true && (
-                <nav className='h-[12.8vw] w-full flex justify-between items-center'>
-                    <div className='flex items-center gap-[1vw]'>
-                        {/* <button type='button' className='inline-block mx-4' onClick={() => navigate(-1)} aria-label="Go back">
-                            <FiChevronLeft className='scale-[2]'/>
-                        </button> */}
+                <nav className='h-[12.8vw] max-h-[81.906px] w-full flex justify-between items-center'>
+                    <div className='flex items-center gap-[clamp(0px,1vw,6px)]'>
                         <BackButton />
                         <Link className='inline-block' to={"/"} aria-label="Go to home page">
-                            <FiHome className='inline-block h-min w-[5vw] mr-[5vw] scale-125' />
-                            <img className='inline-block h-min w-[26vw]' src={AlifakelogoImg} alt="Alifake banner" />
+                            <FiHome className='inline-block h-min w-[5vw] max-w-[32px] mr-[clamp(0px,5vw,32px)] scale-125' />
+                            <img className='inline-block h-min w-[26vw] max-w-[166px]' src={AlifakelogoImg} alt="Alifake banner" />
                         </Link>
                     </div>
-                    <div className='flex gap-[5vw] h-auto w-max mr-[4vw]'>
+                    <div className='flex gap-[clamp(0px,5vw,30px)] h-auto w-max mr-[4%]'>
                         <button onClick={toggleNavbar} type='button' aria-label="Search for a product">
-                            <FiSearch className='h-min w-[5vw] scale-125' />
+                            <FiSearch className='h-min w-[5vw] max-w-[32px] scale-125' />
                         </button>
                         <Link to={"/cart"} aria-label="Go to your shopping cart">
-                            <FiShoppingCart className='h-min w-[5vw] scale-125' />
+                            <FiShoppingCart className='h-min w-[5vw] max-w-[32px] scale-125' />
                         </Link>
                         <button type='button' onClick={toggleOptions} aria-label="Show more options">
-                            <FiMoreHorizontal className='h-min w-[5vw] scale-125' />
+                            <FiMoreHorizontal className='h-min w-[5vw] max-w-[32px] scale-125' />
                         </button>
                     </div>
                 </nav>
             )}
 
             {navbarVanilla === false && (
-                <nav className='relative h-[12.8vw] flex justify-start items-center'>
-                    <button type='button' className='inline-block mx-3' onClick={toggleNavbar}>
-                        <FiChevronLeft className='h-min w-[6.83vw] scale-125'/>
-                    </button>
+                <nav className='relative h-[12.8vw] max-h-[81.906px] flex justify-start items-center'>
+                    {/* <button type='button' className='inline-block mx-3' onClick={toggleNavbar}>
+                        <FiChevronLeft className='h-min w-[6.83vw] scale-125'/> 
+                    </button> */}
+                    <BackButton onClick={toggleNavbar} />
                     <Searcher />
                 </nav>
             )}
 
-            <div className={`absolute h-screen w-full top-0 left-0 ${extraOptions ? "scale-100" : "scale-0 -translate-y-[43vh] translate-x-[50vw]"} transition`} onClick={toggleOptions}>
-                <nav className='absolute top-[13vw] right-0 w-max p-3 rounded-xl bg-white shadow-2xl'>
+            <div className={`absolute h-screen w-full top-0 left-0 ${extraOptions ? "scale-100" : "scale-0 -translate-y-[45%] translate-x-[50%]"} transition`} onClick={toggleOptions}>
+                <nav className='absolute top-[clamp(0px,12.8vw,81.906px)] right-0 w-max p-3 rounded-xl bg-white shadow-2xl'>
                     <ul className='grid gap-2'>
                         <li>
                             <Link to={"/categories"} aria-label="Go to categories">
@@ -100,4 +93,4 @@ const GenericNavbar = ({ headerRef = null }) => {
     )
 }
 
-export default GenericNavbar
+export default GenericNavbar;

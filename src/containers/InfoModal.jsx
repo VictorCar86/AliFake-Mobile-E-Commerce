@@ -29,9 +29,9 @@ const InfoModal = ({ children, title, state, toggle }) => {
     const propsDirectory = children.props.children.props;
 
     return (
-        <div className={`${state ? " visible" : " invisible"} ${background} transition-colors duration-500 min-h-screen w-full fixed top-0 text-[4vw]`}>
-            <div className={`${animate} transition-transform h-3/4 w-full px-5 pb-5 absolute bottom-0 rounded-t-xl bg-white overflow-y-scroll overflow-x-hidden`}>
-                <div className='fixed left-0 right-0 rounded-t-xl bg-white'>
+        <div className={`${state ? " visible" : " invisible"} ${background} transition-colors duration-500 min-h-screen max-w-[640px] w-full fixed top-0 text-clamp-base`}>
+            <div className={`${animate} transition-transform h-3/4 w-full max-w-[640px] px-5 pb-5 absolute bottom-0 rounded-t-xl bg-white overflow-y-scroll overflow-x-hidden`}>
+                <div className='fixed h-auto w-full max-w-[640px] -ml-5 rounded-t-xl bg-white'>
                     <p className='mt-2.5 mb-3 text-center font-medium'>{title}</p>
                     <button
                         className='absolute top-0 right-4 h-full w-[5%]'
@@ -44,7 +44,7 @@ const InfoModal = ({ children, title, state, toggle }) => {
                 <section className='mt-[12%]'>
                     {propsDirectory.children || propsDirectory.content  ?
                         children :
-                        (<img className='h-auto w-[10vw] mt-[16%] mx-auto text-center animate-spin' src={spinnerIcon} alt="Loading content..." />)
+                        (<img className='h-auto w-[10vw] max-w-[64px] mt-[16%] mx-auto text-center animate-spin' src={spinnerIcon} alt="Loading content..." />)
                     }
                 </section>
             </div>

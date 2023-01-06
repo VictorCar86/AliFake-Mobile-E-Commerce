@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 import { Link } from 'react-router-dom';
-import BackButton from '../components/BackButton'
+import BackButton from '../components/BackButton';
 
 const GenericPage = ({ children, title = "", Icon = null, linkTo = "#" }) => {
   return (
@@ -14,7 +14,7 @@ const GenericPage = ({ children, title = "", Icon = null, linkTo = "#" }) => {
           </Link>
         )}
       </header>
-      <main className='h-[80vh] pt-[12.8vw]'>
+      <main className='h-screen pt-[12.8vw]'>
         { children }
       </main>
     </>
