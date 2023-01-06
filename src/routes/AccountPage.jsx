@@ -31,7 +31,7 @@ const AccountPage = () => {
   const displayOrderButtons = (optionsData) => {
     return optionsData.map((config, index) => (
       <li key={index}>
-        <button className='grid grid-rows-2 items-start w-full h-full' type='button' aria-label={config.title}>
+        <button className='flex flex-col justify-start items-center w-full h-full' type='button' aria-label={config.title}>
           {config.component}
           <span>{config.title}</span>
         </button>
@@ -84,7 +84,7 @@ const AccountPage = () => {
             </div>
 
             <div className='h-min w-full mt-2 pt-5 pb-2.5 border-t border-b border-gray-200'>
-              <ul className='grid grid-cols-4 mx-3 text-center'>
+              <ul className='grid grid-cols-4 grid-rows-1 mx-3 text-center'>
 
               { displayOrderButtons(defaultButtonOptions) }
 
