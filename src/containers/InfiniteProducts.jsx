@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { bestSalesState, requestBestSales, resultBestSales } from '../utils/sliceBestSales';
+import { bestSalesState, requestBestSales, resultBestSales, errorBestSales } from '../utils/sliceBestSales';
 import SkeletonPreviewProduct from '../components/SkeletonPreviewProduct';
 import useIntersection from '../hooks/useIntersection';
 import PreviewProduct from '../components/PreviewProduct';
@@ -12,7 +12,6 @@ const InfiniteProducts = () => {
     const bestSalesData = useSelector(bestSalesState);
     const dispatch = useDispatch();
 
-    const [errorFetch, setErrorFetch] = useState(false);
     const [infiniteLoading, setInfiniteLoading] = useState(true);
     const [skeletonLoading, setSkeletonLoading] = useState(true);
 
@@ -42,7 +41,7 @@ const InfiniteProducts = () => {
 
     const fetchBestSales = (pageNum = 1) => {
         const alreadyFetching = bestSalesData.fetching;
-        const envKey = process.env.NEWRAPIDAPI_KEY;
+        const envKey = process.env.WALMART_KEY;
 
         if (alreadyFetching || !envKey){
             return;
@@ -50,11 +49,11 @@ const InfiniteProducts = () => {
 
         const options = {
             method: 'GET',
-            url: 'https://magic-aliexpress1.p.rapidapi.com/api/bestSales/products',
-            params: {page: pageNum, priceMax: '30', priceMin: '5', sort: 'EVALUATE_RATE_ASC'},
+            url: 'https://walmart.p.rapidapi.com/products/v2/list',
+            params: {cat_id: '0', sort: 'best_seller', page: pageNum},
             headers: {
                 'X-RapidAPI-Key': envKey,
-                'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
+                'X-RapidAPI-Host': 'walmart.p.rapidapi.com'
             }
         };
 
@@ -64,14 +63,13 @@ const InfiniteProducts = () => {
             .then((response) => {
                 dispatch( resultBestSales(response.data) );
                 setInfiniteLoading(false);
-                // console.log("fetchBestSales", response.bestSalesData, bestSalesData);
             })
             .catch((error) => {
-                setErrorFetch(true);
+                dispatch( errorBestSales() );
                 setInfiniteLoading(false);
-                console.error(error);
+                // console.error(error);
             });
-    }
+    };
 
     const scrollPagination = () => {
         setInfiniteLoading(true);
@@ -97,7 +95,7 @@ const InfiniteProducts = () => {
     }, []);
 
     useEffect(() => {
-        if (scrollStopRef.current !== null && !errorFetch){
+        if (scrollStopRef.current !== null && !bestSalesData.errorFetch){
             useIntersection(
                 () => {
                     scrollPagination();
@@ -111,36 +109,37 @@ const InfiniteProducts = () => {
         <section className={`table-cell w-full ${!infiniteLoading ? 'h-[calc(100%+48px)]' : 'h-full'} px-3 ${includeRoute && 'pb-14'} text-base bg-transparent`}>
             {/* <button className='fixed top-[3%] z-30 bg-red-600 text-white' onClick={() => console.log(bestSalesData)}>BestSalesData</button> */}
             <p className={`my-[1.8vh] ${pathname !== '/' ? 'text-clamp-base font-bold' : 'text-clamp-lg font-medium'}`}>More to love</p>
+            {/* <button onClick={() => console.log(bestSalesData)}>state</button> */}
             <ul className='h-full w-full min-h-screen grid grid-cols-2 gap-1.5 overflow-hidden'>
             {!!skeletonLoading && (
                 <>
                     <li>
-                        <SkeletonPreviewProduct error={errorFetch} />
+                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct error={errorFetch} />
+                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct error={errorFetch} />
+                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct error={errorFetch} />
+                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct error={errorFetch} />
+                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct error={errorFetch} />
+                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct error={errorFetch} />
+                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
                     </li>
                     <li>
-                        <SkeletonPreviewProduct error={errorFetch} />
+                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
                     </li>
                 </>
             )}
-            {renderProducts(bestSalesData.docs)}
+            { renderProducts(bestSalesData.docs) }
             </ul>
             {infiniteLoading && (
                 <div className='w-full h-max py-4 text-center'>

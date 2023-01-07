@@ -6,7 +6,7 @@ import InfoModal from '../containers/InfoModal';
 import InfiniteProducts from '../containers/InfiniteProducts';
 import HeartButton from '../components/HeartButton';
 import { useDispatch, useSelector } from 'react-redux';
-import { productInfoState, requestProductInfo, resultProductInfo } from '../utils/sliceProductInfo';
+import { productInfoState, requestProductInfo, resultProductInfo, errorProductInfo } from '../utils/sliceProductInfo';
 import GenericNavbar from '../containers/GenericNavbar';
 import NotFound from '../assets/images/not_found.webp';
 const axios = require("axios");
@@ -18,24 +18,26 @@ const ProductViewPage = () => {
     const { pathname } = useLocation();
 
     const [docHtml, setDocHtml] = useState("");
-    const [errorFetch, setErrorFetch] = useState(false);
 
     const fetchProductInfo = (productId = 0) => {
         const alreadyFetching = productInfo.fetching;
-        const envKey = process.env.NEWRAPIDAPI_KEY;
+        const envKey = process.env.WALMART_KEY;
 
-        if (alreadyFetching || !envKey){
-            console.error('Your API Key is not valid or does not exist')
+        if (alreadyFetching){
+            return;
+        }
+        if (!envKey){
+            console.error('Your API Key is not valid or does not exist');
             return;
         }
 
         const options = {
             method: 'GET',
-            url: `https://magic-aliexpress1.p.rapidapi.com/api/product/${productId}`,
-            params: {lg: 'en', targetCurrency: 'USD'},
+            url: 'https://walmart.p.rapidapi.com/products/v3/get-details',
+            params: {usItemId: productId},
             headers: {
                 'X-RapidAPI-Key': envKey,
-                'X-RapidAPI-Host': 'magic-aliexpress1.p.rapidapi.com'
+                'X-RapidAPI-Host': 'walmart.p.rapidapi.com'
             }
         };
 
@@ -48,8 +50,8 @@ const ProductViewPage = () => {
                 dispatch( resultProductInfo(response.data) );
             })
             .catch((error) => {
+                dispatch( errorProductInfo() );
                 console.error(error);
-                setErrorFetch(true);
             });
     }
 
@@ -101,14 +103,14 @@ const ProductViewPage = () => {
                             <>{shippingData?.currency} {shippingData?.displayAmount}</>;
 
     const displayImages = () => {
-        const imagesLocation = productInfo.docs.product_small_image_urls;
+        const imagesLocation = productInfo.docs?.imageInfo?.allImages;
 
-        if (imagesLocation) {
-            return imagesLocation.string?.map((image, index) => (
+        if (imagesLocation){
+            return imagesLocation.map((image, index) => (
                 <img
-                    className={`w-11/12 h-auto ${imagesLocation.string.length !== index+1 ? "snap-start" : "snap-end"} ${(imagesLocation.loading && !errorFetch) && "animate-pulse"}`}
-                    src={errorFetch ? NotFound : image}
-                    alt={productInfo.docs.product_title}
+                    className={`w-11/12 h-auto ${imagesLocation.length !== index+1 ? "snap-start" : "snap-end"} ${(imagesLocation.loading && !productInfo.errorFetch) && "animate-pulse"}`}
+                    src={productInfo.errorFetch ? NotFound : image.url}
+                    alt={productInfo.docs.name}
                     key={index}
                 />
             ));
@@ -279,7 +281,9 @@ const ProductViewPage = () => {
                 </section>
 
                 <section className='h-full w-full bg-white' ref={infiniteSectionRef}>
+
                     <InfiniteProducts />
+
                 </section>
 
             </main>

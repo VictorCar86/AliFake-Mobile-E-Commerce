@@ -1,14 +1,11 @@
-import skeletonImage from '../assets/images/skeleton.webp'
-import notfoundImage from '../assets/images/not_found.webp'
+import skeletonImage from '../assets/images/skeleton.webp';
 import { createSlice } from "@reduxjs/toolkit";
 
-const missingProduct = "No product found in Aliexpress API, DB & Scrapping";
-
 const initialDocs = {
-    product_title: 'Loading image...',
-    product_id: 0,
-    product_small_image_urls: {
-        string: [skeletonImage, skeletonImage],
+    name: 'Loading image...',
+    usItemId: 0,
+    imagesInfo: {
+        allImages: [{url: skeletonImage}, {url: skeletonImage}],
         loading: true,
     },
     feedBackRating: {},
@@ -18,7 +15,10 @@ export const sliceProductInfo = createSlice({
     name: 'productInfo',
     initialState: {
         fetching: false,
+        errorFetch: false,
         docs: initialDocs,
+        idml: undefined,
+        reviews: undefined,
     },
     reducers: {
         requestProductInfo: (state) => {
@@ -26,24 +26,22 @@ export const sliceProductInfo = createSlice({
             state.docs = initialDocs;
         },
         resultProductInfo: (state, action) => {
-            const payload = action.payload;
+            const completeData = action.payload.data;
+
+            console.log(completeData);
 
             state.fetching = false;
-
-            if (payload.name?.includes(missingProduct)) {
-                state.docs = {
-                    product_small_image_urls: {
-                        string: [notfoundImage, notfoundImage]
-                    }
-                };
-            } else {
-                state.docs = {...payload};
-            }
+            state.docs = completeData.product;
+            state.idml = completeData.idml;
+            state.reviews = completeData.reviews;
+        },
+        errorProductInfo: (state) => {
+            state.errorFetch = true;
         },
     }
 })
 
 export const productInfoState = (state) => state.sliceProductInfo;
-export const { requestProductInfo, resultProductInfo } = sliceProductInfo.actions;
+export const { requestProductInfo, resultProductInfo, errorProductInfo } = sliceProductInfo.actions;
 
 export default sliceProductInfo.reducer;

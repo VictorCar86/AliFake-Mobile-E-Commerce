@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const uniqueObjectsReducer = (accumulator, currentValue) => {
     const existingObject = accumulator.find(
-      (obj) => obj.product_id === currentValue.product_id
+      (obj) => obj.id === currentValue.id
     );
 
     if (!existingObject) {
@@ -16,6 +16,7 @@ export const sliceBestSales = createSlice({
     name: 'bestSales',
     initialState: {
         fetching: false,
+        errorFetch: false,
         docs: [],
         hasNextPage: true,
         nextPage: 1,
@@ -26,18 +27,23 @@ export const sliceBestSales = createSlice({
             state.fetching = true;
         },
         resultBestSales: (state, action) => {
-            const payload = action.payload;
+            const resultData = action.payload.data.search.searchResult;
+            const dataDocs = resultData.itemStacks[0].items;
+            const dataPagination = resultData.paginationV2;
 
             state.fetching = false;
-            state.docs = payload.docs.reduce(uniqueObjectsReducer, [...state.docs]);
-            state.hasNextPage = payload.hasNextPage;
-            state.nextPage = payload.nextPage;
-            state.page = payload.page;
+            state.docs = dataDocs.reduce(uniqueObjectsReducer, [...state.docs]);
+            state.hasNextPage = dataPagination.maxPage > dataPagination.currentPage;
+            state.nextPage = dataPagination.currentPage + 1;
+            state.page = dataPagination.currentPage;
         },
+        errorBestSales: (state) => {
+            state.errorFetch = true;
+        }
     }
 })
 
 export const bestSalesState = (state) => state.sliceBestSales;
-export const { requestBestSales, resultBestSales } = sliceBestSales.actions;
+export const { requestBestSales, resultBestSales, errorBestSales } = sliceBestSales.actions;
 
 export default sliceBestSales.reducer;
