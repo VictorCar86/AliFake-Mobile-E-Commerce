@@ -11,13 +11,16 @@ import GenericNavbar from '../containers/GenericNavbar';
 import NotFound from '../assets/images/not_found.webp';
 const axios = require("axios");
 
+const cleanString = (str) => {
+    if (typeof str !== 'string') return false;
+    return str.split('_').join(' ').toLowerCase();
+}
+
 const ProductViewPage = () => {
     const productInfo = useSelector(productInfoState);
     const dispatch = useDispatch();
     const pageInfo = useParams();
     const { pathname } = useLocation();
-
-    const [docHtml, setDocHtml] = useState("");
 
     const fetchProductInfo = (productId = 0) => {
         const alreadyFetching = productInfo.fetching;
@@ -59,29 +62,8 @@ const ProductViewPage = () => {
         if (pathname.includes(`/product/${pageInfo.id}`)){
             window.scrollTo(0, 0);
             fetchProductInfo(pageInfo.id);
-            setDocHtml("");
         }
     }, [pathname]);
-
-    useEffect(() => {
-        const productDescriptionUrl =
-        productInfo.docs.metadata?.descriptionModule.descriptionUrl;
-
-        if (productDescriptionUrl && (productInfo.docs.product_id !== 0)){
-            printHtml(productDescriptionUrl);
-        }
-    }
-    , [productInfo.docs]);
-
-    const printHtml = (weburl) => {
-        fetch(weburl)
-            .then(response => response.text())
-            .then(html => {
-                setDocHtml(html);
-            })
-            .catch(err => console.error(err));
-    }
-
 
     const [specsModal, setSpecsModal] = useState(false);
     const [descModal, setDescModal] = useState(false);
@@ -89,33 +71,22 @@ const ProductViewPage = () => {
     const toggleSpecs = () => setSpecsModal(prev => !prev);
     const toggleDesc = () => setDescModal(prev => !prev);
 
-
-    const starsPercentage = ((productInfo.docs.feedBackRating?.averageStar / 5) * 100) || 0;
-
-    // console.log(productInfo.docs.feedBackRating?.averageStar);
-
-    const shippingData =
-    productInfo.docs.metadata?.shippingModule
-    .generalFreightInfo.originalLayoutResultList[0].bizData;
-
-    const feeShipping = shippingData?.shippingFee === "free" ?
-                            <>Free Shipping</> :
-                            <>{shippingData?.currency} {shippingData?.displayAmount}</>;
-
     const displayImages = () => {
-        const imagesLocation = productInfo.docs?.imageInfo?.allImages;
+        const imagesLocation = productInfo.docs.imageInfo?.allImages;
 
         if (imagesLocation){
             return imagesLocation.map((image, index) => (
                 <img
-                    className={`w-11/12 h-auto ${imagesLocation.length !== index+1 ? "snap-start" : "snap-end"} ${(imagesLocation.loading && !productInfo.errorFetch) && "animate-pulse"}`}
+                    className={`max-h-[576px] h-[90vw] max-w-[576px] w-[90vw] object-contain ${imagesLocation.length !== index+1 ? "snap-start" : "snap-end"} ${(imagesLocation.loading && !productInfo.errorFetch) && "animate-pulse"}`}
                     src={productInfo.errorFetch ? NotFound : image.url}
                     alt={productInfo.docs.name}
                     key={index}
-                />
-            ));
+                    />
+                ));
         }
     }
+
+    const starsPercentage = ((productInfo.reviews?.roundedAverageOverallRating / 5) * 100) || 0;
 
 
     // Show and disappear buttons
@@ -147,7 +118,7 @@ const ProductViewPage = () => {
 
             <main className='relative min-h-screen pt-[clamp(0px,12.8vw,81.906px);] text-clamp-base bg-gray-300'>
                 <section className='mb-[2%] bg-white'>
-                    <div className='relative flex overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
+                    <div className='relative grid grid-flow-col overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
 
                         { displayImages() }
 
@@ -157,25 +128,29 @@ const ProductViewPage = () => {
                     </div>
 
                     <div className='px-[3%] pt-[3%]'>
-                        {productInfo.docs.sale_price && (
+                        {productInfo.docs.priceInfo && (
                             <>
                                 <div className='flex gap-2 justify-start items-center'>
-                                    <span className='text-[5.5vw] font-bold'>{`${productInfo.docs.sale_price_currency} ${productInfo.docs.sale_price}`}</span>
-                                    {Number(productInfo.docs.discount?.slice(0, 2)) >= 20 && (
-                                    <>
-                                        <span className='line-through opacity-70'>{`${productInfo.docs.sale_price_currency} ${productInfo.docs.original_price}`}</span>
-                                        <span className='text-red-600'>{`-${productInfo.docs.discount}`}</span>
-                                    </>
-                                    )}
+                                    <span className='text-clamp-xl font-bold'>
+                                        {`${productInfo.docs.priceInfo.currentPrice.currencyUnit} ${productInfo.docs.priceInfo.currentPrice.priceString}`}
+                                    </span>
+                                    {/* {productInfo.docs.discounts?.discountedValue && (
+                                        <>
+                                          <span className='line-through opacity-70'>
+                                            {`${productInfo.docs.priceInfo.currentPrice.currencyUnit} ${productInfo.docs.priceInfo.currentPrice.priceString}`}
+                                          </span>
+                                          <span className='text-red-600'>{`-${productInfo.docs.discounts.discountedValue.priceString}`}</span>
+                                        </>
+                                    )} */}
                                 </div>
-                                <div className='mt-1.5 mb-3.5 text-[3vw] opacity-70'>
+                                <div className='mt-1.5 mb-3.5 text-clamp-xs opacity-70'>
                                     <span>Price shown before tax, </span>
-                                    <span>{feeShipping}</span>
+                                    <span>{productInfo.docs.productTypeId}</span>
                                 </div>
-                                <p className='my-2'>{productInfo.docs.product_title}</p>
+                                <p className='my-2'>{productInfo.docs.name}</p>
                             </>
                         )}
-                        {!productInfo.docs.sale_price && (
+                        {!productInfo.docs.priceInfo && (
                             <>
                                 <div className='max-h-[38.39px] h-[6vw] w-4/5 pl-2 mt-[1%] rounded-lg bg-gray-300 animate-pulse'></div>
                                 <div className='max-h-[28.8px] h-[4.5vw] w-2/3 pl-2 mt-[2.75%] rounded-lg bg-gray-300 animate-pulse'></div>
@@ -184,12 +159,12 @@ const ProductViewPage = () => {
                                 <div className='max-h-[32px] h-[5vw] w-3/5 pl-2 mt-[1%] mb-2.5 rounded-lg bg-gray-300 animate-pulse'></div>
                             </>
                         )}
-                        <div className={`${!productInfo.docs.feedBackRating?.averageStar && 'blur-[1px]'}`}>
+                        <div className={`${!productInfo.reviews && 'blur-[1px]'}`}>
                             <span className={`mr-2 relative text-gray-300 before:content-["★★★★★"] before:absolute before:w-[${starsPercentage}%] before:text-yellow-400 before:drop-shadow-md before:overflow-hidden`}>
                                 ★★★★★
                             </span>
-                            <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{productInfo.docs.feedBackRating?.averageStar || "0.0"}</span>
-                            <span className='mr-2'>{`${productInfo.docs.lastest_volume || "loading"} orders`}</span>
+                            <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{productInfo.reviews?.roundedAverageOverallRating || "0.0"}</span>
+                            <span className='mr-2'>{`${productInfo.reviews?.totalReviewCount || "No"} reviews`}</span>
                         </div>
                         <button
                             className='w-full mt-4 py-3.5 border-t border-gray-300'
@@ -236,20 +211,57 @@ const ProductViewPage = () => {
 
                     <div className='my-3'>
                         <span className='font-bold'>Delivery</span>
-                        <span className={`float-right flex items-center gap-1 ${!shippingData && 'blur-[1px]'}`}>
+                        <span className={`float-right flex items-center gap-1 ${!productInfo.docs.fulfillmentLabel && 'blur-[1px]'}`}>
                             <FiMapPin className='inline-block' />
-
                             {/* Update logic with user information - local storage */}
 
-                            {`To ${shippingData?.shipTo || ". . ."}`}
+                            {productInfo.docs.fulfillmentLabel ? (
+                                `To ${productInfo.docs.fulfillmentLabel[0].locationText}`
+                                ) : ". . ."
+                            }
 
                         </span>
-                        <div className={`mt-1.5 text-clamp-sm ${!shippingData && 'blur-[1px]'}`}>
+                        <div className={`mt-1.5 text-clamp-sm ${!productInfo.docs.shippingOption && 'blur-[1px]'}`}>
                             <p className='font-medium'>
-                                Shipping: {shippingData?.shippingFee ? feeShipping : '. . . '}
+                                <span className='mr-1'>
+                                    Shipping:
+                                </span>
+                                {productInfo.docs.fulfillmentLabel ? (
+                                      <span className='capitalize'>
+                                        {productInfo.docs.fulfillmentLabel[0].shippingText}
+                                      </span>
+                                    ) : ". . ."
+                                }
+                                {productInfo.docs.shippingOption?.shipPrice && (
+                                    <span>
+                                        {`- $${productInfo.docs.shippingOption?.shipPrice}`}
+                                    </span>
+                                )}
                             </p>
-                            <p>From {shippingData?.shipFrom || ". . ."} via {shippingData?.deliveryProviderName || ". . ."}</p>
-                            <p>Estimated delivery {shippingData?.deliveryDate && `on ${shippingData?.deliveryDate?.slice(0, 3)} ${shippingData?.deliveryDate?.slice(-2)}`}</p>
+                            <p>
+                                <span>From</span>
+
+                                <span> {productInfo.docs.location?.city || ". . ."} </span>
+
+                                <span>via</span>
+
+                                <span className='mx-1'>
+                                    {productInfo.docs.fulfillmentLabel ? (
+                                        cleanString(
+                                            productInfo.docs.fulfillmentLabel[0].fulfillmentMethod?.toLowerCase())
+                                        ) : ". . ."
+                                    }
+                                </span>
+                            </p>
+                            <p>
+                                <span>Estimated delivery on</span>
+                                <span className='mx-1 italic font-medium'>
+                                    {productInfo.docs.shippingOption?.deliveryDate?.slice(0, 10) || ". . ."}
+                                </span>
+                                <span className='capitalize italic font-medium'>
+                                    {cleanString(productInfo.docs.shippingOption?.slaTier)}
+                                </span>
+                            </p>
                         </div>
                     </div>
                     <button className='w-full pt-3.5 pb-4 border-t text-left border-gray-300'>
@@ -264,9 +276,9 @@ const ProductViewPage = () => {
                         <FiShoppingBag className='w-[10vw] h-[10vw] max-w-[64px] max-h-[64px] m-[clamp(0px,0.6vw,3.840px)] px-[12%] rounded-full border border-gray-300 text-gray-400' />
                     </div>
                     <div className='w-2/3 mx-auto'>
-                        <p className='font-bold'>{productInfo.docs.metadata?.storeModule.storeName || ". . ."}</p>
+                        <p className='font-bold'>{productInfo.docs.sellerName || ". . ."}</p>
                         <div className='grid grid-rows-2 grid-flow-col gap-x-[16%] my-2'>
-                            <p className='font-bold'>{productInfo.docs.metadata?.storeModule.positiveRate}</p>
+                            <p className='font-bold'>{productInfo.docs.sellerAverageRating || 'Not avaliable'}</p>
                             <p>Positive Feedback</p>
                             <p className='font-bold'>{productInfo.docs.metadata?.storeModule.countryCompleteName}</p>
                             <p>Country From</p>
@@ -300,7 +312,7 @@ const ProductViewPage = () => {
             )}
 
             <InfoModal title="Product Details" state={specsModal} toggle={toggleSpecs} >
-                <table className='w-full h-max'>
+                {/* <table className='w-full h-max'>
                     <tbody>
                         {productInfo.docs.specs?.map((item, index) => (
                             <tr className='border-b border-gray-300' key={index}>
@@ -309,12 +321,15 @@ const ProductViewPage = () => {
                             </tr>
                         ))}
                     </tbody>
-                </table>
+                </table> */}
+                <React.Fragment>
+                    <Markup content={productInfo.docs.detailedDescription} />
+                </React.Fragment>
             </InfoModal>
 
             <InfoModal title="Description" state={descModal} toggle={toggleDesc} >
                 <React.Fragment>
-                    <Markup content={docHtml} />
+                    <Markup content={productInfo.docs.shortDescription} />
                 </React.Fragment>
             </InfoModal>
         </>

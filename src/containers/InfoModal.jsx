@@ -34,15 +34,15 @@ const InfoModal = ({ children, title, state, toggle }) => {
                 <div className='fixed h-auto w-full max-w-[640px] -ml-5 rounded-t-xl bg-white'>
                     <p className='mt-2.5 mb-3 text-center font-medium'>{title}</p>
                     <button
-                        className='absolute top-0 right-4 h-full w-[5%]'
+                        className='absolute top-[26%] right-4 h-min w-[5%]'
                         onClick={closeLogic}
                         type='button'
                     >
                         <FiX className='w-full h-full opacity-60'/>
                     </button>
                 </div>
-                <section className='mt-[12%]'>
-                    {propsDirectory.children || propsDirectory.content  ?
+                <section className='mt-[12%] italic'>
+                    {propsDirectory.content ?
                         children :
                         (<img className='h-auto w-[10vw] max-w-[64px] mt-[16%] mx-auto text-center animate-spin' src={spinnerIcon} alt="Loading content..." />)
                     }

@@ -4,11 +4,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialDocs = {
     name: 'Loading image...',
     usItemId: 0,
-    imagesInfo: {
+    imageInfo: {
         allImages: [{url: skeletonImage}, {url: skeletonImage}],
         loading: true,
     },
-    feedBackRating: {},
 };
 
 export const sliceProductInfo = createSlice({
@@ -17,13 +16,15 @@ export const sliceProductInfo = createSlice({
         fetching: false,
         errorFetch: false,
         docs: initialDocs,
-        idml: undefined,
-        reviews: undefined,
+        idml: null,
+        reviews: null,
     },
     reducers: {
         requestProductInfo: (state) => {
             state.fetching = true;
             state.docs = initialDocs;
+            state.idml = null;
+            state.reviews = null;
         },
         resultProductInfo: (state, action) => {
             const completeData = action.payload.data;
