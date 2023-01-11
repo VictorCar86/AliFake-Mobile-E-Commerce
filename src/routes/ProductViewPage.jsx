@@ -11,10 +11,6 @@ import GenericNavbar from '../containers/GenericNavbar';
 import NotFound from '../assets/images/not_found.webp';
 const axios = require("axios");
 
-const cleanString = (str) => {
-    if (typeof str !== 'string') return false;
-    return str.split('_').join(' ').toLowerCase();
-}
 
 const ProductViewPage = () => {
     const productInfo = useSelector(productInfoState);
@@ -77,17 +73,16 @@ const ProductViewPage = () => {
         if (imagesLocation){
             return imagesLocation.map((image, index) => (
                 <img
-                    className={`max-h-[576px] h-[90vw] max-w-[576px] w-[90vw] object-contain ${imagesLocation.length !== index+1 ? "snap-start" : "snap-end"} ${(imagesLocation.loading && !productInfo.errorFetch) && "animate-pulse"}`}
+                    className={`max-h-[576px] h-[90vw] ${imagesLocation.length === 1 ? "w-screen max-w-screen-sm" : "w-[90vw] max-w-[576px]"} object-contain ${imagesLocation.length !== index+1 ? "snap-start" : "snap-end"} ${(imagesLocation.loading && !productInfo.errorFetch) && "animate-pulse"}`}
                     src={productInfo.errorFetch ? NotFound : image.url}
                     alt={productInfo.docs.name}
                     key={index}
-                    />
-                ));
+                />
+            ));
         }
     }
 
-    const starsPercentage = ((productInfo.reviews?.roundedAverageOverallRating / 5) * 100) || 0;
-
+    const starsPercentage = Math.round((productInfo.reviews?.roundedAverageOverallRating / 5) * 100) || 0;
 
     // Show and disappear buttons
 
@@ -128,7 +123,7 @@ const ProductViewPage = () => {
                     </div>
 
                     <div className='px-[3%] pt-[3%]'>
-                        {productInfo.docs.priceInfo && (
+                        {typeof productInfo.docs.priceInfo === 'object' && (
                             <>
                                 <div className='flex gap-2 justify-start items-center'>
                                     <span className='text-clamp-xl font-bold'>
@@ -143,10 +138,12 @@ const ProductViewPage = () => {
                                         </>
                                     )} */}
                                 </div>
-                                <div className='mt-1.5 mb-3.5 text-clamp-xs opacity-70'>
-                                    <span>Price shown before tax, </span>
-                                    <span>{productInfo.docs.productTypeId}</span>
-                                </div>
+                                {productInfo.docs.shippingOption?.shipPrice && (
+                                    <div className='mt-1.5 mb-3.5 text-clamp-xs opacity-70'>
+                                        <span>Price shown before tax, </span>
+                                        <span>{productInfo.docs.shippingOption?.shipPrice}</span>
+                                    </div>
+                                )}
                                 <p className='my-2'>{productInfo.docs.name}</p>
                             </>
                         )}
@@ -212,56 +209,53 @@ const ProductViewPage = () => {
                     <div className='my-3'>
                         <span className='font-bold'>Delivery</span>
                         <span className={`float-right flex items-center gap-1 ${!productInfo.docs.fulfillmentLabel && 'blur-[1px]'}`}>
-                            <FiMapPin className='inline-block' />
-                            {/* Update logic with user information - local storage */}
-
-                            {productInfo.docs.fulfillmentLabel ? (
+                        {productInfo.docs.fulfillmentType !== "DIGITAL" && (
+                            <>
+                              <FiMapPin className='inline-block' />
+                              {/* Update logic with user information - local storage */}
+                              {productInfo.docs.fulfillmentLabel ? (
                                 `To ${productInfo.docs.fulfillmentLabel[0].locationText}`
-                                ) : ". . ."
-                            }
-
+                              ) : ". . ."}
+                            </>
+                        )}
                         </span>
                         <div className={`mt-1.5 text-clamp-sm ${!productInfo.docs.shippingOption && 'blur-[1px]'}`}>
                             <p className='font-medium'>
-                                <span className='mr-1'>
-                                    Shipping:
-                                </span>
+                                <span className='font-normal'>Method avaliable: </span>
                                 {productInfo.docs.fulfillmentLabel ? (
                                       <span className='capitalize'>
-                                        {productInfo.docs.fulfillmentLabel[0].shippingText}
+                                        {productInfo.docs.fulfillmentLabel[0].shippingText ||
+                                         productInfo.docs.fulfillmentLabel[0].fulfillmentType.toLowerCase()}
                                       </span>
                                     ) : ". . ."
                                 }
-                                {productInfo.docs.shippingOption?.shipPrice && (
+                                {productInfo.docs.shippingOption?.shipPrice?.price > 0 && (
                                     <span>
-                                        {`- $${productInfo.docs.shippingOption?.shipPrice}`}
+                                        {`- ${productInfo.docs.shippingOption?.shipPrice.priceString}`}
                                     </span>
                                 )}
                             </p>
-                            <p>
-                                <span>From</span>
-
-                                <span> {productInfo.docs.location?.city || ". . ."} </span>
-
-                                <span>via</span>
-
-                                <span className='mx-1'>
-                                    {productInfo.docs.fulfillmentLabel ? (
-                                        cleanString(
-                                            productInfo.docs.fulfillmentLabel[0].fulfillmentMethod?.toLowerCase())
-                                        ) : ". . ."
-                                    }
-                                </span>
-                            </p>
-                            <p>
-                                <span>Estimated delivery on</span>
-                                <span className='mx-1 italic font-medium'>
-                                    {productInfo.docs.shippingOption?.deliveryDate?.slice(0, 10) || ". . ."}
-                                </span>
-                                <span className='capitalize italic font-medium'>
-                                    {cleanString(productInfo.docs.shippingOption?.slaTier)}
-                                </span>
-                            </p>
+                            {productInfo.docs.fulfillmentLabel && (
+                                productInfo.docs.fulfillmentLabel[0].checkStoreAvailability && (
+                                  <>
+                                    <p>{productInfo.docs.fulfillmentLabel[0].checkStoreAvailability}</p>
+                                    <p>{productInfo.docs.fulfillmentLabel[0].message}</p>
+                                  </>
+                                )
+                            )}
+                            {productInfo.docs.fulfillmentType !== "DIGITAL" && (
+                                <p>
+                                    <span>Date product avaliable: </span>
+                                    <span className='italic font-medium capitalize'>
+                                        {productInfo.docs.fulfillmentLabel ? (
+                                            productInfo.docs.fulfillmentLabel[0].fulfillmentText || ". . ."
+                                        ) : ". . ."}
+                                    </span>
+                                </p>
+                            )}
+                            {productInfo.docs.fulfillmentType === "DIGITAL" && (
+                                <p>{productInfo.docs.fulfillmentLabel[0].message}</p>
+                            )}
                         </div>
                     </div>
                     <button className='w-full pt-3.5 pb-4 border-t text-left border-gray-300'>
@@ -275,18 +269,19 @@ const ProductViewPage = () => {
                     <div className='absolute h-max w-max rounded-full bg-white'>
                         <FiShoppingBag className='w-[10vw] h-[10vw] max-w-[64px] max-h-[64px] m-[clamp(0px,0.6vw,3.840px)] px-[12%] rounded-full border border-gray-300 text-gray-400' />
                     </div>
-                    <div className='w-2/3 mx-auto'>
+                    <div className='w-5/6 ml-auto'>
                         <p className='font-bold'>{productInfo.docs.sellerName || ". . ."}</p>
-                        <div className='grid grid-rows-2 grid-flow-col gap-x-[16%] my-2'>
-                            <p className='font-bold'>{productInfo.docs.sellerAverageRating || 'Not avaliable'}</p>
+                        <div className='grid grid-rows-2 grid-flow-col gap-x-[3%] my-2'>
+                            <p className='font-bold overflow-hidden text-ellipsis whitespace-nowrap'>{productInfo.docs.sellerAverageRating?.toString().slice(0,3) || 'Not avaliable'}</p>
                             <p>Positive Feedback</p>
-                            <p className='font-bold'>{productInfo.docs.metadata?.storeModule.countryCompleteName}</p>
-                            <p>Country From</p>
+                            <p className='font-bold overflow-hidden text-ellipsis whitespace-nowrap'>{productInfo.docs.manufacturerName || 'Not avaliable'}</p>
+                            <p>Manufacturer</p>
                         </div>
                         <a
-                            className='relative left-1/2 -translate-x-1/2 inline-block w-[50vw] max-w-xs py-0.5 rounded-full text-center text-black bg-white'
-                            href={productInfo.docs.metadata?.storeModule.storeURL}
-                            aria-label={productInfo.docs.metadata?.storeModule.storeName}>
+                          className='inline-block w-[50vw] max-w-xs ml-[10%] py-0.5 rounded-full text-center text-black bg-white'
+                          href='#'
+                          aria-label='Example button'
+                        >
                             <span>Visit Store</span>
                         </a>
                     </div>
@@ -301,7 +296,7 @@ const ProductViewPage = () => {
             </main>
 
             {!(specsModal || descModal || showExtraButtons) && (
-                <div className='fixed bottom-0 w-full max-w-[640px] h-14 pt-1.5 text-white font-bold text-center bg-white z-30'>
+                <div className='fixed bottom-0 w-full max-w-screen-sm h-14 pt-1.5 text-white font-bold text-center bg-white z-30'>
                     <button className='w-[42%] p-2.5 rounded-l-full bg-gradient-to-r from-yellow-400 to-orange-500'>
                         Add to cart
                     </button>

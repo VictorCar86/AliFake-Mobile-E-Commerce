@@ -21,6 +21,7 @@ export const sliceProductInfo = createSlice({
     },
     reducers: {
         requestProductInfo: (state) => {
+            state.errorFetch = false;
             state.fetching = true;
             state.docs = initialDocs;
             state.idml = null;
