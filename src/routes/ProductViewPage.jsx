@@ -3,12 +3,14 @@ import { FiChevronRight, FiMapPin, FiShoppingBag } from 'react-icons/fi';
 import { useParams, useLocation } from 'react-router-dom';
 import { Markup } from 'interweave';
 import InfoModal from '../containers/InfoModal';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import InfiniteProducts from '../containers/InfiniteProducts';
 import HeartButton from '../components/HeartButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { productInfoState, requestProductInfo, resultProductInfo, errorProductInfo } from '../utils/sliceProductInfo';
 import GenericNavbar from '../containers/GenericNavbar';
 import NotFound from '../assets/images/not_found.webp';
+// import 'swiper/css';
 const axios = require("axios");
 
 
@@ -67,22 +69,25 @@ const ProductViewPage = () => {
     const toggleSpecs = () => setSpecsModal(prev => !prev);
     const toggleDesc = () => setDescModal(prev => !prev);
 
-    const displayImages = () => {
-        const imagesLocation = productInfo.docs.imageInfo?.allImages;
+    const imagesLocation = productInfo.docs.imageInfo?.allImages;
 
-        if (imagesLocation){
-            return imagesLocation.map((image, index) => (
-                <img
-                    className={`max-h-[576px] h-[90vw] ${imagesLocation.length === 1 ? "w-screen max-w-screen-sm" : "w-[90vw] max-w-[576px]"} object-contain ${imagesLocation.length !== index+1 ? "snap-start" : "snap-end"} ${(imagesLocation.loading && !productInfo.errorFetch) && "animate-pulse"}`}
-                    src={productInfo.errorFetch ? NotFound : image.url}
-                    alt={productInfo.docs.name}
-                    key={index}
-                />
+    const displayImages = (imagesArray) => {
+        if (Array.isArray(imagesArray)){
+            return imagesArray.map((image, index) => (
+                <SwiperSlide key={index}>
+                    <img
+                        className={`max-h-[640px] h-min w-screen max-w-screen-sm object-contain object-center ${productInfo.docs.imageInfo.loading && 'animate-pulse'}`}
+                        src={productInfo.errorFetch ? NotFound : image.url}
+                        alt={productInfo.docs.name}
+                    />
+                </SwiperSlide>
             ));
         }
     }
 
     const starsPercentage = Math.round((productInfo.reviews?.roundedAverageOverallRating / 5) * 100) || 0;
+
+    const [currentSlide, setCurrentSlide] = useState(1);
 
     // Show and disappear buttons
 
@@ -113,22 +118,45 @@ const ProductViewPage = () => {
 
             <main className='relative min-h-screen pt-[clamp(0px,12.8vw,81.906px);] text-clamp-base bg-gray-300'>
                 <section className='mb-[2%] bg-white'>
-                    <div className='relative grid grid-flow-col overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
+                    {/* <div className='relative grid grid-flow-col overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
+                    </div> */}
 
-                        { displayImages() }
+                    <Swiper
+                        className='z-0'
+                        slidesPerView={1}
+                        onSlideChange={(slide) => setCurrentSlide(slide.activeIndex + 1)}
+                        lazy={true}
+                    >
+                        { displayImages(imagesLocation) }
 
-                        {productInfo.docs.wishedCount && (
-                            <HeartButton wishedCount={productInfo.docs.wishedCount} sticky="true" />
+                        {!productInfo.docs.imageInfo?.loading && (
+                            <aside className='absolute bottom-[5%] left-[5%] rounded-2xl px-[2%] text-white bg-gray-500 z-10'>
+                                <span>{currentSlide} / </span>
+                                <span>{imagesLocation?.length}</span>
+                            </aside>
                         )}
-                    </div>
+                    </Swiper>
+
+                        {/* {productInfo.docs.wishedCount && (
+                            <HeartButton wishedCount={productInfo.docs.wishedCount} sticky="true" />
+                        )} */}
 
                     <div className='px-[3%] pt-[3%]'>
                         {typeof productInfo.docs.priceInfo === 'object' && (
                             <>
                                 <div className='flex gap-2 justify-start items-center'>
-                                    <span className='text-clamp-xl font-bold'>
-                                        {`${productInfo.docs.priceInfo.currentPrice.currencyUnit} ${productInfo.docs.priceInfo.currentPrice.priceString}`}
-                                    </span>
+                                    {productInfo.docs.priceInfo?.currentPrice !== null && (
+                                        <span className='text-clamp-xl font-bold'>
+                                            {`${productInfo.docs.priceInfo.currentPrice?.currencyUnit} ${productInfo.docs.priceInfo.currentPrice?.priceString}`}
+                                        </span>
+                                    )}
+
+                                    {productInfo.docs.priceInfo?.currentPrice === null && (
+                                        <span className='text-clamp-xl font-bold'>
+                                            {`${productInfo.docs.priceInfo.priceRange?.currencyUnit} ${productInfo.docs.priceInfo.priceRange?.priceString}`}
+                                        </span>
+                                    )}
+
                                     {/* {productInfo.docs.discounts?.discountedValue && (
                                         <>
                                           <span className='line-through opacity-70'>
@@ -138,13 +166,17 @@ const ProductViewPage = () => {
                                         </>
                                     )} */}
                                 </div>
+
                                 {productInfo.docs.shippingOption?.shipPrice && (
                                     <div className='mt-1.5 mb-3.5 text-clamp-xs opacity-70'>
-                                        <span>Price shown before tax, </span>
-                                        <span>{productInfo.docs.shippingOption?.shipPrice}</span>
+                                        <span>Shipping price shown before tax, </span>
+                                        <span>{productInfo.docs.shippingOption?.shipPrice.priceString}</span>
                                     </div>
                                 )}
-                                <p className='my-2'>{productInfo.docs.name}</p>
+
+                                <p className='my-2'>
+                                    {productInfo.docs.name}
+                                </p>
                             </>
                         )}
                         {!productInfo.docs.priceInfo && (
@@ -206,7 +238,7 @@ const ProductViewPage = () => {
                         </div>
                     )}
 
-                    <div className='my-3'>
+                    <div className='mb-3'>
                         <span className='font-bold'>Delivery</span>
                         <span className={`float-right flex items-center gap-1 ${!productInfo.docs.fulfillmentLabel && 'blur-[1px]'}`}>
                         {productInfo.docs.fulfillmentType !== "DIGITAL" && (
@@ -225,7 +257,7 @@ const ProductViewPage = () => {
                                 {productInfo.docs.fulfillmentLabel ? (
                                       <span className='capitalize'>
                                         {productInfo.docs.fulfillmentLabel[0].shippingText ||
-                                         productInfo.docs.fulfillmentLabel[0].fulfillmentType.toLowerCase()}
+                                         productInfo.docs.fulfillmentLabel[0].fulfillmentType?.toLowerCase()}
                                       </span>
                                     ) : ". . ."
                                 }

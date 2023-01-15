@@ -5,7 +5,7 @@ const initialDocs = {
     name: 'Loading image...',
     usItemId: 0,
     imageInfo: {
-        allImages: [{url: skeletonImage}, {url: skeletonImage}],
+        allImages: [{url: skeletonImage}],
         loading: true,
     },
 };

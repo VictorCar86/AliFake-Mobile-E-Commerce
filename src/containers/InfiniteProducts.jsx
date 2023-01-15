@@ -78,10 +78,7 @@ const InfiniteProducts = () => {
             fetchBestSales(bestSalesData.nextPage);
         }
         else {
-            setTimeout(() => {
-                fetchBestSales()
-            }
-            , 2000);
+            fetchBestSales()
         }
     }
 
@@ -103,7 +100,7 @@ const InfiniteProducts = () => {
             ).observe(scrollStopRef.current);
         }
     }
-    , [infiniteLoading]);
+    , [infiniteLoading, pathname]);
 
     return (
         <section className={`table-cell w-full ${!infiniteLoading ? 'h-[calc(100%+48px)]' : 'h-full'} px-3 ${includeRoute && 'pb-14'} text-base bg-transparent`}>
