@@ -76,7 +76,7 @@ const ProductViewPage = () => {
             return imagesArray.map((image, index) => (
                 <SwiperSlide key={index}>
                     <img
-                        className={`max-h-[640px] h-min w-screen max-w-screen-sm object-contain object-center ${productInfo.docs.imageInfo.loading && 'animate-pulse'}`}
+                        className={`max-h-[640px] h-[100vw] w-screen max-w-screen-sm object-contain object-center ${productInfo.docs.imageInfo.loading && 'animate-pulse'}`}
                         src={productInfo.errorFetch ? NotFound : image.url}
                         alt={productInfo.docs.name}
                     />
@@ -118,8 +118,6 @@ const ProductViewPage = () => {
 
             <main className='relative min-h-screen pt-[clamp(0px,12.8vw,81.906px);] text-clamp-base bg-gray-300'>
                 <section className='mb-[2%] bg-white'>
-                    {/* <div className='relative grid grid-flow-col overscroll-x-contain snap-x snap-mandatory overflow-x-scroll overflow-y-hidden'>
-                    </div> */}
 
                     <Swiper
                         className='z-0'
@@ -130,16 +128,16 @@ const ProductViewPage = () => {
                         { displayImages(imagesLocation) }
 
                         {!productInfo.docs.imageInfo?.loading && (
-                            <aside className='absolute bottom-[5%] left-[5%] rounded-2xl px-[2%] text-white bg-gray-500 z-10'>
-                                <span>{currentSlide} / </span>
-                                <span>{imagesLocation?.length}</span>
-                            </aside>
+                            <>
+                                <aside className='absolute bottom-[5%] left-[5%] rounded-2xl px-[2%] text-white bg-gray-500/75 z-10'>
+                                    <span>{currentSlide} / </span>
+                                    <span>{imagesLocation?.length}</span>
+                                </aside>
+
+                                <HeartButton data={productInfo.docs} absolute="true" />
+                            </>
                         )}
                     </Swiper>
-
-                        {/* {productInfo.docs.wishedCount && (
-                            <HeartButton wishedCount={productInfo.docs.wishedCount} sticky="true" />
-                        )} */}
 
                     <div className='px-[3%] pt-[3%]'>
                         {typeof productInfo.docs.priceInfo === 'object' && (
@@ -157,7 +155,8 @@ const ProductViewPage = () => {
                                         </span>
                                     )}
 
-                                    {/* {productInfo.docs.discounts?.discountedValue && (
+                                    {/* 134785881
+                                    {productInfo.docs.discounts?.discountedValue && (
                                         <>
                                           <span className='line-through opacity-70'>
                                             {`${productInfo.docs.priceInfo.currentPrice.currencyUnit} ${productInfo.docs.priceInfo.currentPrice.priceString}`}
