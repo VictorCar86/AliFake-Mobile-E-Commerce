@@ -64,7 +64,13 @@ export const sliceLocalState = createSlice({
             }
         },
         deleteWishList: (state, action) => {
-            state.wishList = [...state.wishList].filter(e => e.id !== action.payload);
+            if (typeof action.payload !== 'string'){
+                console.error('It is only valid to use IDs within strings');
+            }
+
+            const filteredArray = [...state.wishList].filter(e => e.id !== action.payload);
+            setWishListStorage(filteredArray);
+            state.wishList = filteredArray;
         },
 
       // Shopping Cart
