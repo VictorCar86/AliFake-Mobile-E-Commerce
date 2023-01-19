@@ -5,7 +5,7 @@ import { localStorageState, addWishList, deleteWishList } from '../utils/sliceLo
 
 const HeartButton = ({ data = undefined, absolute = false, wishedCount = 0 }) => {
     const localStoreState = useSelector(localStorageState);
-    const existItemOnStorage = localStoreState.wishList.some(item => item.id === data.id);
+    const existItemOnStorage = localStoreState.wishList.some(item => item.id === data.usItemId);
 
     const [fill, setFill] = useState(existItemOnStorage);
     const dispatcher = useDispatch();
@@ -14,7 +14,7 @@ const HeartButton = ({ data = undefined, absolute = false, wishedCount = 0 }) =>
         if (fill){
             dispatcher(addWishList(data));
         } else {
-            dispatcher(deleteWishList(data.id));
+            dispatcher(deleteWishList(data.usItemId));
         }
     }
     ,[fill])

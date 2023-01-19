@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { productInfoState, requestProductInfo, resultProductInfo, errorProductInfo } from '../utils/sliceProductInfo';
 import GenericNavbar from '../containers/GenericNavbar';
 import NotFound from '../assets/images/not_found.webp';
-// import 'swiper/css';
 const axios = require("axios");
 
 
@@ -47,7 +46,6 @@ const ProductViewPage = () => {
         axios
             .request(options)
             .then((response) => {
-                // console.log("fetchProductInfo", response.data);
                 dispatch( resultProductInfo(response.data) );
             })
             .catch((error) => {

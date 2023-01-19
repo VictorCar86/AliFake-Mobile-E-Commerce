@@ -43,15 +43,30 @@ export const sliceLocalState = createSlice({
                 console.error('It is only valid to use objects to save data');
             }
 
-            if (action.payload === undefined) {
+            const data = action.payload;
+
+            if (data === undefined) {
                 console.error('Make sure that you are providing the correct data');
             }
 
+            let finalPrice;
+            let finalCurrency;
+
+            if (data.priceInfo.currentPrice !== null){
+                finalPrice = data.priceInfo.currentPrice.priceString;
+                finalCurrency = data.priceInfo.currentPrice.currencyUnit;
+            }
+            else {
+                finalPrice = data.priceInfo.priceRange.priceString;
+                finalCurrency = data.priceInfo.priceRange.currencyUnit;
+            }
+
             const newState = {
-                id: action.payload.id,
-                image: action.payload.imageInfo.thumbnailUrl,
-                name: action.payload.name,
-                price: action.payload.productTypeId,
+                id: data.usItemId,
+                image: data.imageInfo.thumbnailUrl,
+                name: data.name,
+                price: finalPrice,
+                currency: finalCurrency,
             };
 
             const concatArray = [...state.wishList];
@@ -68,7 +83,7 @@ export const sliceLocalState = createSlice({
                 console.error('It is only valid to use IDs within strings');
             }
 
-            const filteredArray = [...state.wishList].filter(e => e.id !== action.payload);
+            const filteredArray = state.wishList.filter(e => e.id !== action.payload);
             setWishListStorage(filteredArray);
             state.wishList = filteredArray;
         },
