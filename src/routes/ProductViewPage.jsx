@@ -9,7 +9,6 @@ import HeartButton from '../components/HeartButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { productInfoState, requestProductInfo, resultProductInfo, errorProductInfo } from '../utils/sliceProductInfo';
 import GenericNavbar from '../containers/GenericNavbar';
-import NotFound from '../assets/images/not_found.webp';
 const axios = require("axios");
 
 
@@ -55,7 +54,7 @@ const ProductViewPage = () => {
     }
 
     useEffect(() => {
-        if (pathname.includes(`/product/${pageInfo.id}`)){
+        if (pathname.includes(`/product/${pageInfo.id}`) && productInfo.docs.usItemId !== pageInfo.id){
             window.scrollTo(0, 0);
             fetchProductInfo(pageInfo.id);
         }
@@ -75,7 +74,7 @@ const ProductViewPage = () => {
                 <SwiperSlide key={index}>
                     <img
                         className={`max-h-[640px] h-[100vw] w-screen max-w-screen-sm object-contain object-center ${productInfo.docs.imageInfo.loading && 'animate-pulse'}`}
-                        src={productInfo.errorFetch ? NotFound : image.url}
+                        src={image.url}
                         alt={productInfo.docs.name}
                     />
                 </SwiperSlide>

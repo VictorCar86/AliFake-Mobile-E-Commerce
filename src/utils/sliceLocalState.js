@@ -78,6 +78,14 @@ export const sliceLocalState = createSlice({
                 state.wishList = concatArray;
             }
         },
+        putWishList: (state, action) => {
+            if (!Array.isArray(action.payload)){
+                console.error('It is only valid to save your state within arrays');
+            }
+
+            setWishListStorage(action.payload);
+            state.wishList = action.payload;
+        },
         deleteWishList: (state, action) => {
             if (typeof action.payload !== 'string'){
                 console.error('It is only valid to use IDs within strings');
@@ -101,6 +109,6 @@ export const sliceLocalState = createSlice({
 })
 
 export const localStorageState = (state) => state.sliceLocalState;
-export const { setViewed, addWishList, deleteWishList, setShoppingCart } = sliceLocalState.actions;
+export const { setViewed, addWishList, putWishList, deleteWishList, setShoppingCart } = sliceLocalState.actions;
 
 export default sliceLocalState.reducer;
