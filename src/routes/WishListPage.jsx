@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { FaPen } from 'react-icons/fa';
 import { FiShoppingCart, FiHeart, FiCheck } from 'react-icons/fi'
 import { useDispatch, useSelector } from 'react-redux';
-import { localStorageState, putWishList } from '../utils/sliceLocalState';
+import { wishListState, putWishList } from '../utils/sliceWishList';
 import ItemWishList from '../components/ItemWishList';
 import GenericPage from '../containers/GenericPage';
 
 const WishListPage = () => {
-  const currentStateOfStorage = useSelector(localStorageState);
-  const { wishList } = currentStateOfStorage;
+  const { wishList } = useSelector(wishListState);
   const dispatcher = useDispatch();
 
   const [editMode, setEditMode] = useState(false);

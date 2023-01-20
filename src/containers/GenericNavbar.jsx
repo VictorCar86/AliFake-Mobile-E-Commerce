@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-    FiChevronLeft,
     FiClock,
     FiGrid,
     FiHeart,
@@ -51,9 +50,6 @@ const GenericNavbar = ({ headerRef = null }) => {
 
             {navbarVanilla === false && (
                 <nav className='relative h-[12.8vw] max-h-[81.906px] flex justify-start items-center'>
-                    {/* <button type='button' className='inline-block mx-3' onClick={toggleNavbar}>
-                        <FiChevronLeft className='h-min w-[6.83vw] scale-125'/> 
-                    </button> */}
                     <BackButton onClick={toggleNavbar} />
                     <Searcher />
                 </nav>
@@ -63,25 +59,41 @@ const GenericNavbar = ({ headerRef = null }) => {
                 <nav className='absolute top-[clamp(0px,12.8vw,81.906px)] right-0 w-max p-3 rounded-xl bg-white shadow-2xl'>
                     <ul className='grid gap-2'>
                         <li>
-                            <Link to={"/categories"} aria-label="Go to categories">
+                            <Link
+                                className='inline-block w-full h-max'
+                                to={"/categories"}
+                                aria-label="Go to categories"
+                            >
                                 <FiGrid className='inline-block max-w-[34px] w-[6vw] h-full mr-2' />
                                 <span className='text-[2.8vw align-middle'>Categories</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to={"/account/wishlist"} aria-label="Go to your wish list">
+                            <Link
+                                className='inline-block w-full h-max'
+                                to={"/account/wishlist"}
+                                aria-label="Go to your wish list"
+                            >
                                 <FiHeart className='inline-block max-w-[34px] w-[6vw] h-full mr-2' />
                                 <span className='text-[2.8vw align-middle'>Wish List</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to={"/account/viewed"} aria-label="Go to viewed products">
+                            <Link
+                                className='inline-block w-full h-max'
+                                to={"/account/viewed"}
+                                aria-label="Go to viewed products"
+                            >
                                 <FiClock className='inline-block max-w-[34px] w-[6vw] h-full mr-2' />
                                 <span className='text-[2.8vw align-middle'>Viewed</span>
                             </Link>
                         </li>
                         <li>
-                            <Link to={"/account"} aria-label="Go to your account">
+                            <Link
+                                className='inline-block w-full h-max'
+                                to={"/account"}
+                                aria-label="Go to your account"
+                            >
                                 <FiUser className='inline-block max-w-[34px] w-[6vw] h-full mr-2' />
                                 <span className='text-[2.8vw align-middle'>Account</span>
                             </Link>

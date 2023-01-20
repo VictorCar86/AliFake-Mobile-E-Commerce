@@ -2,13 +2,17 @@ import { configureStore } from '@reduxjs/toolkit';
 import sliceBestSales from './sliceBestSales';
 import sliceNewOffers from './sliceNewOffers';
 import sliceProductInfo from './sliceProductInfo';
-import sliceLocalState from './sliceLocalState';
+import sliceWishList from './sliceWishList';
+import sliceViewed from './sliceViewed';
+import sliceShoppingCart from './sliceShoppingCart';
 
 export const store = configureStore({
     reducer: {
         sliceBestSales,
         sliceNewOffers,
         sliceProductInfo,
-        sliceLocalState,
+        sliceWishList,
+        sliceViewed,
+        sliceShoppingCart,
     },
 });

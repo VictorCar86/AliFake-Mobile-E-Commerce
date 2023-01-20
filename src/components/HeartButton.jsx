@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { FiHeart } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
-import { localStorageState, addWishList, deleteWishList } from '../utils/sliceLocalState';
+import { wishListState, addWishList, deleteWishList } from '../utils/sliceWishList';
 
 const HeartButton = ({ data = undefined, absolute = false, wishedCount = 0 }) => {
-    const localStoreState = useSelector(localStorageState);
-    const existItemOnStorage = localStoreState.wishList.some(item => item.id === data.usItemId);
+    const { wishList } = useSelector(wishListState);
+    const existItemOnStorage = wishList.some(item => item.id === data.usItemId);
 
     const [fill, setFill] = useState(existItemOnStorage);
     const dispatcher = useDispatch();

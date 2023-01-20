@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { FiChevronRight, FiMapPin, FiShoppingBag } from 'react-icons/fi';
 import { useParams, useLocation } from 'react-router-dom';
-import { Markup } from 'interweave';
-import InfoModal from '../containers/InfoModal';
+import GenericNavbar from '../containers/GenericNavbar';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import InfiniteProducts from '../containers/InfiniteProducts';
 import HeartButton from '../components/HeartButton';
+import InfoModal from '../containers/InfoModal';
+import InfiniteProducts from '../containers/InfiniteProducts';
+import { Markup } from 'interweave';
 import { useDispatch, useSelector } from 'react-redux';
 import { productInfoState, requestProductInfo, resultProductInfo, errorProductInfo } from '../utils/sliceProductInfo';
-import GenericNavbar from '../containers/GenericNavbar';
+import { addViewedItem } from '../utils/sliceViewed';
 const axios = require("axios");
 
 
@@ -48,10 +49,19 @@ const ProductViewPage = () => {
                 dispatch( resultProductInfo(response.data) );
             })
             .catch((error) => {
-                dispatch( errorProductInfo() );
-                console.error(error);
+                const requestUrl = error.request.responseURL;
+                if (!requestUrl.includes(productInfo.docs.usItemId)){
+                    dispatch( errorProductInfo() );
+                    console.error(error.response.data.message);
+                }
             });
     }
+
+    useEffect(() => {
+        if (productInfo.docs.usItemId !== "0"){
+            dispatch( addViewedItem(productInfo.docs) );
+        }
+    }, [productInfo.docs])
 
     useEffect(() => {
         if (pathname.includes(`/product/${pageInfo.id}`) && productInfo.docs.usItemId !== pageInfo.id){
