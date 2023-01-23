@@ -14,7 +14,7 @@ const GenericPage = ({ children, title = "", Icon = null, linkTo = "#" }) => {
           </Link>
         )}
       </header>
-      <main className='relative min-h-screen pt-[clamp(0px,12.8vw,82px)]'>
+      <main className='relative min-h-screen pt-[clamp(0px,12.8vw,82px)] text-clamp-base bg-gray-200/70'>
         { children }
       </main>
     </>

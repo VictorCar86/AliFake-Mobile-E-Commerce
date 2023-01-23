@@ -24,7 +24,7 @@ export const sliceViewedItems = createSlice({
             const day = currentDate.getDate();
             const year = currentDate.getFullYear();
 
-            const finalDate = `${month} ${day} ${year}`;
+            const finalDate = `${month} ${day}, ${year}`;
             const finalImage = data.imageInfo.allImages[0].url;
             let finalCurrency;
             let finalPrice;
@@ -46,8 +46,8 @@ export const sliceViewedItems = createSlice({
                 price: finalPrice,
             };
 
-            const newState = [{...newItem}, ...state.viewedItems]
-            console.log(newState)
+            const newState = [{...newItem}, ...state.viewedItems];
+            console.log(newState);
 
             setViewedStorage(newState);
             state.viewedItems = newState;

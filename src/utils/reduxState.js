@@ -3,7 +3,7 @@ import sliceBestSales from './sliceBestSales';
 import sliceNewOffers from './sliceNewOffers';
 import sliceProductInfo from './sliceProductInfo';
 import sliceWishList from './sliceWishList';
-import sliceViewed from './sliceViewed';
+import sliceViewedItems from './sliceViewedItems';
 import sliceShoppingCart from './sliceShoppingCart';
 
 export const store = configureStore({
@@ -12,7 +12,7 @@ export const store = configureStore({
         sliceNewOffers,
         sliceProductInfo,
         sliceWishList,
-        sliceViewed,
+        sliceViewedItems,
         sliceShoppingCart,
     },
 });
