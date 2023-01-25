@@ -52,8 +52,8 @@ const WishListPage = () => {
 
       {wishList.length > 0 && (
         <>
-          <div className='fixed max-h-[82px] h-[12.8vw] w-full max-w-screen-sm flex justify-between items-center px-[clamp(0px,1vw,8px)] border-b-[3px] border-gray-300 bg-white z-20'>
-            <select className='text-clamp-base' name="productsOrder" id="productsOrder">
+          <div className='fixed max-h-[82px] h-[12.8vw] w-full max-w-screen-sm flex justify-between items-center px-[clamp(0px,2vw,16px)] border-b-[3px] border-gray-300 bg-white z-20'>
+            <select className='text-clamp-base bg-transparent' name="productsOrder" id="productsOrder">
               <option value="allProducts">
                 ALL PRODUCTS
               </option>

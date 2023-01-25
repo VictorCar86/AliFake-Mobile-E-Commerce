@@ -4,10 +4,10 @@ import skeletonImage from '../assets/images/skeleton.webp';
 
 const ItemWishList = ({ data, selectedItems, updaterSelectedItem, editMode }) => {
 
-    const [imageLoaded, setImageLoaded] = useState(skeletonImage);
+    const [lazyImage, setLazyImage] = useState(skeletonImage);
 
     useEffect(() => {
-        setImageLoaded(data.image);
+        setLazyImage(data.image);
     }, [data]);
 
     const changeSelectedState = () => {
@@ -20,13 +20,13 @@ const ItemWishList = ({ data, selectedItems, updaterSelectedItem, editMode }) =>
     };
 
     return (
-        <li className='relative border-b border-b-gray-300'>
+        <li className='relative border-b border-b-gray-300 bg-white'>
             <Link className='flex gap-[2%] p-[2%]' to={`/product/${data.id}`}>
                 <img
                     className='w-[32vw] max-w-[204px] h-[32vw] max-h-[204px] object-contain object-center'
-                    src={imageLoaded}
+                    src={lazyImage}
                     alt={data.name}
-                    onLoad={() => setImageLoaded(data.image)}
+                    onLoad={() => setLazyImage(data.image)}
                 />
                 <div className='w-[65%]'>
                     <p className='text-clamp-lg text-gray-500 whitespace-nowrap text-ellipsis overflow-hidden'>{data.name}</p>

@@ -52,7 +52,7 @@ const ViewedPage = () => {
             <p className='pb-[2%]'>
               {date}
             </p>
-            <ul className='grid grid-cols-3 auto-rows-fr gap-[3%]'>
+            <ul className='grid grid-cols-3 auto-rows-fr gap-[3%] overflow-hidden whitespace-nowrap'>
             {filteredItems[date].map((item, index) => (
               <li key={index}>
                 <ItemViewedList product={item} />

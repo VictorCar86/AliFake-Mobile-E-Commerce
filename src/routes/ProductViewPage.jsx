@@ -2,14 +2,15 @@ import React, { useEffect, useRef, useState } from 'react'
 import { FiChevronRight, FiMapPin, FiShoppingBag } from 'react-icons/fi';
 import { useParams, useLocation } from 'react-router-dom';
 import GenericNavbar from '../containers/GenericNavbar';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import HeartButton from '../components/HeartButton';
-import InfoModal from '../containers/InfoModal';
-import InfiniteProducts from '../containers/InfiniteProducts';
-import { Markup } from 'interweave';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { productInfoState, requestProductInfo, resultProductInfo, errorProductInfo } from '../utils/sliceProductInfo';
 import { addViewedItem } from '../utils/sliceViewedItems';
+import InfiniteProducts from '../containers/InfiniteProducts';
+import AddToCartModal from '../modals/AddToCartModal';
+import ProductDetailsModal from '../modals/ProductDetailsModal';
+import ProductDescriptionModal from '../modals/ProductDescriptionModal';
 const axios = require("axios");
 
 
@@ -97,8 +98,6 @@ const ProductViewPage = () => {
     const starsPercentage = Math.round((productInfo.reviews?.roundedAverageOverallRating / 5) * 100) || 0;
 
     const [currentSlide, setCurrentSlide] = useState(1);
-
-    const [currentQuantity, setCurrentQuantity] = useState(1);
 
     // Show and disappear buttons
 
@@ -198,15 +197,17 @@ const ProductViewPage = () => {
                                 <div className='max-h-[32px] h-[5vw] w-3/5 pl-2 mt-[1%] mb-2.5 rounded-lg bg-gray-300 animate-pulse'></div>
                             </>
                         )}
-                        <div className={`${!productInfo.reviews && 'blur-[1px]'}`}>
+                        <div className={`whitespace-nowrap overflow-hidden text-ellipsis ${!productInfo.reviews && 'blur-[1px]'}`}>
                             <span className={`mr-2 relative text-gray-300 before:content-["★★★★★"] before:absolute before:w-[${starsPercentage}%] before:text-yellow-400 before:drop-shadow-md before:overflow-hidden`}>
                                 ★★★★★
                             </span>
                             <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{productInfo.reviews?.roundedAverageOverallRating || "0.0"}</span>
-                            <span className='mr-2'>{`${productInfo.reviews?.totalReviewCount || "No"} reviews`}</span>
+                            <span className='pr-[3%] mr-[2.5%] border-r-2 border-gray-300'>{`${productInfo.reviews?.totalReviewCount || "No"} reviews`}</span>
+                            <span className='italic'>{productInfo.docs.primaryShelf || ""}</span>
                         </div>
                         <button
                             className='w-full mt-4 py-3.5 border-t border-gray-300'
+                            disabled={productInfo.fetching}
                             onClick={toggleSpecs}
                             type='button'
                         >
@@ -215,6 +216,7 @@ const ProductViewPage = () => {
                         </button>
                         <button
                             className='w-full py-3.5 border-t border-gray-300'
+                            disabled={productInfo.fetching}
                             onClick={toggleDesc}
                             type='button'
                         >
@@ -289,8 +291,8 @@ const ProductViewPage = () => {
                                     <span>Date product avaliable: </span>
                                     <span className='italic font-medium capitalize'>
                                         {productInfo.docs.fulfillmentLabel ? (
-                                            productInfo.docs.fulfillmentLabel[0].fulfillmentText || ". . ."
-                                        ) : ". . ."}
+                                            productInfo.docs.fulfillmentLabel[0].fulfillmentText || "Not Avaliable Yet"
+                                        ) : "Not Avaliable Yet"}
                                     </span>
                                 </p>
                             )}
@@ -341,6 +343,7 @@ const ProductViewPage = () => {
                     <button
                         className='w-[42%] p-2.5 rounded-l-full bg-gradient-to-r from-yellow-400 to-orange-500'
                         onClick={toggleCart}
+                        disabled={productInfo.fetching}
                     >
                         Add to cart
                     </button>
@@ -350,93 +353,11 @@ const ProductViewPage = () => {
                 </div>
             )}
 
-            <InfoModal title="Add to Cart" state={cartModal} toggle={toggleCart} >
+            <AddToCartModal productData={productInfo.docs} state={cartModal} toggle={toggleCart} />
 
-                <img src={productInfo.docs.imageInfo?.thumbnailUrl} alt={productInfo.docs.name} />
+            <ProductDetailsModal productData={productInfo.docs} state={specsModal} toggle={toggleSpecs} />
 
-                {/* {productInfo.docs.priceInfo?.currentPrice !== null && (
-                    <span className='text-clamp-xl font-bold'>
-                        {`${productInfo.docs.priceInfo.currentPrice?.currencyUnit} ${productInfo.docs.priceInfo.currentPrice?.priceString}`}
-                    </span>
-                )}
-
-                {productInfo.docs.priceInfo?.currentPrice === null && (
-                    <span className='text-clamp-xl font-bold'>
-                        {`${productInfo.docs.priceInfo.priceRange?.currencyUnit} ${productInfo.docs.priceInfo.priceRange?.priceString}`}
-                    </span>
-                )} */}
-
-                <p className='text-clamp-lg font-bold not-italic'>Quantity</p>
-
-                <button
-                    disabled={productInfo.docs.orderMinLimit === currentQuantity}
-                    onClick={() => setCurrentQuantity(prev => prev - 1)}
-                >
-                    <span>-</span>
-                </button>
-
-                <span className='not-italic text-blue-500'>
-                    {currentQuantity}
-                </span>
-
-                <button
-                    disabled={productInfo.docs.orderLimit === currentQuantity}
-                    onClick={() => setCurrentQuantity(prev => prev + 1)}
-                >
-                    <span>+</span>
-                </button>
-
-                <div className={`mt-1.5 text-clamp-sm ${!productInfo.docs.shippingOption && 'blur-[1px]'}`}>
-                    <p className='font-medium'>
-                        <span className='font-normal'>Method avaliable: </span>
-                        {productInfo.docs.fulfillmentLabel ? (
-                                <span className='capitalize'>
-                                {productInfo.docs.fulfillmentLabel[0].shippingText ||
-                                    productInfo.docs.fulfillmentLabel[0].fulfillmentType?.toLowerCase()}
-                                </span>
-                            ) : ". . ."
-                        }
-                        {productInfo.docs.shippingOption?.shipPrice?.price > 0 && (
-                            <span>
-                                {`- ${productInfo.docs.shippingOption?.shipPrice.priceString}`}
-                            </span>
-                        )}
-                    </p>
-                    {productInfo.docs.fulfillmentLabel && (
-                        productInfo.docs.fulfillmentLabel[0].checkStoreAvailability && (
-                            <>
-                            <p>{productInfo.docs.fulfillmentLabel[0].checkStoreAvailability}</p>
-                            <p>{productInfo.docs.fulfillmentLabel[0].message}</p>
-                            </>
-                        )
-                    )}
-                    {productInfo.docs.fulfillmentType !== "DIGITAL" && (
-                        <p>
-                            <span>Date product avaliable: </span>
-                            <span className='italic font-medium capitalize'>
-                                {productInfo.docs.fulfillmentLabel ? (
-                                    productInfo.docs.fulfillmentLabel[0].fulfillmentText || ". . ."
-                                ) : ". . ."}
-                            </span>
-                        </p>
-                    )}
-                    {productInfo.docs.fulfillmentType === "DIGITAL" && (
-                        <p>{productInfo.docs.fulfillmentLabel[0].message}</p>
-                    )}
-                </div>
-            </InfoModal>
-
-            <InfoModal title="Product Details" state={specsModal} toggle={toggleSpecs} >
-                <React.Fragment>
-                    <Markup content={productInfo.docs.detailedDescription} />
-                </React.Fragment>
-            </InfoModal>
-
-            <InfoModal title="Description" state={descModal} toggle={toggleDesc} >
-                <React.Fragment>
-                    <Markup content={productInfo.docs.shortDescription} />
-                </React.Fragment>
-            </InfoModal>
+            <ProductDescriptionModal productData={productInfo.docs} state={descModal} toggle={toggleDesc} />
         </>
     )
 }

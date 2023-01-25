@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { FiX } from 'react-icons/fi';
-import spinnerIcon from '../assets/images/spinnerIcon.webp'
 
 const InfoModal = ({ children, title, state, toggle }) => {
     let [animate, setAnimate] = useState("translate-y-full duration-[400ms]");
@@ -26,8 +25,6 @@ const InfoModal = ({ children, title, state, toggle }) => {
         , 290)
     }
 
-    // const propsDirectory = children.props.children.props;
-
     return (
         <div className={`${state ? " visible" : " invisible"} ${background} transition-colors duration-500 min-h-screen max-w-[640px] w-full fixed top-0 text-clamp-base z-40`}>
 
@@ -45,11 +42,7 @@ const InfoModal = ({ children, title, state, toggle }) => {
                     </button>
                 </div>
                 <section className='mt-[clamp(0px,12vw,64px)] italic'>
-                    {/* {propsDirectory.content ?
-                        children :
-                        (<img className='h-auto w-[10vw] max-w-[64px] mt-[16%] mx-auto text-center animate-spin' src={spinnerIcon} alt="Loading content..." />)
-                    } */}
-                    {children}
+                    { children }
                 </section>
             </div>
         </div>
