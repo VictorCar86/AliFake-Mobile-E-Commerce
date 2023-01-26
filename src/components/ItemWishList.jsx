@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import skeletonImage from '../assets/images/skeleton.webp';
 
-const ItemWishList = ({ data, selectedItems, updaterSelectedItem, editMode }) => {
+const ItemWishList = ({ data, selectedItems, updater, editMode }) => {
 
     const [lazyImage, setLazyImage] = useState(skeletonImage);
 
@@ -12,10 +12,10 @@ const ItemWishList = ({ data, selectedItems, updaterSelectedItem, editMode }) =>
 
     const changeSelectedState = () => {
         if (selectedItems.some(item => item === data.id)){
-            updaterSelectedItem( selectedItems.filter(i => i !== data.id) );
+            updater( selectedItems.filter(i => i !== data.id) );
         }
         else {
-            updaterSelectedItem( [...selectedItems, data.id] );
+            updater( [...selectedItems, data.id] );
         }
     };
 

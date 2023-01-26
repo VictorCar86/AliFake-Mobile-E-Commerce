@@ -39,6 +39,8 @@ export const sliceShoppingCart = createSlice({
                 id: data.usItemId,
                 name: data.name,
                 amount: data.amount,
+                minAmount: data.orderMinLimit,
+                maxAmount: data.orderLimit,
                 price: finalPrice,
                 currency: finalCurrency,
                 image: data.imageInfo.thumbnailUrl,
@@ -54,13 +56,23 @@ export const sliceShoppingCart = createSlice({
             else {
                 if (state.shoppingCart[existsIndex].amount < data.amount){
                     state.shoppingCart[existsIndex] = {...newItem};
+                    setShoppingCartStorage([...state.shoppingCart]);
                 }
             }
+        },
+        deleteShoppingCart: (state, action) => {
+            if (typeof action.payload !== 'string'){
+                console.error('It is only valid to use IDs within strings');
+            }
+
+            const filteredArray = state.shoppingCart.filter(e => e.id !== action.payload);
+            setShoppingCartStorage(filteredArray);
+            state.shoppingCart = filteredArray;
         },
     }
 })
 
 export const shoppingCartState = (state) => state.sliceShoppingCart;
-export const { addShoppingCart } = sliceShoppingCart.actions;
+export const { addShoppingCart, deleteShoppingCart } = sliceShoppingCart.actions;
 
 export default sliceShoppingCart.reducer;

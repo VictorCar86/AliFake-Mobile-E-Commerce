@@ -20,23 +20,16 @@ const WishListPage = () => {
         return !selectedItems.some(toDelete => toDelete === initialItem.id);
       });
 
-      // console.log(listFiltered);
       dispatcher(putWishList(listFiltered));
       setEditMode(false);
     }
   };
-
-  // useEffect(() => {
-  //   console.log(selectedItems);
-  // }, [selectedItems]);
 
   useEffect(() => {
     if (!editMode){
       setSelectedItems([])
     }
   }, [editMode]);
-
-  // console.log(currentStateOfStorage);
 
   return (
     <GenericPage title='Wish List' Icon={FiShoppingCart} linkTo="/cart">
@@ -90,7 +83,7 @@ const WishListPage = () => {
                 <ItemWishList
                   data={product}
                   selectedItems={selectedItems}
-                  updaterSelectedItem={setSelectedItems}
+                  updater={setSelectedItems}
                   editMode={editMode}
                   key={index} />
               ))}

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { FaMinus, FaPlus } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import MinusButton from '../components/MinusButton';
+import PlusButton from '../components/PlusButton';
 import InfoModal from '../containers/InfoModal';
 import { addShoppingCart } from '../utils/sliceShoppingCart';
 
@@ -8,6 +9,10 @@ const AddToCartModal = ({ productData, state, toggle }) => {
     const dispatch = useDispatch();
 
     const [currentQuantity, setCurrentQuantity] = useState(1);
+
+    useEffect(() => {
+        setCurrentQuantity(1);
+    }, [productData]);
 
     function sendToCart() {
         const newItem = {...productData, amount: currentQuantity};
@@ -46,25 +51,21 @@ const AddToCartModal = ({ productData, state, toggle }) => {
                     <section>
                         <p className='mt-3 mb-2 text-clamp-lg font-bold not-italic'>Quantity</p>
 
-                        <button
-                            className={`rounded-full p-[1.5%] bg-gray-200 ${productData.orderMinLimit === currentQuantity && 'opacity-60'}`}
+                        <MinusButton
+                            className={productData.orderMinLimit === currentQuantity && 'opacity-60'}
                             disabled={productData.orderMinLimit === currentQuantity}
                             onClick={() => setCurrentQuantity(prev => prev - 1)}
-                        >
-                            <FaMinus className='scale-75 fill-gray-600' />
-                        </button>
+                        />
 
                         <span className='inline-block w-[10%] h-auto not-italic text-blue-500 align-text-bottom text-center'>
                             {currentQuantity}
                         </span>
 
-                        <button
+                        <PlusButton
                             className={`rounded-full p-[1.5%] bg-gray-200 ${productData.orderLimit === currentQuantity && 'opacity-60'}`}
                             disabled={productData.orderLimit === currentQuantity}
                             onClick={() => setCurrentQuantity(prev => prev + 1)}
-                        >
-                            <FaPlus className='scale-75 fill-gray-600' />
-                        </button>
+                        />
 
                         <span className='text-clamp-sm mx-[4%] text-gray-500 align-text-top'>
                             {productData.orderLimit ||'Not'} avaliable to buy
@@ -84,11 +85,11 @@ const AddToCartModal = ({ productData, state, toggle }) => {
                                     </span>
                                 ) : ". . ."
                             }
-                            {productData.shippingOption?.shipPrice?.price > 0 && (
+                            {/* {productData.shippingOption?.shipPrice?.price > 0 && (
                                 <span>
                                     {`- ${productData.shippingOption?.shipPrice.priceString}`}
                                 </span>
-                            )}
+                            )} */}
                         </p>
                         {productData.fulfillmentLabel && (
                             productData.fulfillmentLabel[0].checkStoreAvailability && (
@@ -116,7 +117,7 @@ const AddToCartModal = ({ productData, state, toggle }) => {
             </figure>
 
 
-            <div className='fixed bottom-0 w-[89vw] max-w-[585px] py-1.5 bg-white'>
+            <div className='fixed bottom-0 w-[89vw] max-w-[585px] py-3 bg-white'>
                 <button
                     className='w-full py-2 rounded-full text-rose-600 font-bold bg-rose-200/60'
                     onClick={sendToCart}
