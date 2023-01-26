@@ -45,8 +45,8 @@ const WishListPage = () => {
 
       {wishList.length > 0 && (
         <>
-          <div className='fixed max-h-[82px] h-[12.8vw] w-full max-w-screen-sm flex justify-between items-center px-[clamp(0px,2vw,16px)] border-b-[3px] border-gray-300 bg-white z-20'>
-            <select className='text-clamp-base bg-transparent' name="productsOrder" id="productsOrder">
+          <div className='fixed max-h-[82px] h-[12.8vw] w-full max-w-screen-sm flex justify-between items-center pl-[clamp(0px,1vw,8px)] pr-[clamp(0px,2vw,16px)] border-b-[3px] border-gray-300 bg-white z-20'>
+            <select className='p-[2%] text-clamp-base bg-transparent' name="productsOrder" id="productsOrder">
               <option value="allProducts">
                 ALL PRODUCTS
               </option>
@@ -55,25 +55,19 @@ const WishListPage = () => {
               </option>
             </select>
 
-            {!editMode && (
-              <button
-                onClick={() => setEditMode(!editMode)}
-                className='w-[5vw] max-w-[32px] h-min p-3 box-content active:bg-gray-200'
-                type='button'
-              >
+            <button
+              onClick={() => setEditMode(!editMode)}
+              className='w-[5vw] max-w-[32px] h-min p-3 box-content active:bg-gray-200'
+              type='button'
+            >
+              {!editMode && (
                 <FaPen className='w-full max-w-[32px] h-min'/>
-              </button>
-            )}
+              )}
+              {editMode && (
+                <FiCheck className='w-full max-w-[32px] h-min scale-[1.40]'/>
+              )}
+            </button>
 
-            {editMode && (
-              <button
-                onClick={() => setEditMode(!editMode)}
-                className='w-[6vw] max-w-[32px] h-min p-3 box-content active:bg-gray-200'
-                type='button'
-              >
-                <FiCheck className='w-full max-w-[32px] h-min'/>
-              </button>
-            )}
           </div>
 
           <section className={`pt-[12.8%] ${editMode && 'pb-[clamp(0px,12.8vw,82px)]'}`}>

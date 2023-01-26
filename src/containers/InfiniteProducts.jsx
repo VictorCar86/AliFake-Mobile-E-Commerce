@@ -19,8 +19,6 @@ const InfiniteProducts = () => {
     const useEffectFirstCall = useRef(false);
 
     const { pathname } = useLocation();
-    const routeExceptions = ['/', 'cart'];
-    const includeRoute = routeExceptions.some(route => pathname.includes(route));
 
     const renderProducts = (docs) => {
         if (docs.length !== 0){
@@ -103,7 +101,7 @@ const InfiniteProducts = () => {
     , [infiniteLoading, pathname]);
 
     return (
-        <section className={`table-cell w-full ${!infiniteLoading ? 'h-[calc(100%+48px)]' : 'h-full'} px-3 ${includeRoute && 'pb-14'} text-base bg-transparent`}>
+        <section className={`table-cell w-full ${!infiniteLoading ? 'h-[calc(100%+48px)]' : 'h-full'} px-3 ${pathname.includes('/') && 'pb-14'} ${pathname.includes('cart') && 'pb-44'} text-base bg-transparent`}>
             {/* <button className='fixed top-[3%] z-30 bg-red-600 text-white' onClick={() => console.log(bestSalesData)}>BestSalesData</button> */}
             <p className={`my-[1.8vh] ${pathname !== '/' ? 'text-clamp-base font-bold' : 'text-clamp-lg font-medium'}`}>More to love</p>
             {/* <button onClick={() => console.log(bestSalesData)}>state</button> */}

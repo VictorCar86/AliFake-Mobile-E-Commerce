@@ -28,7 +28,7 @@ const ItemCart = ({ data, selectedItems, updater }) => {
 
     return (
         <li className='relative mt-[2%] overflow-hidden'>
-            <aside className='absolute top-0 left-0 bottom-0 right-[90%]' onClick={selectItem}>
+            <button className='absolute top-0 left-0 bottom-0 right-[90%]' onClick={selectItem}>
                 {selected && (
                     <FaCheckCircle
                         className='absolute top-[40%] left-1/4 max-w-[32px] w-[5vw] h-min fill-rose-600'
@@ -39,7 +39,7 @@ const ItemCart = ({ data, selectedItems, updater }) => {
                         className='absolute top-[40%] left-1/4 max-w-[32px] w-[5vw] h-min fill-gray-400/75'
                     />
                 )}
-            </aside>
+            </button>
             <Link to={`/product/${data.id}`}>
                 <figure className='flex gap-[2%] p-[2%] pl-[10%] bg-white'>
                     <img
