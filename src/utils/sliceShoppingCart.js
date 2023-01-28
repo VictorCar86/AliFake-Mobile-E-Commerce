@@ -23,39 +23,39 @@ export const sliceShoppingCart = createSlice({
 
             const existsIndex = state.shoppingCart.findIndex(item => item.id === data.usItemId);
 
-            let finalPrice;
-            let finalCurrency;
-
-            if (data.priceInfo.currentPrice !== null){
-                finalPrice = data.priceInfo.currentPrice.priceString;
-                finalCurrency = data.priceInfo.currentPrice.currencyUnit;
-            }
-            else {
-                finalPrice = data.priceInfo.priceRange.priceString;
-                finalCurrency = data.priceInfo.priceRange.currencyUnit;
-            }
-
-            const newItem = {
-                id: data.usItemId,
-                name: data.name,
-                amount: data.amount,
-                minAmount: data.orderMinLimit,
-                maxAmount: data.orderLimit,
-                price: finalPrice,
-                currency: finalCurrency,
-                image: data.imageInfo.thumbnailUrl,
-                manufacturer: data.manufacturerName,
-            };
-
             if (existsIndex === -1) {
+                let finalPrice;
+                let finalCurrency;
+
+                if (data.priceInfo.currentPrice !== null){
+                    finalPrice = data.priceInfo.currentPrice.priceString;
+                    finalCurrency = data.priceInfo.currentPrice.currencyUnit;
+                }
+                else {
+                    finalPrice = data.priceInfo.priceRange.priceString;
+                    finalCurrency = data.priceInfo.priceRange.currencyUnit;
+                }
+
+                const newItem = {
+                    id: data.usItemId,
+                    name: data.name,
+                    amount: data.amount,
+                    minAmount: data.orderMinLimit,
+                    maxAmount: data.orderLimit,
+                    price: finalPrice,
+                    currency: finalCurrency,
+                    image: data.imageInfo.thumbnailUrl,
+                    manufacturer: data.manufacturerName,
+                };
+
                 const newState = [...state.shoppingCart, {...newItem}];
 
                 setShoppingCartStorage(newState);
                 state.shoppingCart = newState;
             }
             else {
-                if (state.shoppingCart[existsIndex].amount < data.amount){
-                    state.shoppingCart[existsIndex] = {...newItem};
+                if (state.shoppingCart[existsIndex].amount !== data.amount){
+                    state.shoppingCart[existsIndex].amount = data.amount;
                     setShoppingCartStorage([...state.shoppingCart]);
                 }
             }

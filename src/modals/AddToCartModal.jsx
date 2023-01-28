@@ -52,7 +52,7 @@ const AddToCartModal = ({ productData, state, toggle }) => {
                         <p className='mt-3 mb-2 text-clamp-lg font-bold not-italic'>Quantity</p>
 
                         <MinusButton
-                            className={productData.orderMinLimit === currentQuantity && 'opacity-60'}
+                            className={`p-[1.5%] ${productData.orderMinLimit === currentQuantity && 'opacity-60'}`}
                             disabled={productData.orderMinLimit === currentQuantity}
                             onClick={() => setCurrentQuantity(prev => prev - 1)}
                         />
@@ -62,7 +62,7 @@ const AddToCartModal = ({ productData, state, toggle }) => {
                         </span>
 
                         <PlusButton
-                            className={`rounded-full p-[1.5%] bg-gray-200 ${productData.orderLimit === currentQuantity && 'opacity-60'}`}
+                            className={`p-[1.5%] ${productData.orderLimit === currentQuantity && 'opacity-60'}`}
                             disabled={productData.orderLimit === currentQuantity}
                             onClick={() => setCurrentQuantity(prev => prev + 1)}
                         />

@@ -1,34 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { FaCheckCircle, FaRegCircle } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import skeletonImage from '../assets/images/skeleton.webp';
+import { addShoppingCart } from '../utils/sliceShoppingCart';
 import MinusButton from './MinusButton';
 import PlusButton from './PlusButton';
 
-const ItemCart = ({ data, selectedItems, updater }) => {
-    const [selected, setSelected] = useState(false);
+const ItemCart = ({ data = {}, selectedItems = [], updater}) => {
+    const dispatch = useDispatch();
     const [amount, setAmount] = useState(data.amount);
     const [lazyImage, setLazyImage] = useState(skeletonImage);
 
+    const selected = selectedItems.some(product => product.id === data.id);
+
     useEffect(() => {
-        setLazyImage(data.image);
-        setSelected(false);
+        if (data.image !== lazyImage){
+            setLazyImage(data.image);
+            updater( selectedItems.filter(i => i.id !== data.id) );
+        }
     }, [data]);
 
+    useEffect(() => {
+        if (amount !== data.amount){
+            const itemStorage = {usItemId: data.id, amount};
+            dispatch(addShoppingCart(itemStorage));
+            // const itemIndex = selectedItems.findIndex(i => i.id === data.id);
+            // const newItem = [...selectedItems];
+            // newItem[itemIndex].amount = amount;
+            // updater( newItem );
+        }
+    }, [amount]);
+
     function selectItem() {
-        if (selectedItems.some(e => e === data.id)){
-            setSelected(false);
-            updater( selectedItems.filter(i => i !== data.id) );
+        if (selected){
+            updater( selectedItems.filter(i => i.id !== data.id) );
         }
         else {
-            setSelected(true);
-            updater( [...selectedItems, data.id] );
+            updater( [...selectedItems, {id: data.id, amount: data.amount}] );
         }
     }
 
     return (
         <li className='relative mt-[2%] overflow-hidden'>
-            <button className='absolute top-0 left-0 bottom-0 right-[90%]' onClick={selectItem}>
+            <button className='absolute top-0 left-0 bottom-0 w-[10vw] max-w-[64px]' onClick={selectItem}>
                 {selected && (
                     <FaCheckCircle
                         className='absolute top-[40%] left-1/4 max-w-[32px] w-[5vw] h-min fill-rose-600'
@@ -52,10 +67,10 @@ const ItemCart = ({ data, selectedItems, updater }) => {
                         <p className='text-clamp-lg text-gray-500 whitespace-nowrap text-ellipsis overflow-hidden'>
                             {data.name}
                         </p>
-                        <p>
+                        <p className='whitespace-nowrap text-ellipsis overflow-hidden'>
                             {data.manufacturer}
                         </p>
-                        <p className='font-bold'>
+                        <p className='w-[55%] font-bold'>
                             {data.currency} {data.price}
                         </p>
                     </figcaption>
