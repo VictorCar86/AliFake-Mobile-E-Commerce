@@ -7,7 +7,7 @@ import MainPage from './routes/MainPage';
 import ProductViewPage from './routes/ProductViewPage';
 import CategoriesPage from './routes/CategoriesPage';
 import CartPage from './routes/CartPage';
-import OrderPage from './routes/orderPage';
+import OrderPage from './routes/OrderPage';
 import AccountPage from './routes/AccountPage';
 import WishListPage from './routes/WishListPage';
 import ViewedPage from './routes/ViewedPage';
