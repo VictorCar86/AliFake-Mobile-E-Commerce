@@ -3,12 +3,11 @@ import { useLocation, Link } from 'react-router-dom'
 import { FiUser, FiShoppingCart, FiGrid, FiHome } from 'react-icons/fi'
 
 const MainNavbar = () => {
+  const { pathname } = useLocation();
+  const routeExceptions = ['/product', 'account/wishlist', 'account/viewed', 'cart/confirm', 'cart/confirm/purchases'];
+  const includeRoute = routeExceptions.some(route => pathname.includes(route));
 
   const svgStyles = "w-[6.4vw] max-w-[36px] h-[6.4vw] max-h-9 mx-auto";
-
-  const { pathname } = useLocation();
-  const routeExceptions = ['/product', 'account/wishlist', 'account/viewed'];
-  const includeRoute = routeExceptions.some(route => pathname.includes(route));
 
   const avaliableScroll = () => {
     if (pathname === "/"){

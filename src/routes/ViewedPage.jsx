@@ -1,7 +1,7 @@
 import React from 'react';
 import GenericPage from '../containers/GenericPage';
 import { useSelector } from 'react-redux';
-import { viewedItemsState } from '../utils/sliceViewedItems';
+import { viewedItemsState } from '../utils/redux/sliceViewedItems';
 import { Link } from 'react-router-dom';
 import ItemViewedList from '../components/ItemViewedList';
 

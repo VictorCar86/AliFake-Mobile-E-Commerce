@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import useLocalStorage from "../hooks/useLocalStorage";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 const [viewedStorage, setViewedStorage] = useLocalStorage('viewedItems');
 

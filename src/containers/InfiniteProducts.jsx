@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { bestSalesState, requestBestSales, resultBestSales, errorBestSales } from '../utils/sliceBestSales';
+import { bestSalesState, requestBestSales, resultBestSales, errorBestSales } from '../utils/redux/sliceBestSales';
 import SkeletonPreviewProduct from '../components/SkeletonPreviewProduct';
 import useIntersection from '../hooks/useIntersection';
 import PreviewProduct from '../components/PreviewProduct';

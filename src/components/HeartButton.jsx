@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FiHeart } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
-import { wishListState, addWishList, deleteWishList } from '../utils/sliceWishList';
+import { wishListState, addWishList, deleteWishList } from '../utils/redux/sliceWishList';
 
 const HeartButton = ({ data = undefined, absolute = false, wishedCount = 0 }) => {
     const { wishList } = useSelector(wishListState);

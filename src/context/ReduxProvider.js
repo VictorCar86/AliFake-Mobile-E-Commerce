@@ -1,6 +1,6 @@
 import React from "react";
 import { Provider } from "react-redux";
-import { store } from "../utils/reduxState";
+import { store } from "../utils/redux/reduxState";
 
 const ReduxProvider = ({ children }) => {
     return (

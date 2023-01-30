@@ -1,5 +1,5 @@
-import skeletonImage from '../assets/images/skeleton.webp';
-import notFoundImage from '../assets/images/not_found.webp';
+import skeletonImage from '../../assets/images/skeleton.webp';
+import notFoundImage from '../../assets/images/not_found.webp';
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialDocs = {

@@ -1,21 +1,26 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { GiShoppingCart } from 'react-icons/gi';
 import { FaCheckCircle, FaRegCircle, FaRegTrashAlt } from 'react-icons/fa';
-import InfiniteProducts from '../containers/InfiniteProducts';
+import { deleteShoppingCart, shoppingCartState } from '../utils/redux/sliceShoppingCart';
 import BackButton from '../components/BackButton';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteShoppingCart, shoppingCartState } from '../utils/sliceShoppingCart';
 import ItemCart from '../components/ItemCart';
+import priceReducer from '../utils/functions/priceReducer';
+import InfiniteProducts from '../containers/InfiniteProducts';
 import { useEffect } from 'react';
+import { addPurchaseID } from '../utils/redux/slicePurchase';
+import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
   const { shoppingCart } = useSelector(shoppingCartState);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
     console.log(selectedItems);
+    console.log(shoppingCart);
     return () => {return}
   }
   , [selectedItems])
@@ -29,28 +34,6 @@ const CartPage = () => {
     }
   }
 
-  function priceReducer(array){
-    const reducedNumber = array.reduce((accumulator, item) => {
-
-      const alreadySelected = selectedItems.findIndex(p => p.id === item.id);
-
-      if (alreadySelected === -1){
-        return accumulator;
-      }
-
-      const amountProduct = alreadySelected >= 0 ? selectedItems[alreadySelected].amount : false;
-
-      const newPrice = Number(item.price.slice(1)) * (amountProduct || 1);
-
-      return accumulator + newPrice;
-    }
-    , 0);
-
-    const stringyNumber = `$${reducedNumber}`;
-
-    return stringyNumber.includes('.') ? stringyNumber : stringyNumber + '.00';
-  }
-
   function toggleSelectedItems(){
     if (selectedItems.length < shoppingCart.length){
       const everyProductSelected = shoppingCart.reduce((accumulator, product) => {
@@ -61,6 +44,14 @@ const CartPage = () => {
     else {
       setSelectedItems([]);
     }
+  }
+
+  function sendToConfirmation(){
+    selectedItems.forEach(item => {
+      dispatch(addPurchaseID(item.id));
+    });
+
+    navigate('/cart/confirm');
   }
 
   return (
@@ -119,9 +110,9 @@ const CartPage = () => {
             <span className='ml-2 align-middle' type='button'>All</span>
           </button>
           <span className='ml-auto mr-[3%] font-medium'>
-            USD {selectedItems.length > 0 ? priceReducer(shoppingCart) : '$0.00'}
+            USD {priceReducer(shoppingCart, selectedItems)}
           </span>
-          <button className='py-[1.5%] px-[3%] rounded-full text-white bg-rose-600' type='button'>
+          <button className='py-[1.5%] px-[3%] rounded-full text-white bg-rose-600' disabled={selectedItems.length <= 0} onClick={sendToConfirmation} type='button'>
             Checkout ({selectedItems.length})
           </button>
         </div>

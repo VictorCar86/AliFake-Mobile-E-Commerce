@@ -3,7 +3,7 @@ import { FaCheckCircle, FaRegCircle } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import skeletonImage from '../assets/images/skeleton.webp';
-import { addShoppingCart } from '../utils/sliceShoppingCart';
+import { addShoppingCart } from '../utils/redux/sliceShoppingCart';
 import MinusButton from './MinusButton';
 import PlusButton from './PlusButton';
 
@@ -25,10 +25,14 @@ const ItemCart = ({ data = {}, selectedItems = [], updater}) => {
         if (amount !== data.amount){
             const itemStorage = {usItemId: data.id, amount};
             dispatch(addShoppingCart(itemStorage));
-            // const itemIndex = selectedItems.findIndex(i => i.id === data.id);
-            // const newItem = [...selectedItems];
-            // newItem[itemIndex].amount = amount;
-            // updater( newItem );
+
+            const itemIndex = selectedItems.findIndex(i => i.id === data.id);
+
+            if (itemIndex !== -1){
+                const newItem = [...selectedItems];
+                newItem[itemIndex].amount = amount;
+                updater( newItem );
+            }
         }
     }, [amount]);
 

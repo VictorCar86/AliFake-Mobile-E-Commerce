@@ -5,6 +5,7 @@ import sliceProductInfo from './sliceProductInfo';
 import sliceWishList from './sliceWishList';
 import sliceViewedItems from './sliceViewedItems';
 import sliceShoppingCart from './sliceShoppingCart';
+import slicePurchase from './slicePurchase';
 
 export const store = configureStore({
     reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
         sliceWishList,
         sliceViewedItems,
         sliceShoppingCart,
+        slicePurchase,
     },
 });

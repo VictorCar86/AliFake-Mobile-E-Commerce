@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import MinusButton from '../components/MinusButton';
 import PlusButton from '../components/PlusButton';
 import InfoModal from '../containers/InfoModal';
-import { addShoppingCart } from '../utils/sliceShoppingCart';
+import { addShoppingCart } from '../utils/redux/sliceShoppingCart';
 
 const AddToCartModal = ({ productData, state, toggle }) => {
     const dispatch = useDispatch();

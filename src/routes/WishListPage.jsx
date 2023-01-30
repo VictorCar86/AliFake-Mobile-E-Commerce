@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaPen } from 'react-icons/fa';
 import { FiShoppingCart, FiHeart, FiCheck } from 'react-icons/fi'
 import { useDispatch, useSelector } from 'react-redux';
-import { wishListState, putWishList } from '../utils/sliceWishList';
+import { wishListState, putWishList } from '../utils/redux/sliceWishList';
 import ItemWishList from '../components/ItemWishList';
 import GenericPage from '../containers/GenericPage';
 
