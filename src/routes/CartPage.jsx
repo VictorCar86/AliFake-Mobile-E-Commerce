@@ -112,7 +112,7 @@ const CartPage = () => {
           <span className='ml-auto mr-[3%] font-medium'>
             USD {priceReducer(shoppingCart, selectedItems)}
           </span>
-          <button className='py-[1.5%] px-[3%] rounded-full text-white bg-rose-600' disabled={selectedItems.length <= 0} onClick={sendToConfirmation} type='button'>
+          <button className={`py-[1.5%] px-[3%] rounded-full text-white bg-rose-600 ${selectedItems.length <= 0 && 'opacity-60'}`} disabled={selectedItems.length <= 0} onClick={sendToConfirmation} type='button'>
             Checkout ({selectedItems.length})
           </button>
         </div>
