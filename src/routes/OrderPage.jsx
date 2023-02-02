@@ -9,60 +9,65 @@ import { shoppingCartState } from '../utils/redux/sliceShoppingCart';
 import { useNavigate } from 'react-router-dom';
 import ItemOrder from '../components/ItemOrder';
 import priceReducer from '../utils/functions/priceReducer';
+import PaymentModal from '../modals/PaymentModal';
 
 const OrderPage = () => {
     const { purchaseIDList } = useSelector(purchaseListState);
     const { shoppingCart } = useSelector(shoppingCartState);
     const navigate = useNavigate();
 
-    // const filteredProducts = [
-    //     {
-    //         "id": "179141552",
-    //         "name": "Akedo, 18 Ultimate Arcade 2.5 inch Action Figures , Exclusive All Star Collector Pack, Boys, Ages 6+",
-    //         "amount": 4,
-    //         "minAmount": 1,
-    //         "maxAmount": 5,
-    //         "price": "$30.00",
-    //         "currency": "USD",
-    //         "image": "https://i5.walmartimages.com/asr/e44215ec-9d60-4e40-b624-1f68c1a6d41a.129a7ebe61d2e813700bbc25cc10e433.jpeg",
-    //         "manufacturer": "Akedo"
-    //     },
-    //     {
-    //         "id": "495431201",
-    //         "name": "Nee Doh Cool Cats Squishy Fidget Ball, Novelty Toy, Multiple Colors, Children Ages 3+",
-    //         "amount": 3,
-    //         "minAmount": 1,
-    //         "maxAmount": 12,
-    //         "price": "$3.44",
-    //         "currency": "USD",
-    //         "image": "https://i5.walmartimages.com/asr/6ad2d944-d385-42d0-a9d8-2c079d520e5f_1.7e544a5cc7687fbbadc432ef3ee88393.jpeg",
-    //         "manufacturer": "Schylling"
-    //     },
-    //     {
-    //         "id": "2911481438",
-    //         "name": "Funko Pop! Animation: Demon Slayer – Kyojuro Rengoku (Glow) Vinyl Figure (Walmart Exclusive) (+ Pop! Protector)",
-    //         "amount": 1,
-    //         "minAmount": 1,
-    //         "maxAmount": 12,
-    //         "price": "$19.76",
-    //         "currency": "USD",
-    //         "image": "https://i5.walmartimages.com/asr/9b803cce-5bd3-4ba4-9ee0-9c0baa0af2bd.43f3669ba2b70a78a6adc8ac88f7c696.jpeg",
-    //         "manufacturer": null
-    //     }
-    // ];
+    const filteredProducts = [
+        {
+            "id": "179141552",
+            "name": "Akedo, 18 Ultimate Arcade 2.5 inch Action Figures , Exclusive All Star Collector Pack, Boys, Ages 6+",
+            "amount": 4,
+            "minAmount": 1,
+            "maxAmount": 5,
+            "price": "$30.00",
+            "currency": "USD",
+            "image": "https://i5.walmartimages.com/asr/e44215ec-9d60-4e40-b624-1f68c1a6d41a.129a7ebe61d2e813700bbc25cc10e433.jpeg",
+            "manufacturer": "Akedo"
+        },
+        {
+            "id": "495431201",
+            "name": "Nee Doh Cool Cats Squishy Fidget Ball, Novelty Toy, Multiple Colors, Children Ages 3+",
+            "amount": 3,
+            "minAmount": 1,
+            "maxAmount": 12,
+            "price": "$3.44",
+            "currency": "USD",
+            "image": "https://i5.walmartimages.com/asr/6ad2d944-d385-42d0-a9d8-2c079d520e5f_1.7e544a5cc7687fbbadc432ef3ee88393.jpeg",
+            "manufacturer": "Schylling"
+        },
+        {
+            "id": "2911481438",
+            "name": "Funko Pop! Animation: Demon Slayer – Kyojuro Rengoku (Glow) Vinyl Figure (Walmart Exclusive) (+ Pop! Protector)",
+            "amount": 1,
+            "minAmount": 1,
+            "maxAmount": 12,
+            "price": "$19.76",
+            "currency": "USD",
+            "image": "https://i5.walmartimages.com/asr/9b803cce-5bd3-4ba4-9ee0-9c0baa0af2bd.43f3669ba2b70a78a6adc8ac88f7c696.jpeg",
+            "manufacturer": null
+        }
+    ];
 
-    const filteredProducts = shoppingCart.filter(item => {
-        return purchaseIDList.some(id => id === item.id)
-    });
+    // const filteredProducts = shoppingCart.filter(item => {
+    //     return purchaseIDList.some(id => id === item.id)
+    // });
 
     const [itemsRefs, setItemsRefs] = useState(filteredProducts.map(product => ({id: product.id, amount: product.amount})));
 
-    useEffect(() => {
-        if (purchaseIDList.length <= 0){
-            navigate('/cart');
-        }
-        return () => console.log('Closed');
-    }, []);
+    // useEffect(() => {
+    //     if (purchaseIDList.length <= 0){
+    //         navigate('/cart');
+    //     }
+    //     return () => console.log('Closed');
+    // }, []);
+
+    const [payMethodModal, setPayMethodModal] = useState(false);
+
+    const togglePayMethodModal = () => setPayMethodModal(prev => !prev);
 
     return (
         <GenericPage title='Order Confirmation'>
@@ -83,7 +88,11 @@ const OrderPage = () => {
                 </button>
             </section>
             <section className='m-[3%] text-clamp-base'>
-                <button className='flex justify-between items-center gap-[3%] h-max w-full py-[4.5%] px-[2%] rounded-lg whitespace-nowrap bg-white' type='button'>
+                <button
+                    className='flex justify-between items-center gap-[3%] h-max w-full py-[4.5%] px-[2%] rounded-lg whitespace-nowrap bg-white'
+                    onClick={togglePayMethodModal}
+                    type='button'
+                >
                     <i>
                         <PaymentIcon className='w-[5.5vw] max-w-[35px] h-min' />
                     </i>
@@ -115,7 +124,7 @@ const OrderPage = () => {
                                 <td className='py-[1%]'>
                                     <button className='flex items-center ml-auto' type='button'>
                                         <span>Enter code here</span>
-                                        <FiChevronRight/>
+                                        <FiChevronRight className='translate-y-0.5'/>
                                     </button>
                                 </td>
                             </tr>
@@ -128,7 +137,7 @@ const OrderPage = () => {
                 </div>
             </section>
 
-            <div className='fixed bottom-0 h-min w-full max-w-screen-sm px-[3%] pb-[2%] bg-white'>
+            <div className='fixed bottom-0 h-min w-full max-w-screen-sm px-[clamp(0px,3vw,20px)] pb-[clamp(0px,2vw,13px)] bg-white'>
                 <p className='flex justify-between items-center py-[2%] font-bold'>
                     <span>Total</span>
                     <span>
@@ -140,6 +149,8 @@ const OrderPage = () => {
                     Place order
                 </button>
             </div>
+
+            <PaymentModal state={payMethodModal} toggle={togglePayMethodModal} />
         </GenericPage>
     )
 }

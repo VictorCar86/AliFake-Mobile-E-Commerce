@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FiX } from 'react-icons/fi';
 
-const InfoModal = ({ children, title, state, toggle }) => {
+const InfoModal = ({ children, title = "", state, toggle }) => {
     let [animate, setAnimate] = useState("translate-y-full duration-[400ms]");
     let [background, setBackground] = useState("bg-transparent");
 
@@ -31,7 +31,7 @@ const InfoModal = ({ children, title, state, toggle }) => {
             <div className='w-full h-screen' onClick={closeLogic}></div>
 
             <div className={`${animate} transition-transform h-3/4 w-full max-w-[640px] px-5 pb-5 absolute bottom-0 rounded-t-xl bg-white overflow-y-scroll overflow-x-hidden`}>
-                <div className='fixed h-auto w-full max-w-[640px] -ml-5 rounded-t-xl bg-white'>
+                <nav className='fixed h-auto w-full max-w-[640px] -ml-5 rounded-t-xl bg-white z-30'>
                     <p className='mt-2.5 mb-3 text-center font-medium'>{title}</p>
                     <button
                         className='absolute top-[26%] right-4 h-min w-[5%]'
@@ -40,10 +40,10 @@ const InfoModal = ({ children, title, state, toggle }) => {
                     >
                         <FiX className='w-full h-full opacity-60'/>
                     </button>
-                </div>
-                <section className='mt-[clamp(0px,12vw,64px)] italic'>
+                </nav>
+                <main className='relative min-h-[64vh] mt-[clamp(0px,13vw,64px)] italic'>
                     { children }
-                </section>
+                </main>
             </div>
         </div>
     )
