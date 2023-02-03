@@ -6,7 +6,7 @@ import { FiChevronRight } from 'react-icons/fi';
 import PaymentIcon from '../utils/icons/PaymentIcon';
 import { purchaseListState } from '../utils/redux/slicePurchase';
 import { shoppingCartState } from '../utils/redux/sliceShoppingCart';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ItemOrder from '../components/ItemOrder';
 import priceReducer from '../utils/functions/priceReducer';
 import PaymentModal from '../modals/PaymentModal';
@@ -16,54 +16,54 @@ const OrderPage = () => {
     const { shoppingCart } = useSelector(shoppingCartState);
     const navigate = useNavigate();
 
-    const filteredProducts = [
-        {
-            "id": "179141552",
-            "name": "Akedo, 18 Ultimate Arcade 2.5 inch Action Figures , Exclusive All Star Collector Pack, Boys, Ages 6+",
-            "amount": 4,
-            "minAmount": 1,
-            "maxAmount": 5,
-            "price": "$30.00",
-            "currency": "USD",
-            "image": "https://i5.walmartimages.com/asr/e44215ec-9d60-4e40-b624-1f68c1a6d41a.129a7ebe61d2e813700bbc25cc10e433.jpeg",
-            "manufacturer": "Akedo"
-        },
-        {
-            "id": "495431201",
-            "name": "Nee Doh Cool Cats Squishy Fidget Ball, Novelty Toy, Multiple Colors, Children Ages 3+",
-            "amount": 3,
-            "minAmount": 1,
-            "maxAmount": 12,
-            "price": "$3.44",
-            "currency": "USD",
-            "image": "https://i5.walmartimages.com/asr/6ad2d944-d385-42d0-a9d8-2c079d520e5f_1.7e544a5cc7687fbbadc432ef3ee88393.jpeg",
-            "manufacturer": "Schylling"
-        },
-        {
-            "id": "2911481438",
-            "name": "Funko Pop! Animation: Demon Slayer – Kyojuro Rengoku (Glow) Vinyl Figure (Walmart Exclusive) (+ Pop! Protector)",
-            "amount": 1,
-            "minAmount": 1,
-            "maxAmount": 12,
-            "price": "$19.76",
-            "currency": "USD",
-            "image": "https://i5.walmartimages.com/asr/9b803cce-5bd3-4ba4-9ee0-9c0baa0af2bd.43f3669ba2b70a78a6adc8ac88f7c696.jpeg",
-            "manufacturer": null
-        }
-    ];
+    // const filteredProducts = [
+    //     {
+    //         "id": "179141552",
+    //         "name": "Akedo, 18 Ultimate Arcade 2.5 inch Action Figures , Exclusive All Star Collector Pack, Boys, Ages 6+",
+    //         "amount": 4,
+    //         "minAmount": 1,
+    //         "maxAmount": 5,
+    //         "price": "$30.00",
+    //         "currency": "USD",
+    //         "image": "https://i5.walmartimages.com/asr/e44215ec-9d60-4e40-b624-1f68c1a6d41a.129a7ebe61d2e813700bbc25cc10e433.jpeg",
+    //         "manufacturer": "Akedo"
+    //     },
+    //     {
+    //         "id": "495431201",
+    //         "name": "Nee Doh Cool Cats Squishy Fidget Ball, Novelty Toy, Multiple Colors, Children Ages 3+",
+    //         "amount": 3,
+    //         "minAmount": 1,
+    //         "maxAmount": 12,
+    //         "price": "$3.44",
+    //         "currency": "USD",
+    //         "image": "https://i5.walmartimages.com/asr/6ad2d944-d385-42d0-a9d8-2c079d520e5f_1.7e544a5cc7687fbbadc432ef3ee88393.jpeg",
+    //         "manufacturer": "Schylling"
+    //     },
+    //     {
+    //         "id": "2911481438",
+    //         "name": "Funko Pop! Animation: Demon Slayer – Kyojuro Rengoku (Glow) Vinyl Figure (Walmart Exclusive) (+ Pop! Protector)",
+    //         "amount": 1,
+    //         "minAmount": 1,
+    //         "maxAmount": 12,
+    //         "price": "$19.76",
+    //         "currency": "USD",
+    //         "image": "https://i5.walmartimages.com/asr/9b803cce-5bd3-4ba4-9ee0-9c0baa0af2bd.43f3669ba2b70a78a6adc8ac88f7c696.jpeg",
+    //         "manufacturer": null
+    //     }
+    // ];
 
-    // const filteredProducts = shoppingCart.filter(item => {
-    //     return purchaseIDList.some(id => id === item.id)
-    // });
+    const filteredProducts = shoppingCart.filter(item => {
+        return purchaseIDList.some(id => id === item.id)
+    });
 
     const [itemsRefs, setItemsRefs] = useState(filteredProducts.map(product => ({id: product.id, amount: product.amount})));
 
-    // useEffect(() => {
-    //     if (purchaseIDList.length <= 0){
-    //         navigate('/cart');
-    //     }
-    //     return () => console.log('Closed');
-    // }, []);
+    useEffect(() => {
+        if (purchaseIDList.length <= 0){
+            navigate('/cart');
+        }
+        // return () => console.log('Closed');
+    }, []);
 
     const [payMethodModal, setPayMethodModal] = useState(false);
 
@@ -145,9 +145,12 @@ const OrderPage = () => {
                     </span>
                 </p>
 
-                <button className='w-full py-[1.5%] rounded-full font-medium text-white bg-gradient-to-r from-orange-500 to-red-600' type='button'>
+                <Link
+                    className='inline-block w-full py-[1.5%] rounded-full font-medium text-center text-white bg-gradient-to-r from-orange-500 to-red-600'
+                    to={'/cart/purchase-done'}
+                >
                     Place order
-                </button>
+                </Link>
             </div>
 
             <PaymentModal state={payMethodModal} toggle={togglePayMethodModal} />

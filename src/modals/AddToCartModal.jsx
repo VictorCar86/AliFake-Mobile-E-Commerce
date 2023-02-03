@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import MinusButton from '../components/MinusButton';
 import PlusButton from '../components/PlusButton';
@@ -7,6 +7,8 @@ import { addShoppingCart } from '../utils/redux/sliceShoppingCart';
 
 const AddToCartModal = ({ productData, state, toggle }) => {
     const dispatch = useDispatch();
+
+    const closeModal = useRef(() => {});
 
     const [currentQuantity, setCurrentQuantity] = useState(1);
 
@@ -17,11 +19,11 @@ const AddToCartModal = ({ productData, state, toggle }) => {
     function sendToCart() {
         const newItem = {...productData, amount: currentQuantity};
         dispatch(addShoppingCart(newItem))
-        toggle()
+        closeModal.current()
     }
 
     return (
-        <InfoModal title="Add to Cart" state={state} toggle={toggle} >
+        <InfoModal title="Add to Cart" state={state} toggle={toggle} closeModal={closeModal}>
             <figure>
                 <img
                     className='w-3/5 mx-auto mb-[4%]'

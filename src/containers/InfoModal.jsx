@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FiX } from 'react-icons/fi';
 
-const InfoModal = ({ children, title = "", state, toggle }) => {
+const InfoModal = ({ children, title = "", state, toggle, closeModal }) => {
     let [animate, setAnimate] = useState("translate-y-full duration-[400ms]");
     let [background, setBackground] = useState("bg-transparent");
 
@@ -16,14 +16,20 @@ const InfoModal = ({ children, title = "", state, toggle }) => {
         }
     }, [state])
 
-    const closeLogic = () => {
+    function closeLogic(){
         setAnimate("translate-y-full duration-[400ms]");
         setBackground("bg-transparent");
         setTimeout(() => {
             toggle();
         }
-        , 290)
+        , 290);
     }
+
+    useEffect(() => {
+        if (closeModal !== undefined){
+            closeModal.current = closeLogic;
+        }
+    }, []);
 
     return (
         <div className={`${state ? " visible" : " invisible"} ${background} transition-colors duration-500 min-h-screen max-w-[640px] w-full fixed top-0 text-clamp-base z-40`}>

@@ -12,6 +12,7 @@ import AccountPage from './routes/AccountPage';
 import WishListPage from './routes/WishListPage';
 import ViewedPage from './routes/ViewedPage';
 import NotExistPage from './routes/NotFoundPage';
+import PurchaseDonePage from './routes/PurchaseDonePage';
 
 const App = () => {
 
@@ -26,6 +27,7 @@ const App = () => {
             {/* <Route path="categories" element={<CategoriesPage />} /> */}
             <Route path="cart" element={<CartPage />} />
               <Route path="cart/confirm" element={<OrderPage />} />
+              <Route path="cart/purchase-done" element={<PurchaseDonePage />} />
             <Route path="account" element={<AccountPage />} />
               <Route path="account/wishlist" element={<WishListPage />} />
               <Route path="account/viewed" element={<ViewedPage />} />
