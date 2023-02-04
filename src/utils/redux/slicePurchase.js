@@ -23,6 +23,16 @@ export const slicePurchase = createSlice({
             state.purchaseIDList = [...state.purchaseIDList, newId];
         },
 
+        putPurchaseID: (state, action) => {
+            const arrayWithIDs = action.payload;
+
+            if (!Array.isArray(arrayWithIDs)){
+                console.error('It is only valid to use arrays to save data');
+            }
+
+            state.purchaseIDList = arrayWithIDs;
+        },
+
         deletePurchaseID: (state, action) => {
             const idToDelete = action.payload;
 
@@ -38,6 +48,6 @@ export const slicePurchase = createSlice({
 });
 
 export const purchaseListState = (state) => state.slicePurchase;
-export const { addPurchaseID, deletePurchaseID } = slicePurchase.actions;
+export const { addPurchaseID, putPurchaseID, deletePurchaseID } = slicePurchase.actions;
 
 export default slicePurchase.reducer;

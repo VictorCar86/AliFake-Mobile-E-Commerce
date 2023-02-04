@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { BiStoreAlt } from 'react-icons/bi';
 import { HiMinus, HiPlus } from "react-icons/hi";
+import skeletonImage from '../assets/images/skeleton.webp';
 
 const ItemOrder = ({ data, items, updater }) => {
+    const [lazyImage, setLazyImage] = useState(skeletonImage);
+
+    useEffect(() => {
+        setLazyImage(data.image);
+    }, [data]);
+
     const [amount, setAmount] = useState(data.amount);
 
     useEffect(() => {
@@ -25,7 +32,12 @@ const ItemOrder = ({ data, items, updater }) => {
             </span>
 
             <figure className='flex gap-[3%] p-[2.5%] pt-0'>
-                <img className='max-h-48 h-[30vw] max-w-[192px] w-[30vw] object-contain object-center' src={data.image} alt={data.name} />
+                <img
+                    className='max-h-48 h-[30vw] max-w-[192px] w-[30vw] object-contain object-center'
+                    onLoad={() => setLazyImage(data.image)}
+                    src={lazyImage}
+                    alt={data.name}
+                />
                 <figcaption className='relative overflow-hidden text-clamp-base'>
                     <p className='mt-[5%] overflow-hidden whitespace-nowrap text-ellipsis'>
                         {data.name}

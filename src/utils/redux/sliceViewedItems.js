@@ -47,7 +47,7 @@ export const sliceViewedItems = createSlice({
             };
 
             const newState = [{...newItem}, ...state.viewedItems];
-            console.log(newState);
+            // console.log(newState);
 
             setViewedStorage(newState);
             state.viewedItems = newState;

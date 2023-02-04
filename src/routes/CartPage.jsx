@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { GiShoppingCart } from 'react-icons/gi';
 import { FaCheckCircle, FaRegCircle, FaRegTrashAlt } from 'react-icons/fa';
@@ -8,7 +8,7 @@ import ItemCart from '../components/ItemCart';
 import priceReducer from '../utils/functions/priceReducer';
 import InfiniteProducts from '../containers/InfiniteProducts';
 import { useEffect } from 'react';
-import { addPurchaseID } from '../utils/redux/slicePurchase';
+import { addPurchaseID, putPurchaseID } from '../utils/redux/slicePurchase';
 import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
@@ -18,27 +18,34 @@ const CartPage = () => {
 
   const [selectedItems, setSelectedItems] = useState([]);
 
+  // useEffect(() => {
+  //   console.log(selectedItems);
+  //   console.log(shoppingCart);
+  //   return () => {return}
+  // }
+  // , [selectedItems]);
+
   useEffect(() => {
-    console.log(selectedItems);
-    console.log(shoppingCart);
-    return () => {return}
-  }
-  , [selectedItems])
+    dispatch(putPurchaseID([]));
+  }, []);
 
   function deleteSelectedItems(){
     if (!selectedItems.length <= 0){
       selectedItems.forEach(product => {
         dispatch(deleteShoppingCart(product.id));
-      })
+      });
+
       setSelectedItems([]);
     }
   }
 
   function toggleSelectedItems(){
     if (selectedItems.length < shoppingCart.length){
-      const everyProductSelected = shoppingCart.reduce((accumulator, product) => {
+      const everyProductSelected = shoppingCart.reduce( (accumulator, product) => {
         return [...accumulator, {id: product.id, amount: product.amount}]
-      }, []);
+      }
+      , []);
+
       setSelectedItems(everyProductSelected);
     }
     else {

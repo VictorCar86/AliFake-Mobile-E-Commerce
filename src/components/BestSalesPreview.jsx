@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const PreviewProduct = ({ data, deal = false}) => {
+const BestSalesPreview = ({ data, deal = false}) => {
     // const discount = Math.round(
     //     ((data.original_price - data.sale_price) / data.original_price) * 100
     // );
@@ -57,4 +57,4 @@ const PreviewProduct = ({ data, deal = false}) => {
     )
 }
 
-export default PreviewProduct;
+export default BestSalesPreview;

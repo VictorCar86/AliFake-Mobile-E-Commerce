@@ -62,7 +62,6 @@ const OrderPage = () => {
         if (purchaseIDList.length <= 0){
             navigate('/cart');
         }
-        // return () => console.log('Closed');
     }, []);
 
     const [payMethodModal, setPayMethodModal] = useState(false);
@@ -71,89 +70,93 @@ const OrderPage = () => {
 
     return (
         <GenericPage title='Order Confirmation'>
-            <section className='m-[3%]'>
-                <button className='flex justify-start items-center gap-[3%] h-max w-full py-[1%] px-[2%] rounded-lg whitespace-nowrap bg-white' type='button'>
-                    <i className='h-[20vw] max-h-32'>
-                        <BiMap className='w-[5.5vw] max-w-[35px] h-min' />
-                    </i>
-                    <div className='overflow-hidden text-left text-clamp-sm text-gray-500'>
-                        <p className='overflow-hidden text-ellipsis text-black'>Jamie Brooklyn</p>
-                        <p className='overflow-hidden text-ellipsis'>+1-9024141132</p>
-                        <p className='overflow-hidden text-ellipsis'>SE 26th Place Bellevue</p>
-                        <p className='overflow-hidden text-ellipsis'>98008, Washington, United States</p>
+            {!purchaseIDList.length <= 0 && (
+              <>
+                <section className='m-[3%]'>
+                    <button className='flex justify-start items-center gap-[3%] h-max w-full py-[1%] px-[2%] rounded-lg whitespace-nowrap bg-white' type='button'>
+                        <i className='h-[20vw] max-h-32'>
+                            <BiMap className='w-[5.5vw] max-w-[35px] h-min' />
+                        </i>
+                        <div className='overflow-hidden text-left text-clamp-sm text-gray-500'>
+                            <p className='overflow-hidden text-ellipsis text-black'>Jamie Brooklyn</p>
+                            <p className='overflow-hidden text-ellipsis'>+1-9024141132</p>
+                            <p className='overflow-hidden text-ellipsis'>SE 26th Place Bellevue</p>
+                            <p className='overflow-hidden text-ellipsis'>98008, Washington, United States</p>
+                        </div>
+                        <i className='ml-auto'>
+                            <FiChevronRight className='w-[5.5vw] max-w-[35px] h-min' />
+                        </i>
+                    </button>
+                </section>
+                <section className='m-[3%] text-clamp-base'>
+                    <button
+                        className='flex justify-between items-center gap-[3%] h-max w-full py-[4.5%] px-[2%] rounded-lg whitespace-nowrap bg-white'
+                        onClick={togglePayMethodModal}
+                        type='button'
+                    >
+                        <i>
+                            <PaymentIcon className='w-[5.5vw] max-w-[35px] h-min' />
+                        </i>
+                        <p className='text-cyan-500'>Select Payment Method</p>
+                        <i className='ml-auto'>
+                            <FiChevronRight className='w-[5.5vw] max-w-[35px] h-min' />
+                        </i>
+                    </button>
+                </section>
+
+                {filteredProducts.map((product, index) => (
+                    <ItemOrder data={product} items={itemsRefs} updater={setItemsRefs} key={index}/>
+                ))}
+
+                <section className='mt-[3%] mx-[3%] pb-[24%] text-clamp-base'>
+                    <div className='p-[2.5%] pb-[2%] rounded-lg bg-white'>
+                        <p className='pb-[2%] font-medium'>Summary</p>
+
+                        <table className='w-full text-clamp-xs'>
+                            <tbody>
+                                <tr className='border-t border-gray-50'>
+                                    <td>Total items costs</td>
+                                    <td className='py-[1%] pr-[4%] text-right'>
+                                        {filteredProducts[0]?.currency} {priceReducer(filteredProducts, itemsRefs)}
+                                    </td>
+                                </tr>
+                                <tr className='border-t border-gray-50'>
+                                    <td>Promo Code</td>
+                                    <td className='py-[1%]'>
+                                        <button className='flex items-center ml-auto' type='button'>
+                                            <span>Enter code here</span>
+                                            <FiChevronRight className='translate-y-0.5'/>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr className='border-t border-gray-50'>
+                                    <td>Total shipping</td>
+                                    <td className='py-[1%] pr-[4%] text-right'>Free</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <i className='ml-auto'>
-                        <FiChevronRight className='w-[5.5vw] max-w-[35px] h-min' />
-                    </i>
-                </button>
-            </section>
-            <section className='m-[3%] text-clamp-base'>
-                <button
-                    className='flex justify-between items-center gap-[3%] h-max w-full py-[4.5%] px-[2%] rounded-lg whitespace-nowrap bg-white'
-                    onClick={togglePayMethodModal}
-                    type='button'
-                >
-                    <i>
-                        <PaymentIcon className='w-[5.5vw] max-w-[35px] h-min' />
-                    </i>
-                    <p className='text-cyan-500'>Select Payment Method</p>
-                    <i className='ml-auto'>
-                        <FiChevronRight className='w-[5.5vw] max-w-[35px] h-min' />
-                    </i>
-                </button>
-            </section>
+                </section>
 
-            {filteredProducts.map((product, index) => (
-                <ItemOrder data={product} items={itemsRefs} updater={setItemsRefs} key={index}/>
-            ))}
+                <div className='fixed bottom-0 h-min w-full max-w-screen-sm px-[clamp(0px,3vw,20px)] pb-[clamp(0px,2vw,13px)] bg-white'>
+                    <p className='flex justify-between items-center py-[2%] font-bold'>
+                        <span>Total</span>
+                        <span>
+                            {filteredProducts[0]?.currency} {priceReducer(filteredProducts, itemsRefs)}
+                        </span>
+                    </p>
 
-            <section className='mt-[3%] mx-[3%] pb-[24%] text-clamp-base'>
-                <div className='p-[2.5%] pb-[2%] rounded-lg bg-white'>
-                    <p className='pb-[2%] font-medium'>Summary</p>
-
-                    <table className='w-full text-clamp-xs'>
-                        <tbody>
-                            <tr className='border-t border-gray-50'>
-                                <td>Total items costs</td>
-                                <td className='py-[1%] pr-[4%] text-right'>
-                                    {filteredProducts[0]?.currency} {priceReducer(filteredProducts, itemsRefs)}
-                                </td>
-                            </tr>
-                            <tr className='border-t border-gray-50'>
-                                <td>Promo Code</td>
-                                <td className='py-[1%]'>
-                                    <button className='flex items-center ml-auto' type='button'>
-                                        <span>Enter code here</span>
-                                        <FiChevronRight className='translate-y-0.5'/>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr className='border-t border-gray-50'>
-                                <td>Total shipping</td>
-                                <td className='py-[1%] pr-[4%] text-right'>Free</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <Link
+                        className='inline-block w-full py-[1.5%] rounded-full font-medium text-center text-white bg-gradient-to-r from-orange-500 to-red-600'
+                        to={'/cart/purchase-done'}
+                    >
+                        Place order
+                    </Link>
                 </div>
-            </section>
 
-            <div className='fixed bottom-0 h-min w-full max-w-screen-sm px-[clamp(0px,3vw,20px)] pb-[clamp(0px,2vw,13px)] bg-white'>
-                <p className='flex justify-between items-center py-[2%] font-bold'>
-                    <span>Total</span>
-                    <span>
-                        {filteredProducts[0]?.currency} {priceReducer(filteredProducts, itemsRefs)}
-                    </span>
-                </p>
-
-                <Link
-                    className='inline-block w-full py-[1.5%] rounded-full font-medium text-center text-white bg-gradient-to-r from-orange-500 to-red-600'
-                    to={'/cart/purchase-done'}
-                >
-                    Place order
-                </Link>
-            </div>
-
-            <PaymentModal state={payMethodModal} toggle={togglePayMethodModal} />
+                <PaymentModal state={payMethodModal} toggle={togglePayMethodModal} />
+              </>
+            )}
         </GenericPage>
     )
 }
