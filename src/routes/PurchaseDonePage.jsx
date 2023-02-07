@@ -46,7 +46,7 @@ const PurchaseDonePage = () => {
                         </i>
                         <span>
                             <p>
-                                Thank you for your purchase on Aliexpress.
+                                Thank you for your purchase on AliFake.
                             </p>
                             <p>
                                 We've received your payment.

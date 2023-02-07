@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import GenericPage from '../containers/GenericPage';
 import { BiMap } from "react-icons/bi";
 import { FiChevronRight } from 'react-icons/fi';
 import PaymentIcon from '../utils/icons/PaymentIcon';
-import { purchaseListState } from '../utils/redux/slicePurchase';
-import { shoppingCartState } from '../utils/redux/sliceShoppingCart';
+import { purchaseListState, putPurchaseID } from '../utils/redux/slicePurchase';
+import { putShoppingCart, shoppingCartState } from '../utils/redux/sliceShoppingCart';
 import { Link, useNavigate } from 'react-router-dom';
 import ItemOrder from '../components/ItemOrder';
 import priceReducer from '../utils/functions/priceReducer';
@@ -14,6 +14,7 @@ import PaymentModal from '../modals/PaymentModal';
 const OrderPage = () => {
     const { purchaseIDList } = useSelector(purchaseListState);
     const { shoppingCart } = useSelector(shoppingCartState);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     // const filteredProducts = [
@@ -68,8 +69,22 @@ const OrderPage = () => {
 
     const togglePayMethodModal = () => setPayMethodModal(prev => !prev);
 
+    const clearPurchaseList = () => {
+        navigate(-1);
+        dispatch(putPurchaseID([]));
+    };
+
+    const completePurchase = () => {
+        const cleanedCart = shoppingCart.filter(item => {
+            return !purchaseIDList.some(id => id === item.id)
+        });
+
+        dispatch(putShoppingCart(cleanedCart));
+        navigate('/cart/purchase-done');
+    };
+
     return (
-        <GenericPage title='Order Confirmation'>
+        <GenericPage title='Order Confirmation' backButtonCB={clearPurchaseList}>
             {!purchaseIDList.length <= 0 && (
               <>
                 <section className='m-[3%]'>
@@ -146,12 +161,13 @@ const OrderPage = () => {
                         </span>
                     </p>
 
-                    <Link
+                    <button
                         className='inline-block w-full py-[1.5%] rounded-full font-medium text-center text-white bg-gradient-to-r from-orange-500 to-red-600'
-                        to={'/cart/purchase-done'}
+                        aria-label='Place order'
+                        onClick={completePurchase}
                     >
                         Place order
-                    </Link>
+                    </button>
                 </div>
 
                 <PaymentModal state={payMethodModal} toggle={togglePayMethodModal} />

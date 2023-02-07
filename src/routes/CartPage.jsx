@@ -8,25 +8,21 @@ import ItemCart from '../components/ItemCart';
 import priceReducer from '../utils/functions/priceReducer';
 import InfiniteProducts from '../containers/InfiniteProducts';
 import { useEffect } from 'react';
-import { addPurchaseID, putPurchaseID } from '../utils/redux/slicePurchase';
+import { addPurchaseID, purchaseListState, putPurchaseID } from '../utils/redux/slicePurchase';
 import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
   const { shoppingCart } = useSelector(shoppingCartState);
+  const { purchaseIDList } = useSelector(purchaseListState);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [selectedItems, setSelectedItems] = useState([]);
 
-  // useEffect(() => {
-  //   console.log(selectedItems);
-  //   console.log(shoppingCart);
-  //   return () => {return}
-  // }
-  // , [selectedItems]);
-
   useEffect(() => {
-    dispatch(putPurchaseID([]));
+    if (purchaseIDList.length > 0){
+      dispatch(putPurchaseID([]));
+    }
   }, []);
 
   function deleteSelectedItems(){
@@ -66,7 +62,9 @@ const CartPage = () => {
       <header className='fixed h-[12.8vw] max-h-[81.906px] w-full max-w-[640px] flex justify-between items-center bg-white z-30'>
         <div className='flex'>
           <BackButton />
-          <span className='text-clamp-xl font-bold'>Cart({shoppingCart.length})</span>
+          <span className='text-clamp-xl font-bold'>
+            Cart({shoppingCart.length})
+          </span>
         </div>
         <button className='mr-[5%]' type='button' aria-label='Delete selected items'>
           <FaRegTrashAlt
@@ -81,7 +79,9 @@ const CartPage = () => {
         {shoppingCart.length <= 0 && (
           <section>
             <GiShoppingCart className='w-2/5 h-max pt-[6%] mx-auto fill-gray-400/60' />
-            <p className='pb-[6%] text-center text-gray-500 text-clamp-base'>No items added to cart yet</p>
+            <p className='pb-[6%] text-center text-gray-500 text-clamp-base'>
+              No items added to cart yet
+            </p>
           </section>
         )}
 
@@ -90,7 +90,7 @@ const CartPage = () => {
             <ul>
               {shoppingCart.map((item, index) => (
                 <ItemCart
-                  data={item}
+                  productData={item}
                   selectedItems={selectedItems}
                   updater={setSelectedItems}
                   key={index}
@@ -119,7 +119,12 @@ const CartPage = () => {
           <span className='ml-auto mr-[3%] font-medium'>
             USD {priceReducer(shoppingCart, selectedItems)}
           </span>
-          <button className={`py-[1.5%] px-[3%] rounded-full text-white bg-rose-600 ${selectedItems.length <= 0 && 'opacity-60'}`} disabled={selectedItems.length <= 0} onClick={sendToConfirmation} type='button'>
+          <button
+            className={`py-[1.5%] px-[3%] rounded-full text-white bg-rose-600 ${selectedItems.length <= 0 && 'opacity-60'}`}
+            disabled={selectedItems.length <= 0}
+            onClick={sendToConfirmation}
+            type='button'
+          >
             Checkout ({selectedItems.length})
           </button>
         </div>

@@ -1,24 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { FiChevronRight, FiMapPin, FiShoppingBag } from 'react-icons/fi';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import GenericNavbar from '../containers/GenericNavbar';
 import HeartButton from '../components/HeartButton';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { productInfoState, requestProductInfo, resultProductInfo, errorProductInfo } from '../utils/redux/sliceProductInfo';
 import { addViewedItem } from '../utils/redux/sliceViewedItems';
-import InfiniteProducts from '../containers/InfiniteProducts';
-import AddToCartModal from '../modals/AddToCartModal';
+import { addShoppingCart } from '../utils/redux/sliceShoppingCart';
+import { addPurchaseID } from '../utils/redux/slicePurchase';
 import ProductDetailsModal from '../modals/ProductDetailsModal';
 import ProductDescriptionModal from '../modals/ProductDescriptionModal';
+import AddToCartModal from '../modals/AddToCartModal';
+import InfiniteProducts from '../containers/InfiniteProducts';
 const axios = require("axios");
 
 
 const ProductViewPage = () => {
     const productInfo = useSelector(productInfoState);
     const dispatch = useDispatch();
-    const pageInfo = useParams();
     const { pathname } = useLocation();
+    const pageInfo = useParams();
+    const navigate = useNavigate();
 
     const fetchProductInfo = (productId = 0) => {
         const alreadyFetching = productInfo.fetching;
@@ -99,11 +102,20 @@ const ProductViewPage = () => {
 
     const [currentSlide, setCurrentSlide] = useState(1);
 
+    const buyNowProduct = () => {
+        const productID = productInfo.docs.usItemId;
+
+        dispatch(addShoppingCart({...productInfo.docs, amount: 1}))
+        dispatch(addPurchaseID(productID));
+
+        navigate('/cart/confirm');
+    }
+
     // Show and disappear buttons
 
     const headerRef = useRef(null);
     const infiniteSectionRef = useRef(null);
-    const [showExtraButtons, setShowExtraButtons] = useState(true);
+    const [showExtraButtons, setShowExtraButtons] = useState(false);
 
     window.addEventListener('scroll', () => {
         const headerHeight = headerRef.current?.clientHeight;
@@ -124,7 +136,7 @@ const ProductViewPage = () => {
 
     return (
         <>
-            <GenericNavbar />
+            <GenericNavbar headerRef={headerRef} />
 
             <main className='relative min-h-screen pt-[clamp(0px,12.8vw,81.906px);] text-clamp-base bg-gray-300'>
                 <section className='mb-[2%] bg-white'>
@@ -332,7 +344,7 @@ const ProductViewPage = () => {
 
                 <section className='h-full w-full bg-white' ref={infiniteSectionRef}>
 
-                    <InfiniteProducts />
+                    <InfiniteProducts componentRef={infiniteSectionRef} />
 
                 </section>
 
@@ -342,12 +354,18 @@ const ProductViewPage = () => {
                 <div className='fixed bottom-0 w-full max-w-screen-sm h-14 pt-1.5 text-white font-bold text-center bg-white z-30'>
                     <button
                         className='w-[42%] p-2.5 rounded-l-full bg-gradient-to-r from-yellow-400 to-orange-500'
-                        onClick={toggleCart}
                         disabled={productInfo.fetching}
+                        onClick={toggleCart}
                     >
                         Add to cart
                     </button>
-                    <button className='w-[42%] p-2.5 rounded-r-full bg-gradient-to-r from-red-600 to-orange-500'>
+                    <button
+                        className='w-[42%] p-2.5 rounded-r-full bg-gradient-to-r from-red-600 to-orange-500'
+                        disabled={productInfo.fetching}
+                        onClick={buyNowProduct}
+                        aria-label='Buy product now'
+                        type='button'
+                    >
                         Buy now
                     </button>
                 </div>

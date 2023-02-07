@@ -4,15 +4,15 @@ import { useLocation } from 'react-router-dom';
 import { bestSalesState, requestBestSales, resultBestSales, errorBestSales } from '../utils/redux/sliceBestSales';
 import SkeletonPreviewProduct from '../components/SkeletonPreviewProduct';
 import useIntersection from '../hooks/useIntersection';
-import NewOfferPreview from '../components/BestSalesPreview';
-import spinnerIcon from '../assets/images/spinnerIcon.webp'
+import BestSalesPreview from '../components/BestSalesPreview';
+import spinnerIcon from '../assets/images/spinnerIcon.webp';
 const axios = require("axios");
 
-const InfiniteProducts = () => {
+const InfiniteProducts = ({ componentRef }) => {
     const bestSalesData = useSelector(bestSalesState);
     const dispatch = useDispatch();
 
-    const [infiniteLoading, setInfiniteLoading] = useState(true);
+    const [infiniteLoading, setInfiniteLoading] = useState(bestSalesData.fetching);
     const [skeletonLoading, setSkeletonLoading] = useState(true);
 
     const scrollStopRef = useRef(null);
@@ -29,7 +29,7 @@ const InfiniteProducts = () => {
 
             return docs.map((e, index) => (
                 <li key={index}>
-                    <NewOfferPreview data={e} />
+                    <BestSalesPreview data={e} />
                 </li>
             ))
         }
@@ -82,7 +82,7 @@ const InfiniteProducts = () => {
 
     useEffect(() => {
         if (useEffectFirstCall.current !== true){
-            if (infiniteLoading && !bestSalesData.fetching && bestSalesData.page === 0){
+            if (!bestSalesData.fetching && bestSalesData.page === 0){
                 scrollPagination();
             }
         }
@@ -90,7 +90,10 @@ const InfiniteProducts = () => {
     }, []);
 
     useEffect(() => {
-        if (scrollStopRef.current !== null && !bestSalesData.errorFetch){
+        // console.log(bestSalesData)
+
+        if (!bestSalesData.errorFetch && !bestSalesData.page <= 0 && !infiniteLoading){
+            // console.log(pathname)
             useIntersection(
                 () => {
                     scrollPagination();
@@ -98,46 +101,28 @@ const InfiniteProducts = () => {
             ).observe(scrollStopRef.current);
         }
     }
-    , [infiniteLoading, pathname]);
+    , [infiniteLoading]);
 
     return (
         <section
-            className={`table-cell w-full ${!infiniteLoading ? 'h-[calc(100%+48px)]' : 'h-full'} px-3 ${(pathname === '/' || pathname === '/cart/purchase-done') && 'pb-[13%]'} ${pathname === '/cart' && 'pb-[26%]'} text-base bg-transparent`}
+            className={`relative table-cell w-full ${!infiniteLoading ? 'h-[calc(100%+48px)]' : 'h-full'} px-3 ${(pathname === '/' || pathname === '/cart/purchase-done') && 'pb-[13%]'} ${pathname === '/cart' && 'pb-[26%]'} text-base bg-transparent`}
+            ref={componentRef}
         >
             <p className={`my-[1.8vh] ${pathname !== '/' ? 'text-clamp-base font-bold' : 'text-clamp-lg font-medium'}`}>More to love</p>
 
             <ul className='h-full w-full min-h-screen grid grid-cols-2 gap-1.5 overflow-hidden'>
 
-            {!!skeletonLoading && (
+                {skeletonLoading && (
                 <>
-                    <li>
-                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
-                    </li>
-                    <li>
-                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
-                    </li>
-                    <li>
-                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
-                    </li>
-                    <li>
-                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
-                    </li>
-                    <li>
-                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
-                    </li>
-                    <li>
-                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
-                    </li>
-                    <li>
-                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
-                    </li>
-                    <li>
-                        <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
-                    </li>
+                    {[...Array(8).keys()].map(key => (
+                        <li key={key}>
+                            <SkeletonPreviewProduct error={bestSalesData.errorFetch} />
+                        </li>
+                    ))}
                 </>
-            )}
+                )}
 
-            { renderProducts(bestSalesData.docs) }
+                { renderProducts(bestSalesData.docs) }
 
             </ul>
             {infiniteLoading && (
@@ -146,7 +131,7 @@ const InfiniteProducts = () => {
                 </div>
             )}
             {!infiniteLoading && (
-                <div className='h-0 w-full' onClick={scrollPagination} ref={scrollStopRef} />
+                <span className='h-0 w-full' onClick={scrollPagination} ref={scrollStopRef} />
             )}
         </section>
     )

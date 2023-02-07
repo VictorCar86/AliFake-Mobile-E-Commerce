@@ -60,6 +60,19 @@ export const sliceShoppingCart = createSlice({
                 }
             }
         },
+
+        putShoppingCart: (state, action) => {
+            const data = action.payload;
+
+            if (!Array.isArray(data)) {
+                console.error('It is only valid to use arrays to save data');
+                return;
+            }
+
+            setShoppingCartStorage(data);
+            state.shoppingCart = data;
+        },
+
         deleteShoppingCart: (state, action) => {
             if (typeof action.payload !== 'string'){
                 console.error('It is only valid to use IDs within strings');
@@ -73,6 +86,6 @@ export const sliceShoppingCart = createSlice({
 })
 
 export const shoppingCartState = (state) => state.sliceShoppingCart;
-export const { addShoppingCart, deleteShoppingCart } = sliceShoppingCart.actions;
+export const { addShoppingCart, putShoppingCart, deleteShoppingCart } = sliceShoppingCart.actions;
 
 export default sliceShoppingCart.reducer;

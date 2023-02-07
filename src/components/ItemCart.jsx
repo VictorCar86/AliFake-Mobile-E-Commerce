@@ -7,26 +7,26 @@ import { addShoppingCart } from '../utils/redux/sliceShoppingCart';
 import MinusButton from './MinusButton';
 import PlusButton from './PlusButton';
 
-const ItemCart = ({ data = {}, selectedItems = [], updater}) => {
+const ItemCart = ({ productData = {}, selectedItems = [], updater}) => {
     const dispatch = useDispatch();
-    const [amount, setAmount] = useState(data.amount);
+    const [amount, setAmount] = useState(productData.amount);
     const [lazyImage, setLazyImage] = useState(skeletonImage);
 
-    const selected = selectedItems.some(product => product.id === data.id);
+    const selected = selectedItems.some(item => item.id === productData.id);
 
     useEffect(() => {
-        if (data.image !== lazyImage){
-            setLazyImage(data.image);
-            updater( selectedItems.filter(i => i.id !== data.id) );
+        if (productData.image !== lazyImage){
+            setLazyImage(productData.image);
+            updater( selectedItems.filter(item => item.id !== productData.id) );
         }
-    }, [data]);
+    }, [productData]);
 
     useEffect(() => {
-        if (amount !== data.amount){
-            const itemStorage = {usItemId: data.id, amount};
+        if (amount !== productData.amount){
+            const itemStorage = {usItemId: productData.id, amount};
             dispatch(addShoppingCart(itemStorage));
 
-            const itemIndex = selectedItems.findIndex(i => i.id === data.id);
+            const itemIndex = selectedItems.findIndex(item => item.id === productData.id);
 
             if (itemIndex !== -1){
                 const newItem = [...selectedItems];
@@ -38,10 +38,10 @@ const ItemCart = ({ data = {}, selectedItems = [], updater}) => {
 
     function selectItem() {
         if (selected){
-            updater( selectedItems.filter(i => i.id !== data.id) );
+            updater( selectedItems.filter(item => item.id !== productData.id) );
         }
         else {
-            updater( [...selectedItems, {id: data.id, amount: data.amount}] );
+            updater( [...selectedItems, {id: productData.id, amount: productData.amount}] );
         }
     }
 
@@ -59,23 +59,23 @@ const ItemCart = ({ data = {}, selectedItems = [], updater}) => {
                     />
                 )}
             </button>
-            <Link to={`/product/${data.id}`}>
+            <Link to={`/product/${productData.id}`}>
                 <figure className='flex gap-[2%] p-[2%] pl-[10%] bg-white'>
                     <img
                         className='max-w-[154px] w-[24vw] max-h-[154px] h-[24vw] rounded-2xl object-contain object-center'
                         src={lazyImage}
-                        alt={data.name}
-                        onLoad={() => setLazyImage(data.image)}
+                        alt={productData.name}
+                        onLoad={() => setLazyImage(productData.image)}
                     />
                     <figcaption className='text-clamp-base overflow-hidden'>
                         <p className='text-clamp-lg text-gray-500 whitespace-nowrap text-ellipsis overflow-hidden'>
-                            {data.name}
+                            {productData.name}
                         </p>
                         <p className='whitespace-nowrap text-ellipsis overflow-hidden'>
-                            {data.manufacturer}
+                            {productData.manufacturer}
                         </p>
                         <p className='w-[55%] font-bold'>
-                            {data.currency} {data.price}
+                            {productData.currency} {productData.price}
                         </p>
                     </figcaption>
                 </figure>
@@ -83,8 +83,8 @@ const ItemCart = ({ data = {}, selectedItems = [], updater}) => {
             <span className='absolute bottom-[16%] left-[70%] w-[25vw] max-w-[160px] flex items-center'>
                 <MinusButton
                     onClick={() => setAmount(prev => prev - 1)}
-                    disabled={amount === data.minAmount}
-                    className={`p-[5%] ${amount === data.minAmount && 'opacity-60'}`}
+                    disabled={amount === productData.minAmount}
+                    className={`p-[5%] ${amount === productData.minAmount && 'opacity-60'}`}
                 />
 
                 <span className='inline-block w-[35%] h-auto text-center text-clamp-sm'>
@@ -93,8 +93,8 @@ const ItemCart = ({ data = {}, selectedItems = [], updater}) => {
 
                 <PlusButton
                     onClick={() => setAmount(prev => prev + 1)}
-                    disabled={amount === data.maxAmount}
-                    className={`p-[5%] ${amount === data.maxAmount && 'opacity-60'}`}
+                    disabled={amount === productData.maxAmount}
+                    className={`p-[5%] ${amount === productData.maxAmount && 'opacity-60'}`}
                 />
             </span>
         </li>

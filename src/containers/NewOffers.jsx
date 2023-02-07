@@ -69,18 +69,11 @@ const NewOffers = () => {
           <ul className='flex gap-1.5 h-full max-h-[450px] pb-[3%] overflow-x-scroll overflow-y-hidden'>
             {skeletonLoading && (
               <>
-                <li>
-                  <SkeletonPreviewProduct deal="true" error={newOffersData.error}/>
-                </li>
-                <li>
-                  <SkeletonPreviewProduct deal="true" error={newOffersData.error}/>
-                </li>
-                <li>
-                  <SkeletonPreviewProduct deal="true" error={newOffersData.error}/>
-                </li>
-                <li>
-                  <SkeletonPreviewProduct deal="true" error={newOffersData.error}/>
-                </li>
+                {[...Array(4).keys()].map(key => (
+                  <li key={key}>
+                    <SkeletonPreviewProduct deal="true" error={newOffersData.error}/>
+                  </li>
+                ))}
               </>
             )}
 

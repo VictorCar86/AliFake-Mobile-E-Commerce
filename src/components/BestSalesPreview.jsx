@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const BestSalesPreview = ({ data, deal = false}) => {
+const BestSalesPreview = ({ data }) => {
     // const discount = Math.round(
     //     ((data.original_price - data.sale_price) / data.original_price) * 100
     // );
@@ -11,7 +11,7 @@ const BestSalesPreview = ({ data, deal = false}) => {
     const dataAverageRating = String(data.averageRating);
 
     return (
-        <article className={`${deal ? "w-[calc(37.45318vw_-_11.98502px)]" : "w-full"} h-min rounded-xl`}>
+        <article className='w-full h-min rounded-xl'>
             <Link to={`/product/${data.usItemId}`}>
                 <img className='h-auto w-full border-gray-300 border-4 rounded-xl' src={data.imageInfo.thumbnailUrl} alt={data.name} />
                 {dataPriceRange && (
@@ -36,13 +36,10 @@ const BestSalesPreview = ({ data, deal = false}) => {
                 </>
                 )} */}
 
-                {!deal && (
-                <>
-                    <p className='h-6 mr-3 whitespace-nowrap overflow-hidden text-ellipsis'>
-                        {data.name}
-                    </p>
-                </>
-                )}
+                <p className='h-6 mr-3 whitespace-nowrap overflow-hidden text-ellipsis'>
+                    {data.name}
+                </p>
+
                 {data.averageRating && (
                     <span className='mr-[3%] font-medium'>
                         ⭐

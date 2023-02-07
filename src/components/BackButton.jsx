@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiChevronLeft } from 'react-icons/fi';
 
-const BackButton = ({ onClick = null }) => {
+const BackButton = ({ onClick }) => {
     const navigate = useNavigate();
 
     return (

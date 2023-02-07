@@ -66,7 +66,7 @@ const GenericNavbar = ({ headerRef = null }) => {
                         >
                             <FiShoppingCart className='h-min w-[5vw] max-w-[32px] scale-125' />
                             {shoppingCart.length > 0 && (
-                                <span className='absolute -top-1/3 -right-1/2 w-[95%] h-max rounded-full text-clamp-xs text-white font-medium text-center dark-box-shadow bg-red-600'>
+                                <span className='absolute -top-1/3 -right-1/2 w-[95%] h-max rounded-full text-clamp-xs text-white font-medium text-center shadow-[0px_2px_6px_#313131] bg-red-600'>
                                     {shoppingCart.length}
                                 </span>
                             )}

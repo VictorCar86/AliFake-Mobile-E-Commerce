@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 
-const GenericPage = ({ children, title = "", Icon = null, linkTo = "#" }) => {
+const GenericPage = ({ title = "", Icon = null, linkTo = "#", backButtonCB, children }) => {
   return (
     <>
       <header className='fixed top-0 flex items-center gap-[4%] max-h-[82px] h-[12.8vw] w-full max-w-[640px] text-white bg-black z-20'>
