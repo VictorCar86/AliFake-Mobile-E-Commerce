@@ -23,6 +23,7 @@ const HeartButton = ({ data = undefined, absolute = false, wishedCount = 0 }) =>
         <button
             className={`${absolute && "absolute right-[5%] bottom-[5%]"} h-min p-1.5 flex items-center gap-1 rounded-full font-medium bg-gray-500/75 z-10`}
             onClick={() => setFill(!fill)}
+            aria-label='Add product to your wish product list'
             type='button'
         >
             <FiHeart className={`${fill && "fill-red-700"} stroke-white`} />

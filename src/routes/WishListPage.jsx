@@ -14,6 +14,26 @@ const WishListPage = () => {
 
   const [selectedItems, setSelectedItems] = useState([]);
 
+  const [filteredItems, setFilteredItems] = useState(wishList);
+
+  const changeItems = (select) => {
+    if (select.target.value === 'lowPriceProd'){
+      const sortFunct = (a, b) => {
+        const priceA = parseFloat(a.price.slice(1));
+        const priceB = parseFloat(b.price.slice(1));
+
+        return priceA - priceB;
+      };
+
+      // console.log([...wishList].sort(sortFunct))
+
+      setFilteredItems([...wishList].sort(sortFunct));
+    }
+    else {
+      setFilteredItems(wishList);
+    }
+  }
+
   const deleteItemsFromStorage = () => {
     if (editMode && selectedItems.length > 0){
       const listFiltered = wishList.filter(initialItem => {
@@ -21,13 +41,14 @@ const WishListPage = () => {
       });
 
       dispatcher(putWishList(listFiltered));
+      setFilteredItems(listFiltered);
       setEditMode(false);
     }
   };
 
   useEffect(() => {
     if (!editMode){
-      setSelectedItems([])
+      setSelectedItems([]);
     }
   }, [editMode]);
 
@@ -46,7 +67,7 @@ const WishListPage = () => {
       {wishList.length > 0 && (
         <>
           <div className='fixed max-h-[82px] h-[12.8vw] w-full max-w-screen-sm flex justify-between items-center pl-[clamp(0px,1vw,8px)] pr-[clamp(0px,2vw,16px)] border-b-[3px] border-gray-300 bg-white z-20'>
-            <select className='p-[2%] text-clamp-base bg-transparent' name="productsOrder" id="productsOrder">
+            <select className='p-[2%] text-clamp-base bg-transparent' name="productsOrder" id="productsOrder" onChange={changeItems}>
               <option value="allProducts">
                 ALL PRODUCTS
               </option>
@@ -73,7 +94,7 @@ const WishListPage = () => {
           <section className={`pt-[12.8%] ${editMode && 'pb-[clamp(0px,12.8vw,82px)]'}`}>
             <ul className='overflow-hidden'>
 
-              {wishList.map((product, index) => (
+              {filteredItems.map((product, index) => (
                 <ItemWishList
                   data={product}
                   selectedItems={selectedItems}

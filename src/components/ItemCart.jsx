@@ -47,7 +47,7 @@ const ItemCart = ({ productData = {}, selectedItems = [], updater}) => {
 
     return (
         <li className='relative mt-[2%] overflow-hidden'>
-            <button className='absolute top-0 left-0 bottom-0 w-[10vw] max-w-[64px]' onClick={selectItem}>
+            <button className='absolute top-0 left-0 bottom-0 w-[10vw] max-w-[64px]' onClick={selectItem} aria-label='Select product' type='button'>
                 {selected && (
                     <FaCheckCircle
                         className='absolute top-[40%] left-1/4 max-w-[32px] w-[5vw] h-min fill-rose-600'

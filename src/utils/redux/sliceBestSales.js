@@ -1,16 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-const uniqueObjectsReducer = (accumulator, currentValue) => {
-    const existingObject = accumulator.find(
-      (obj) => obj.id === currentValue.id
-    );
-
-    if (!existingObject) {
-      accumulator.push(currentValue);
-    }
-
-    return accumulator;
-}
+import uniqueObjectsReducer from "../functions/uniqueObjectsReducer";
 
 export const sliceBestSales = createSlice({
     name: 'bestSales',

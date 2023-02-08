@@ -7,6 +7,8 @@ const PlusButton = ({ className = "", disabled = false, onClick }) => {
         className={`rounded-full bg-gray-200 ${className}`}
         disabled={disabled}
         onClick={onClick}
+        aria-label='Increase amount of items'
+        type='button'
     >
         <FaPlus className='scale-75 fill-gray-600' />
     </button>

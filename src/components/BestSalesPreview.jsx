@@ -16,14 +16,14 @@ const BestSalesPreview = ({ data }) => {
                 <img className='h-auto w-full border-gray-300 border-4 rounded-xl' src={data.imageInfo.thumbnailUrl} alt={data.name} />
                 {dataPriceRange && (
                     <>
-                      <span className='text-xl font-medium'>{dataPriceRange || dataCurrentPrice}</span>
+                      <span className='text-xl font-medium'>{dataPriceRange || dataCurrentPrice || 'Price not avaliable'}</span>
                       <span className='mx-1 text-xs font-medium'>{data.currencyCode}</span>
                     </>
                 )}
                 {!dataPriceRange && (
                     <>
                       <span className='text-xs font-medium'>{data.currencyCode}</span>
-                      <span className='mx-1 text-xl font-medium'>{dataCurrentPrice}</span>
+                      <span className='mx-1 text-xl font-medium'>{dataCurrentPrice || 'Price not avaliable'}</span>
                     </>
                 )}
 

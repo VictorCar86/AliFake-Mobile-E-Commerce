@@ -32,7 +32,7 @@ export const sliceShoppingCart = createSlice({
                     finalCurrency = data.priceInfo.currentPrice.currencyUnit;
                 }
                 else {
-                    finalPrice = data.priceInfo.priceRange.priceString;
+                    finalPrice = `$${data.priceInfo.priceRange.minPrice}`;
                     finalCurrency = data.priceInfo.priceRange.currencyUnit;
                 }
 

@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <header className='flow-root h-auto w-full max-w-[640px] fixed z-10 bg-white'>
         <img className='h-min w-32 my-3 mx-auto' src={AlifakelogoImg} alt="Alifake banner" />
-        <Searcher main="true" />
+        <Searcher className='mb-3 mx-auto'/>
     </header>
   )
 }

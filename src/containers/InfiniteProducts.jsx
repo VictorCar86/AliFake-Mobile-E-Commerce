@@ -90,10 +90,7 @@ const InfiniteProducts = ({ componentRef }) => {
     }, []);
 
     useEffect(() => {
-        // console.log(bestSalesData)
-
-        if (!bestSalesData.errorFetch && !bestSalesData.page <= 0 && !infiniteLoading){
-            // console.log(pathname)
+        if (!bestSalesData.errorFetch && !bestSalesData.page <= 0 && bestSalesData.hasNextPage && !infiniteLoading){
             useIntersection(
                 () => {
                     scrollPagination();

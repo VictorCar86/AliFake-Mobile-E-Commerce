@@ -86,7 +86,7 @@ const GenericNavbar = ({ headerRef = null }) => {
             {navbarVanilla === false && (
                 <nav className='relative h-[12.8vw] max-h-[81.906px] flex justify-start items-center'>
                     <BackButton onClick={toggleNavbar} />
-                    <Searcher />
+                    <Searcher className='inline-block ml-[clamp(0px,9vw,57px)]'/>
                 </nav>
             )}
 
