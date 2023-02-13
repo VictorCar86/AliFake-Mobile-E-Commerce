@@ -1,4 +1,4 @@
-# AliFake - Dummy e-commerce webpage
+# AliFake - Mobile E-commerce 🛒
 
 Color in use:
 - bg-gray-300
