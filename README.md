@@ -1,4 +1,4 @@
-# AliFake - Mobile E-commerce 🛒
+# AliFake - Mobile E-Commerce 🛒
 
 Color in use:
 - bg-gray-300
@@ -36,4 +36,4 @@ Open the file `dist/index.html` in your browser
 
 ## Check it online
 
-👉 Coming soon...
+🔗 [Alifake - Mobile E-Commerce](https://alifake.netlify.app)
