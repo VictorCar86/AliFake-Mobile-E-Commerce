@@ -1,21 +1,18 @@
-import { useState } from 'react';
-
 function useLocalStorage(key) {
-  const [value, setValue] = useState(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : undefined;
-    } catch (error) {
-      console.error(error);
-      return undefined;
-    }
-  });
+  let value;
+  try {
+    const item = window.localStorage.getItem(key);
+    value = item ? JSON.parse(item) : undefined;
+  } catch (error) {
+    console.error(error);
+    value = undefined;
+  }
 
   function setValueInLocalStorage(newValue) {
     try {
       const serializedValue = JSON.stringify(newValue);
       window.localStorage.setItem(key, serializedValue);
-      setValue(newValue);
+      value = newValue;
     } catch (error) {
       console.error(error);
     }
