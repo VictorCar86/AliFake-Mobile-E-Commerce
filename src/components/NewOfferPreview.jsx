@@ -7,9 +7,9 @@ const NewOfferPreview = ({ data }) => {
     const dataAverageRating = String(data.averageRating);
 
     return (
-        <article className='max-w-[220px] w-[calc(37.45318vw_-_11.98502px)] h-min rounded-xl text-clamp-sm'>
+        <article className='max-w-[220px] w-[35vw] h-min rounded-xl text-clamp-sm'>
             <Link to={`/product/${data.usItemId}`}>
-                <img className='h-auto w-full border-gray-300 border-4 rounded-xl' src={data.imageInfo.thumbnailUrl} alt={data.name} />
+                <img className='max-w-[220px] w-[35vw] max-h-[220px] h-[35vw] border-gray-300 border-4 rounded-xl' src={data.imageInfo.thumbnailUrl} alt={data.name} />
                 {dataPriceRange && (
                     <p className='h-[5vw] max-h-8 mt-[2%]'>
                       <span className='font-medium'>{dataPriceRange || dataCurrentPrice}</span>

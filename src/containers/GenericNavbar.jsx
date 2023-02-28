@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import Searcher from '../components/Searcher';
 import AlifakelogoImg from '../assets/images/alifake_logo.webp';
-import { shoppingCartState } from '../utils/redux/sliceShoppingCart';
+import { shoppingCartState } from '../context/sliceShoppingCart';
 
 
 const GenericNavbar = ({ headerRef = null }) => {

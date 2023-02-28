@@ -1,10 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import uniqueObjectsReducer from "../functions/uniqueObjectsReducer";
+import uniqueObjectsReducer from "../utils/functions/uniqueObjectsReducer";
 
-export const sliceSearch = createSlice({
-    name: 'searchState',
+export const sliceBestSales = createSlice({
+    name: 'bestSales',
     initialState: {
-        query: "",
         fetching: false,
         errorFetch: false,
         docs: [],
@@ -13,22 +12,10 @@ export const sliceSearch = createSlice({
         page: 0,
     },
     reducers: {
-        requestNewSearch: (state, action) => {
-            if (typeof action.payload !== 'string'){
-                console.error('It is only valid to save your search query into strings');
-                return;
-            }
-
-            state.docs = [];
-            state.query = action.payload;
+        requestBestSales: (state) => {
             state.fetching = true;
         },
-
-        requestNextPageSearch: (state) => {
-            state.fetching = true;
-        },
-
-        resultSearch: (state, action) => {
+        resultBestSales: (state, action) => {
             const resultData = action.payload.data.search.searchResult;
             const dataDocs = resultData.itemStacks[0].items;
             const dataPagination = resultData.paginationV2;
@@ -39,14 +26,13 @@ export const sliceSearch = createSlice({
             state.nextPage = dataPagination.currentPage + 1;
             state.page = dataPagination.currentPage;
         },
-
-        errorSearch: (state) => {
+        errorBestSales: (state) => {
             state.errorFetch = true;
         }
     }
 })
 
-export const searchState = (state) => state.sliceSearch;
-export const { requestNewSearch, requestNextPageSearch, resultSearch, errorSearch } = sliceSearch.actions;
+export const bestSalesState = (state) => state.sliceBestSales;
+export const { requestBestSales, resultBestSales, errorBestSales } = sliceBestSales.actions;
 
-export default sliceSearch.reducer;
+export default sliceBestSales.reducer;

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { bestSalesState, requestBestSales, resultBestSales, errorBestSales } from '../utils/redux/sliceBestSales';
+import { bestSalesState, requestBestSales, resultBestSales, errorBestSales } from '../context/sliceBestSales';
 import SkeletonPreviewProduct from '../components/SkeletonPreviewProduct';
 import useIntersection from '../hooks/useIntersection';
 import BestSalesPreview from '../components/BestSalesPreview';
@@ -76,7 +76,7 @@ const InfiniteProducts = ({ componentRef }) => {
             fetchBestSales(bestSalesData.nextPage);
         }
         else {
-            fetchBestSales()
+            fetchBestSales();
         }
     }
 
@@ -102,7 +102,7 @@ const InfiniteProducts = ({ componentRef }) => {
 
     return (
         <section
-            className={`relative table-cell w-full ${!infiniteLoading ? 'h-[calc(100%+48px)]' : 'h-full'} px-3 ${(pathname === '/' || pathname === '/cart/purchase-done') && 'pb-[13%]'} ${pathname === '/cart' && 'pb-[26%]'} text-base bg-transparent`}
+            className={`relative table-cell max-w-screen-sm w-screen ${!infiniteLoading ? 'h-[calc(100%+48px)]' : 'h-full'} px-3 ${(pathname === '/' || pathname === '/cart/purchase-done') && 'pb-[13%]'} ${pathname === '/cart' && 'pb-[26%]'} text-base bg-transparent`}
             ref={componentRef}
         >
             <p className={`my-[1.8vh] ${pathname !== '/' ? 'text-clamp-base font-bold' : 'text-clamp-lg font-medium'}`}>More to love</p>

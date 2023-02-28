@@ -11,9 +11,9 @@ const BestSalesPreview = ({ data }) => {
     const dataAverageRating = String(data.averageRating);
 
     return (
-        <article className='w-full h-min rounded-xl'>
+        <article className='max-w-[295px] w-[46vw] mx-auto rounded-xl'>
             <Link to={`/product/${data.usItemId}`}>
-                <img className='h-auto w-full border-gray-300 border-4 rounded-xl' src={data.imageInfo.thumbnailUrl} alt={data.name} />
+                <img className='max-w-[295px] w-[46vw] max-h-[295px] h-[46vw] border-gray-300 border-4 rounded-xl bg-white' src={data.imageInfo.thumbnailUrl} alt={data.name} />
                 {dataPriceRange && (
                     <>
                       <span className='text-xl font-medium'>{dataPriceRange || dataCurrentPrice || 'Price not avaliable'}</span>

@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { GiShoppingCart } from 'react-icons/gi';
 import { FaCheckCircle, FaRegCircle, FaRegTrashAlt } from 'react-icons/fa';
-import { deleteShoppingCart, shoppingCartState } from '../utils/redux/sliceShoppingCart';
+import { deleteShoppingCart, shoppingCartState } from '../context/sliceShoppingCart';
 import BackButton from '../components/BackButton';
 import ItemCart from '../components/ItemCart';
 import priceReducer from '../utils/functions/priceReducer';
 import InfiniteProducts from '../containers/InfiniteProducts';
 import { useEffect } from 'react';
-import { addPurchaseID, purchaseListState, putPurchaseID } from '../utils/redux/slicePurchase';
+import { addPurchaseID, purchaseListState, putPurchaseID } from '../context/slicePurchase';
 import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {

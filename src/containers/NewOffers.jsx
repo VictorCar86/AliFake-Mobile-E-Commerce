@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { errorNewOffers, newOffersState, requestNewOffers, resultNewOffers } from '../utils/redux/sliceNewOffers';
+import { errorNewOffers, newOffersState, requestNewOffers, resultNewOffers } from '../context/sliceNewOffers';
 import SkeletonPreviewProduct from '../components/SkeletonPreviewProduct';
-import PreviewProduct from '../components/BestSalesPreview';
 import NewOfferPreview from '../components/NewOfferPreview';
 const axios = require("axios");
 

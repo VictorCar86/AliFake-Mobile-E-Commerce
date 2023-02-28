@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { errorSearch, requestNewSearch, requestNextPageSearch, resultSearch, searchState } from '../utils/redux/sliceSearch';
+import { errorSearch, requestNewSearch, requestNextPageSearch, resultSearch, searchState } from '../context/sliceSearch';
 import useIntersection from '../hooks/useIntersection';
 import SkeletonPreviewProduct from '../components/SkeletonPreviewProduct';
 import BestSalesPreview from '../components/BestSalesPreview';

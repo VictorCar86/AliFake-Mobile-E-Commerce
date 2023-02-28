@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { purchaseListState, putPurchaseID } from '../utils/redux/slicePurchase';
+import { purchaseListState, putPurchaseID } from '../context/slicePurchase';
 import { useNavigate } from 'react-router-dom';
 import { BsCheckCircleFill } from "react-icons/bs";
 import AliexpressBagIcon from '../utils/icons/AliexpressBagIcon';

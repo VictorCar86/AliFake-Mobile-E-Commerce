@@ -3,7 +3,7 @@ import { FaCheckCircle, FaRegCircle } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import skeletonImage from '../assets/images/skeleton.webp';
-import { addShoppingCart } from '../utils/redux/sliceShoppingCart';
+import { addShoppingCart } from '../context/sliceShoppingCart';
 import MinusButton from './MinusButton';
 import PlusButton from './PlusButton';
 

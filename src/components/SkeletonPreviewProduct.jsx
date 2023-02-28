@@ -4,11 +4,11 @@ import NotFound from '../assets/images/not_found.webp';
 
 const SkeletonPreviewProduct = ({ deal = false, error = false }) => {
   return (
-    <article className={`${deal ? "w-[calc(37.45318vw_-_11.98502px)] max-w-[220px]" : "w-full"} h-min p-1 rounded-xl ${!error && 'animate-pulse'} bg-white`}>
-        <img className={`h-min ${deal ? 'w-[38vw]' : 'w-full'} border-gray-300 border-4 rounded-xl`} src={error ? NotFound : SkeletonImg} alt="Image loading soon" />
+    <article className={`${deal ? "max-w-[220px] w-[35vw]" : "max-w-[295px] w-[46vw] mx-auto"} rounded-xl ${!error && 'animate-pulse'} bg-white`}>
+        <img className={`${deal ? 'max-w-[220px] w-[35vw] max-h-[220px] h-[35vw]' : 'max-w-[295px] w-[46vw] max-h-[295px] h-[46vw]'} border-gray-300 border-4 rounded-xl bg-gray-300`} src={error ? NotFound : SkeletonImg} alt="Image loading soon" />
         <div className='h-5 w-24 my-1 rounded-md bg-gray-300' />
         <div className='h-5 w-full my-1 rounded-md bg-gray-300' />
-        <div className='h-5 w-14 my-1 rounded-md bg-gray-300' />
+        {/* <div className='h-5 w-14 my-1 rounded-md bg-gray-300' /> */}
     </article>
   )
 }
