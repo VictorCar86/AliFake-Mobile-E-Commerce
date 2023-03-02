@@ -39,7 +39,8 @@ const categoriesList = [
     },
     {
       "name": "Easter",
-      "imageSrc": "https://i5.walmartimages.com/dfw/4ff9c6c9-b958/k2-_af086f6c-fe73-4587-af4f-ba807076f177.v1.jpg",
+      "imageSrc": "https://imgs.search.brave.com/EvLjiqmuwhYdbpkt4SlThmp3OkVhF4p4S0I0-_XoCLY/rs:fit:512:512:1/g:ce/aHR0cHM6Ly9jZG4w/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvY2hyaXN0bWFz/LWljb25zLXJvdW5k/ZWQvMTEwL0Vhc3Rl/ci01MTIucG5n",
+      "extraStyle": "p-[9%]",
       "deptId": null
     },
     {

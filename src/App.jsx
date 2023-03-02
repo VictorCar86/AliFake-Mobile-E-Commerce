@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainNavbar from './containers/MainNavbar';
 import MainPage from './routes/MainPage';
 import ProductViewPage from './routes/ProductViewPage';
-// import CategoriesPage from './routes/CategoriesPage';
+import CategoriesPage from './routes/CategoriesPage';
 import SearchPage from './routes/SearchPage';
 import CartPage from './routes/CartPage';
 import OrderPage from './routes/OrderPage';
@@ -25,7 +25,7 @@ const App = () => {
           <Routes>
             <Route index element={<MainPage />} />
               <Route path="product/:id" element={<ProductViewPage />} />
-            {/* <Route path="categories" element={<CategoriesPage />} /> */}
+            <Route path="categories" element={<CategoriesPage />} />
             <Route path="search" element={<SearchPage />} />
             <Route path="cart" element={<CartPage />} />
               <Route path="cart/confirm" element={<OrderPage />} />
