@@ -46,18 +46,34 @@ const SearchPage = () => {
             return;
         }
 
+        let finalQuery = querySearch;
+
+        const departmentRequest = querySearch.includes('deptId');
+
+        if (departmentRequest){
+            finalQuery = querySearch.replace('deptId', '');
+        }
+
         const options = {
             method: 'GET',
             url: 'https://walmart.p.rapidapi.com/products/v2/list',
-            params: {cat_id: '0', sort: 'best_seller', page: pageNum, query: querySearch},
+            params: {
+                page: pageNum,
+                sort: 'best_seller',
+                cat_id: departmentRequest ? finalQuery : '0',
+            },
             headers: {
                 'X-RapidAPI-Key': envKey,
                 'X-RapidAPI-Host': 'walmart.p.rapidapi.com'
             }
         };
 
-        if (querySearch !== searchData.query){
-            dispatch( requestNewSearch(querySearch) );
+        if (!departmentRequest){
+            options.params.query = querySearch;
+        }
+
+        if (finalQuery !== searchData.query){
+            dispatch( requestNewSearch(finalQuery) );
         } else {
             dispatch( requestNextPageSearch() );
         }
