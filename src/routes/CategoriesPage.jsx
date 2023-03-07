@@ -22,15 +22,16 @@ const CategoriesPage = () => {
           {categoriesList.map((category, index) => (
             <li key={index}>
               <a
-                className='flex h-full w-full rounded-md border-2 border-gray-300 cursor-pointer'
+                className='flex h-full w-full rounded-md border-2 border-gray-300 shadow-[0px_0px_3px_#cacaca] transition-all cursor-pointer active:scale-95'
                 aria-label={`Go to ${category.name}`}
                 onClick={(event) => goToCategory(event, category)}
               >
-                <figure>
+                <figure className='grid justify-center w-full'>
                   <img
-                    className={`${category.extraStyle || ""} w-11/12 mt-2.5 mx-auto bg-white`}
+                    className={`${category.extraStyle || ""} max-w-[275px] w-[43vw] max-h-[275px] h-[43vw] mt-2.5 mx-auto bg-white`}
                     src={category.imageSrc}
                     alt={category.name}
+                    draggable='false'
                   />
                   <figcaption className='my-2.5 font-bold'>
                     {category.name}

@@ -15,9 +15,6 @@ const InfiniteProducts = ({ componentRef }) => {
     const [infiniteLoading, setInfiniteLoading] = useState(bestSalesData.fetching);
     const [skeletonLoading, setSkeletonLoading] = useState(true);
 
-    const scrollStopRef = useRef(null);
-    const useEffectFirstCall = useRef(false);
-
     const { pathname } = useLocation();
 
     const renderProducts = (docs) => {
@@ -28,7 +25,7 @@ const InfiniteProducts = ({ componentRef }) => {
             }
 
             return docs.map((e, index) => (
-                <li key={index}>
+                <li className='invisible' key={index}>
                     <BestSalesPreview data={e} />
                 </li>
             ))
@@ -80,6 +77,9 @@ const InfiniteProducts = ({ componentRef }) => {
         }
     }
 
+
+    const useEffectFirstCall = useRef(false);
+
     useEffect(() => {
         if (useEffectFirstCall.current !== true){
             if (!bestSalesData.fetching && bestSalesData.page === 0){
@@ -89,13 +89,51 @@ const InfiniteProducts = ({ componentRef }) => {
         return () => useEffectFirstCall.current = true;
     }, []);
 
+
+    const containerProducts = useRef(null);
+    const lastArrayProdLength = useRef(0);
+
+    useEffect(() => {
+        if (!infiniteLoading && !skeletonLoading){
+
+            const actualItems = Array.from(containerProducts.current.children);
+            const slicedItems = actualItems.slice(lastArrayProdLength.current - bestSalesData.docs.length);
+
+            lastArrayProdLength.current = bestSalesData.docs.length;
+
+            // console.log(slicedItems)
+
+            slicedItems.forEach(itemHtml => {
+                useIntersection((entry) => {
+                    // console.log(entry.target.className);
+
+                    const HTML_LI = entry.target;
+
+                    const newClassLi = HTML_LI.className.replace('invisible', 'visible');
+                    HTML_LI.className = newClassLi;
+
+                    const HTML_ARTICLE = HTML_LI.children[0];
+                    const HTML_A = HTML_ARTICLE.children[0];
+                    const HTML_IMG = HTML_A.children[0];
+
+                    const currentSrc = HTML_IMG.getAttribute("data-src");
+                    HTML_IMG.setAttribute("src", currentSrc);
+                    HTML_IMG.setAttribute("data-src", "");
+
+                    // console.log(HTML_LI.className, HTML_IMG.src);
+                }).observe(itemHtml);
+            });
+        }
+    }, [infiniteLoading]);
+
+
+    const scrollStopRef = useRef(null);
+
     useEffect(() => {
         if (!bestSalesData.errorFetch && !bestSalesData.page <= 0 && bestSalesData.hasNextPage && !infiniteLoading){
-            useIntersection(
-                () => {
-                    scrollPagination();
-                }
-            ).observe(scrollStopRef.current);
+            useIntersection(() => {
+                scrollPagination();
+            }).observe(scrollStopRef.current);
         }
     }
     , [infiniteLoading]);
@@ -105,9 +143,9 @@ const InfiniteProducts = ({ componentRef }) => {
             className={`relative table-cell max-w-screen-sm w-screen ${!infiniteLoading ? 'h-[calc(100%+48px)]' : 'h-full'} px-3 ${(pathname === '/' || pathname === '/cart/purchase-done') && 'pb-[13%]'} ${pathname === '/cart' && 'pb-[26%]'} text-base bg-transparent`}
             ref={componentRef}
         >
-            <p className={`my-[1.8vh] ${pathname !== '/' ? 'text-clamp-base font-bold' : 'text-clamp-lg font-medium'}`}>More to love</p>
+            <p className={`my-[3%] ${pathname !== '/' ? 'text-clamp-base font-bold' : 'text-clamp-lg font-medium'}`}>More to love</p>
 
-            <ul className='h-full w-full min-h-screen grid grid-cols-2 gap-1.5 overflow-hidden'>
+            <ul className='h-full w-full min-h-screen grid grid-cols-2 gap-1.5 overflow-hidden' ref={containerProducts}>
 
                 {skeletonLoading && (
                 <>

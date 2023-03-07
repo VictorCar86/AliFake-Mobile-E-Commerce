@@ -63,8 +63,8 @@ const NewOffers = () => {
     }, []);
 
     return (
-        <section className='px-3 pt-[108px]'>
-          <p className='my-[1.8vh] text-clamp-lg font-medium'>Most recent offers</p>
+        <section className='px-3 pt-[clamp(108px,22vw,130px)]'>
+          <p className='mb-[3%] text-clamp-lg font-medium'>Most recent offers</p>
           <ul className='flex gap-1.5 h-full max-h-[450px] pb-[3%] overflow-x-scroll overflow-y-hidden'>
             {skeletonLoading && (
               <>
