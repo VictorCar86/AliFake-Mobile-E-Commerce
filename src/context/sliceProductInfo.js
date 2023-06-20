@@ -30,9 +30,6 @@ export const sliceProductInfo = createSlice({
         },
         resultProductInfo: (state, action) => {
             const completeData = action.payload.data;
-
-            // console.log(completeData);
-
             state.fetching = false;
             state.errorFetch = false;
             state.docs = completeData.product;

@@ -1,21 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import NotFoundImg from '../assets/images/not_found.webp';
 
 const BestSalesPreview = ({ data }) => {
-    // const discount = Math.round(
-    //     ((data.original_price - data.sale_price) / data.original_price) * 100
-    // );
-
-    const dataCurrentPrice = data.priceInfo.currentPrice?.priceString;
-    const dataPriceRange = data.priceInfo.priceRange?.priceString;
+    const dataCurrentPrice = data.priceInfo?.currentPrice?.priceString;
+    const dataPriceRange = data.priceInfo?.priceRange?.priceString;
     const dataAverageRating = String(data.averageRating);
 
     return (
-        <article className='max-w-[295px] w-[46vw] mx-auto rounded-xl'>
+        <article className={`max-w-[295px] w-[46vw] min-h-[40.2vw] mx-auto rounded-xl ${!data.usItemId && 'pointer-events-none'}`}>
             <Link to={`/product/${data.usItemId}`}>
                 <img
                     className='max-w-[295px] w-[46vw] max-h-[295px] h-[46vw] border-gray-300 border-4 rounded-xl bg-white'
-                    data-src={data.imageInfo.thumbnailUrl}
+                    src={data.imageInfo?.thumbnailUrl ?? NotFoundImg}
                     alt={data.name}
                 />
                 {dataPriceRange && (
@@ -30,15 +27,6 @@ const BestSalesPreview = ({ data }) => {
                       <span className='mx-1 text-xl font-medium'>{dataCurrentPrice || 'Price not avaliable'}</span>
                     </>
                 )}
-
-                {/* {discount >= 20 && (
-                <>
-                    <span className='mr-1 opacity-75 line-through'>{data.priceInfo.currentPrice.price}</span>
-                    <span className='inline-block w-max px-1 pb-0.5 bg-red-600 text-white font-medium rounded-tl-lg rounded-br-xl'>
-                        Save {discount + "%"}
-                    </span>
-                </>
-                )} */}
 
                 <p className='h-6 mr-3 whitespace-nowrap overflow-hidden text-ellipsis'>
                     {data.name}

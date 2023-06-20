@@ -13,8 +13,8 @@
     "build-dev": "webpack --mode development",
     "build": "webpack --mode production",
     "start": "node server.js",
-    "start-dev": "webpack serve --mode development",
-    "start-prod": "webpack serve --mode production"
+    "dev": "webpack serve --mode development",
+    "prod": "webpack serve --mode production"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",

@@ -25,22 +25,18 @@ const InfiniteProducts = ({ componentRef }) => {
             }
 
             return docs.map((e, index) => (
-                <li className='invisible' key={index}>
+                <li className='invisible content-visibility-hidden min-h-[clamp(0px,70vw,370px)]' key={index}>
                     <BestSalesPreview data={e} />
                 </li>
             ))
         }
     }
 
-    // console.log(useSelector(bestSalesState));
-
     const fetchBestSales = (pageNum = 1) => {
         const alreadyFetching = bestSalesData.fetching;
         const envKey = process.env.WALMART_KEY;
 
-        if (alreadyFetching || !envKey){
-            return;
-        }
+        if (alreadyFetching || !envKey) return;
 
         const options = {
             method: 'GET',
@@ -62,7 +58,6 @@ const InfiniteProducts = ({ componentRef }) => {
             .catch((error) => {
                 dispatch( errorBestSales() );
                 setInfiniteLoading(false);
-                // console.error(error);
             });
     };
 
@@ -95,37 +90,20 @@ const InfiniteProducts = ({ componentRef }) => {
 
     useEffect(() => {
         if (!infiniteLoading && !skeletonLoading){
-
             const actualItems = Array.from(containerProducts.current.children);
             const slicedItems = actualItems.slice(lastArrayProdLength.current - bestSalesData.docs.length);
 
             lastArrayProdLength.current = bestSalesData.docs.length;
 
-            // console.log(slicedItems)
-
             slicedItems.forEach(itemHtml => {
                 useIntersection((entry) => {
-                    // console.log(entry.target.className);
-
-                    const HTML_LI = entry.target;
-
-                    const newClassLi = HTML_LI.className.replace('invisible', 'visible');
-                    HTML_LI.className = newClassLi;
-
-                    const HTML_ARTICLE = HTML_LI.children[0];
-                    const HTML_A = HTML_ARTICLE.children[0];
-                    const HTML_IMG = HTML_A.children[0];
-
-                    const currentSrc = HTML_IMG.getAttribute("data-src");
-                    HTML_IMG.setAttribute("src", currentSrc);
-                    HTML_IMG.setAttribute("data-src", "");
-
-                    // console.log(HTML_LI.className, HTML_IMG.src);
+                    const $HTML_LI = entry.target;
+                    const newClassLi = $HTML_LI.className.replace('invisible content-visibility-hidden', 'visible');
+                    $HTML_LI.className = newClassLi;
                 }).observe(itemHtml);
             });
         }
     }, [infiniteLoading]);
-
 
     const scrollStopRef = useRef(null);
 
@@ -135,8 +113,7 @@ const InfiniteProducts = ({ componentRef }) => {
                 scrollPagination();
             }).observe(scrollStopRef.current);
         }
-    }
-    , [infiniteLoading]);
+    }, [infiniteLoading]);
 
     return (
         <section
@@ -162,11 +139,11 @@ const InfiniteProducts = ({ componentRef }) => {
             </ul>
             {infiniteLoading && (
                 <div className='w-full h-max py-4 text-center'>
-                    <img className='inline-block h-10 w-10 animate-spin' src={spinnerIcon} alt='Spin loader image' />
+                    <img className='inline-block h-10 w-10 animate-spin' src={spinnerIcon} alt='Spin loader image'/>
                 </div>
             )}
             {!infiniteLoading && (
-                <span className='h-0 w-full' onClick={scrollPagination} ref={scrollStopRef} />
+                <span className='block h-0.5 w-full' onClick={scrollPagination} ref={scrollStopRef}/>
             )}
         </section>
     )

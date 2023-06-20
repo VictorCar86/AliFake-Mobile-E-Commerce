@@ -52,7 +52,6 @@ const NewOffers = () => {
             })
             .catch((error) => {
                 dispatch( errorNewOffers() );
-                // console.error(error);
             });
     };
 

@@ -24,7 +24,6 @@ const Searcher = ({ className = "" }) => {
       textRef.current.value = placeholder;
       navigate(`/search?i=${placeholder}`);
     }
-    // console.log(inputText);
   }
 
   useEffect(() => {

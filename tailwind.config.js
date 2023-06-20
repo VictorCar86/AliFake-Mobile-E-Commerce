@@ -7,7 +7,7 @@ for (let index = 0; index < 101; index++) {
   safeWidth.push(`before:w-[${index}%]`)
 }
 
-const rotateX = plugin(function ({ addUtilities }) {
+const rotateX = plugin(({ addUtilities }) => {
   addUtilities({
     '.rotate-x-20': {
       transform: 'rotateX(20deg)',
@@ -33,7 +33,7 @@ const rotateX = plugin(function ({ addUtilities }) {
   })
 });
 
-const rotateY = plugin(function ({ addUtilities }) {
+const rotateY = plugin(({ addUtilities }) => {
   addUtilities({
     '.rotate-y-20': {
       transform: 'rotateY(20deg)',
@@ -59,6 +59,14 @@ const rotateY = plugin(function ({ addUtilities }) {
   })
 });
 
+const contentVisibility = plugin(({ addUtilities }) => {
+  addUtilities({
+    '.content-visibility-hidden': {
+      'content-visibility': 'hidden',
+    },
+  })
+})
+
 module.exports = {
   purge: ['./dist/**/*.html', './public/**/*.html', './src/**/*.{js,jsx,ts,tsx}'],
   darkMode: "class", // or 'media' or 'class'
@@ -74,5 +82,5 @@ module.exports = {
       }
     },
   },
-  plugins: [rotateX, rotateY],
+  plugins: [rotateX, rotateY, contentVisibility],
 }

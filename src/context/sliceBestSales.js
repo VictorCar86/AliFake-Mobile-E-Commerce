@@ -17,7 +17,7 @@ export const sliceBestSales = createSlice({
         },
         resultBestSales: (state, action) => {
             const resultData = action.payload.data.search.searchResult;
-            const dataDocs = resultData.itemStacks[0].items;
+            const dataDocs = resultData.itemStacks[0].itemsV2;
             const dataPagination = resultData.paginationV2;
 
             state.fetching = false;
@@ -34,5 +34,4 @@ export const sliceBestSales = createSlice({
 
 export const bestSalesState = (state) => state.sliceBestSales;
 export const { requestBestSales, resultBestSales, errorBestSales } = sliceBestSales.actions;
-
 export default sliceBestSales.reducer;

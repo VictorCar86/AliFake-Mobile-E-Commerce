@@ -15,9 +15,7 @@ export const sliceNewOffers = createSlice({
         },
         resultNewOffers: (state, action) => {
             const resultData = action.payload.data.search.searchResult;
-            const dataDocs = resultData.itemStacks[0].items.slice(0, 10);
-
-            // console.log(dataDocs);
+            const dataDocs = resultData.itemStacks[0].itemsV2.slice(0, 10);
 
             state.fetching = false;
             state.docs = dataDocs;

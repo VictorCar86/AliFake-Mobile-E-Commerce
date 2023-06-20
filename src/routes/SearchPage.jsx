@@ -31,7 +31,7 @@ const SearchPage = () => {
             }
 
             return docs.map((e, index) => (
-                <li key={index}>
+                <li className='invisible content-visibility-hidden min-h-[clamp(0px,70vw,370px)]' key={index}>
                     <BestSalesPreview data={e} />
                 </li>
             ))
@@ -121,6 +121,26 @@ const SearchPage = () => {
         return () => useEffectFirstCall.current = true;
     }, []);
 
+    const containerProducts = useRef(null);
+    const lastArrayProdLength = useRef(0);
+
+    useEffect(() => {
+        if (!infiniteLoading && !skeletonLoading){
+            const actualItems = Array.from(containerProducts.current.children);
+            const slicedItems = actualItems.slice(lastArrayProdLength.current - searchData.docs.length);
+
+            lastArrayProdLength.current = searchData.docs.length;
+
+            slicedItems.forEach(itemHtml => {
+                useIntersection((entry) => {
+                    const $HTML_LI = entry.target;
+                    const newClassLi = $HTML_LI.className.replace('invisible content-visibility-hidden', 'visible');
+                    $HTML_LI.className = newClassLi;
+                }).observe(itemHtml);
+            });
+        }
+    }, [searchData, infiniteLoading]);
+
     useEffect(() => {
         if (querySearch && !searchData.page <= 0 && searchData.hasNextPage && !infiniteLoading && !searchData.fetching){
             useIntersection(
@@ -129,8 +149,7 @@ const SearchPage = () => {
                 }
             ).observe(scrollStopRef.current);
         }
-    }
-    , [infiniteLoading]);
+    }, [infiniteLoading]);
 
     return (
         <>
@@ -148,7 +167,7 @@ const SearchPage = () => {
 
                 {querySearch && (
                   <>
-                    <ul className='h-full w-full min-h-screen grid grid-cols-2 gap-1.5 overflow-hidden'>
+                    <ul className='h-full w-full min-h-screen grid grid-cols-2 gap-1.5 overflow-hidden' ref={containerProducts}>
                         {skeletonLoading && (
                             [...Array(8).keys()].map(key => (
                                 <li key={key}>

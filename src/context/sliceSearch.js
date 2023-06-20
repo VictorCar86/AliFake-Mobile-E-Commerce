@@ -30,7 +30,7 @@ export const sliceSearch = createSlice({
 
         resultSearch: (state, action) => {
             const resultData = action.payload.data.search.searchResult;
-            const dataDocs = resultData.itemStacks[0].items;
+            const dataDocs = resultData.itemStacks[0].itemsV2;
             const dataPagination = resultData.paginationV2;
 
             state.fetching = false;
