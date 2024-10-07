@@ -8,7 +8,7 @@ const BestSalesPreview = ({ data }) => {
     const dataAverageRating = String(data.averageRating);
 
     return (
-        <article className={`max-w-[295px] w-[46vw] min-h-[40.2vw] mx-auto rounded-xl ${!data.usItemId && 'pointer-events-none'}`}>
+        <article className={`max-w-[295px] w-[46vw] mx-auto rounded-xl ${!data.usItemId && 'pointer-events-none'}`}>
             <Link to={`/product/${data.usItemId}`}>
                 <img
                     className='max-w-[295px] w-[46vw] max-h-[295px] h-[46vw] border-gray-300 border-4 rounded-xl bg-white'
