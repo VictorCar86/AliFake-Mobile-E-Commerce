@@ -18,13 +18,19 @@ const NewOffers = () => {
                 setSkeletonLoading(false);
             }
 
-            return data.map((e, index) => (
-                <li key={index}>
-                    <NewOfferPreview data={e}/>
-                </li>
-            ))
+            const excludedTypes = ["SponsoredVideoAd"];
+
+            return data.map((d, index) => {
+                if (!excludedTypes.includes(d.type)){
+                    return (
+                        <li key={index}>
+                            <NewOfferPreview data={d}/>
+                        </li>
+                    )
+                }
+            })
         }
-      }
+    }
 
     const fetchNewOffers = () => {
         const alreadyFetching = newOffersData.fetching;
