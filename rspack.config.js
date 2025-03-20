@@ -1,6 +1,6 @@
 const path = require('path');
-const HTMLWebpackPlugin = require("html-webpack-plugin");
 const Dotenv = require("dotenv-webpack");
+const { rspack } = require('@rspack/core');
 
 module.exports = {
   entry: './src/index.js',
@@ -45,7 +45,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new HTMLWebpackPlugin({
+    new rspack.HtmlRspackPlugin({
       template: "./public/index.html",
       filename: "index.html"
     }),
@@ -60,7 +60,6 @@ module.exports = {
     },
     historyApiFallback: true,
     compress: true,
-    port: 3005,
-    open: true
+    port: 3005
   }
 };
