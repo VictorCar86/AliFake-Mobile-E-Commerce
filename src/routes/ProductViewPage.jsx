@@ -373,9 +373,9 @@ const ProductViewPage = () => {
 
             <AddToCartModal productData={productInfo.docs} state={cartModal} toggle={toggleCart} />
 
-            <ProductDetailsModal productData={productInfo.docs} state={specsModal} toggle={toggleSpecs} />
+            <ProductDetailsModal productData={productInfo.idml} state={specsModal} toggle={toggleSpecs} />
 
-            <ProductDescriptionModal productData={productInfo.docs} state={descModal} toggle={toggleDesc} />
+            <ProductDescriptionModal productData={productInfo.idml} state={descModal} toggle={toggleDesc} />
         </>
     )
 }

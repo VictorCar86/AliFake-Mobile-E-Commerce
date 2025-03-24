@@ -3,13 +3,17 @@ const Dotenv = require("dotenv-webpack");
 const { rspack } = require('@rspack/core');
 
 module.exports = {
-  entry: './src/index.js',
+  context: path.resolve(__dirname), // Base directory for relative paths
+  entry: './src/index.js', // Now relative to 'src'
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: "/"
+    publicPath: "/" // Ensure assets are loaded from root
   },
   resolve: {
+    alias: {
+      '@/': path.resolve(__dirname,'src'),
+    },
     extensions: [".js", ".jsx"],
   },
   module: {
@@ -26,9 +30,7 @@ module.exports = {
       },
       {
         test: /\.html$/,
-        use: [
-          'html-loader',
-        ]
+        use: ['html-loader']
       },
       {
         test: /\.(gif|png|webp|pdf|mp4|jpe?g)$/,
@@ -38,7 +40,7 @@ module.exports = {
         }
       },
       {
-        test: /.(css|sass|scss)$/,
+        test: /\.(css|sass|scss)$/,
         include: path.resolve(__dirname, 'src'),
         use: ['style-loader', 'css-loader', 'sass-loader', 'postcss-loader'],
       },
@@ -47,7 +49,8 @@ module.exports = {
   plugins: [
     new rspack.HtmlRspackPlugin({
       template: "./public/index.html",
-      filename: "index.html"
+      filename: "index.html",
+      favicon: "./public/favicon.ico",
     }),
     new Dotenv({
       path: "./.env",

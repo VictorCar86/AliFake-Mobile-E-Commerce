@@ -6,7 +6,7 @@ const ProductDescriptionModal = ({ productData, state, toggle }) => {
     return (
         <InfoModal title="Description" state={state} toggle={toggle} >
             <React.Fragment>
-                <Markup content={productData.shortDescription} />
+                <Markup content={productData?.longDescription} />
             </React.Fragment>
         </InfoModal>
     )
